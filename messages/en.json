@@ -239,6 +239,7 @@
     "menuTab": "Menu",
     "offersTab": "Offers",
     "customersTab": "Customers",
+    "cashiersTab": "Cashiers",
     "settingsTab": "Settings",
     "addMenuItem": "Add New Menu Item",
     "itemNamePlaceholder": "Item name (e.g. Iced Latte)",

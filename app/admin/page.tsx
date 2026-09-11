@@ -27,7 +27,7 @@ import ProfileModal from '@/components/ProfileModal';
 export default function AdminDashboardPage() {
   const router = useRouter();
   const { t, isRtl } = useLocale();
-  const [activeTab, setActiveTab] = useState<'menu' | 'offers' | 'customers' | 'settings' | 'partnerships' | 'audit' | 'tiers' | 'referral' | 'analytics' | 'dailyReview'>('menu');
+  const [activeTab, setActiveTab] = useState<'menu' | 'offers' | 'customers' | 'cashiers' | 'settings' | 'partnerships' | 'audit' | 'tiers' | 'referral' | 'analytics' | 'dailyReview'>('menu');
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [businessName, setBusinessName] = useState('');
   const [userRole, setUserRole] = useState<string>('owner');
@@ -1435,19 +1435,19 @@ export default function AdminDashboardPage() {
         )}
 
         <nav 
-          className="grid grid-cols-5 sm:grid-cols-10 p-1 rounded-2xl border text-[9px] sm:text-[11px] font-bold shadow-xs overflow-x-auto gap-1 sm:gap-0 backdrop-blur-xl"
+          className="flex items-center overflow-x-auto p-1.5 rounded-2xl border text-[10px] sm:text-xs font-bold shadow-xs gap-1.5 backdrop-blur-xl no-scrollbar"
           style={{ backgroundColor: 'rgba(16, 14, 28, 0.75)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
         >
           <button
             onClick={() => { setActiveTab('menu'); setFeedback(null); }}
             id="tab-menu-items"
-            className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 ${
+            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
               activeTab === 'menu' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
             }`}
             style={activeTab === 'menu' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
             <Coffee className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{t('admin.menuTab')}</span>
+            <span>{t('admin.menuTab')}</span>
           </button>
 
           {/* Phase 22.8: Offers Tab - completely hidden if both offers and daily_offers are disabled */}
@@ -1455,38 +1455,62 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => { setActiveTab('offers'); setFeedback(null); }}
               id="tab-offers"
-              className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 ${
+              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
                 activeTab === 'offers' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
               }`}
               style={activeTab === 'offers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <Sparkles className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">{t('admin.offersTab')}</span>
+              <span>{t('admin.offersTab')}</span>
             </button>
           )}
 
           <button
             onClick={() => { setActiveTab('customers'); setFeedback(null); }}
             id="tab-customers"
-            className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 ${
+            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
               activeTab === 'customers' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
             }`}
             style={activeTab === 'customers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
             <Users className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{t('admin.customersTab')}</span>
+            <span>{t('admin.customersTab')}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab('cashiers');
+              setFeedback(null);
+              if (businessId) {
+                loadCashiers(businessId);
+              }
+            }}
+            id="tab-cashiers"
+            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer relative ${
+              activeTab === 'cashiers' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
+            }`}
+            style={activeTab === 'cashiers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
+          >
+            {cashiers.some(c => c.isNearLimit || c.isOverLimit) && (
+              <span
+                className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2"
+                style={{ backgroundColor: 'var(--color-error-text)', borderColor: 'var(--color-card-bg)' }}
+              />
+            )}
+            <UserPlus className="w-3.5 h-3.5 shrink-0" />
+            <span>{t('admin.cashiersTab')}</span>
           </button>
 
           <button
             onClick={() => { setActiveTab('settings'); setFeedback(null); }}
             id="tab-settings"
-            className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 ${
+            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
               activeTab === 'settings' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
             }`}
             style={activeTab === 'settings' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
             <Settings className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{t('admin.settingsTab')}</span>
+            <span>{t('admin.settingsTab')}</span>
           </button>
 
           {/* Phase 22.8: Partnerships Tab - completely hidden if branch_partnerships is disabled */}
@@ -1494,13 +1518,13 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => { setActiveTab('partnerships'); setFeedback(null); }}
               id="tab-partnerships"
-              className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 ${
+              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
                 activeTab === 'partnerships' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
               }`}
               style={activeTab === 'partnerships' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <Handshake className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">{t('partnerships.tab')}</span>
+              <span>{t('partnerships.tab')}</span>
             </button>
           )}
 
@@ -1513,7 +1537,7 @@ export default function AdminDashboardPage() {
               }
             }}
             id="tab-audit-log"
-            className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 relative ${
+            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer relative ${
               activeTab === 'audit' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
             }`}
             style={activeTab === 'audit' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
@@ -1525,7 +1549,7 @@ export default function AdminDashboardPage() {
               />
             )}
             <ClipboardList className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{t('auditLog.tab')}</span>
+            <span>{t('auditLog.tab')}</span>
           </button>
 
           {/* Phase 22.8: Tiers Tab - completely hidden if membership_tiers is disabled */}
@@ -1539,13 +1563,13 @@ export default function AdminDashboardPage() {
                 }
               }}
               id="tab-tiers"
-              className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 ${
+              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
                 activeTab === 'tiers' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
               }`}
               style={activeTab === 'tiers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <Award className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">{t('tiers.tab')}</span>
+              <span>{t('tiers.tab')}</span>
             </button>
           )}
 
@@ -1560,13 +1584,13 @@ export default function AdminDashboardPage() {
                 }
               }}
               id="tab-referral"
-              className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 ${
+              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
                 activeTab === 'referral' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
               }`}
               style={activeTab === 'referral' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <Gift className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">{t('admin.referralTab')}</span>
+              <span>{t('admin.referralTab')}</span>
             </button>
           )}
 
@@ -1581,13 +1605,13 @@ export default function AdminDashboardPage() {
                 }
               }}
               id="tab-analytics"
-              className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 ${
+              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
                 activeTab === 'analytics' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
               }`}
               style={activeTab === 'analytics' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <BarChart3 className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">{t('analytics.tab')}</span>
+              <span>{t('analytics.tab')}</span>
             </button>
           )}
 
@@ -1600,7 +1624,7 @@ export default function AdminDashboardPage() {
               }
             }}
             id="tab-daily-review"
-            className={`py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 relative ${
+            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer relative ${
               activeTab === 'dailyReview' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
             }`}
             style={activeTab === 'dailyReview' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
@@ -1612,7 +1636,7 @@ export default function AdminDashboardPage() {
               />
             )}
             <Receipt className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{t('admin.dailyReviewTab')}</span>
+            <span>{t('admin.dailyReviewTab')}</span>
           </button>
         </nav>
 
@@ -2723,7 +2747,7 @@ export default function AdminDashboardPage() {
         {/* =========================================================================
             TAB 6: Phase 15 — Audit Log + Cashier Limits
            ========================================================================= */}
-        {activeTab === 'audit' && (
+        {(activeTab === 'cashiers' || activeTab === 'audit') && (
           <div className="flex flex-col gap-6">
 
             {/* 15.2: Cashier Daily Limits Manager */}
@@ -3052,6 +3076,7 @@ export default function AdminDashboardPage() {
             </div>
 
             {/* === 15.1: Audit Log Section === */}
+            {activeTab === 'audit' && (
             <div
               className="p-5 rounded-3xl border shadow-sm flex flex-col gap-4"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
@@ -3194,6 +3219,7 @@ export default function AdminDashboardPage() {
                 </div>
               )}
             </div>
+            )}
 
           </div>
         )}
