@@ -1,0 +1,40 @@
+name: RLS Tests
+
+# PLAN.md 2.8: Automated RLS tests run on every PR and after any migration.
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'supabase/migrations/**'
+      - 'tests/rls/**'
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  rls-tests:
+    name: Run Automated RLS Test Suite
+    runs-on: ubuntu-latest
+
+    env:
+      # These secrets must be set in GitHub → Settings → Secrets → Actions
+      # Point to your STAGING Supabase project, never production.
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run RLS Test Suite
+        run: npm run test:rls
+        timeout-minutes: 5

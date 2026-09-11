@@ -1,26 +1,306 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* ==============================================================================
+   Central CSS Design System — Dual-Mode: Warm Cream Light & Deep Obsidian Dark
+   Light Mode: off-white (#FAF7F2) + light brown accent (#B08968) — RULES.md Section 3
+   Dark Mode:  obsidian (#070612) + warm purple accent (#B08968 adapted for contrast)
+   ============================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Default: Warm Light Mode — RULES.md Section 3 */
+  --color-bg: #FAF7F2;
+  --color-bg-alt: #F4EFEB;
+  --page-bg-gradient: linear-gradient(135deg, #FAF7F2 0%, #F5EFEB 50%, #EDE4DC 100%);
+  /* RULES.md Section 3: light brown accent */
+  --color-accent: #B08968;
+  --color-accent-hover: #9A7458;
+  --color-secondary: #0D9488;
+  --color-secondary-hover: #0F766E;
+  --color-text: #1C1917;
+  --color-text-muted: #78716C;
+  --color-card-bg: rgba(255, 255, 255, 0.92);
+  --color-card-solid: #FFFFFF;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-hover: rgba(176, 137, 104, 0.4);
+  --color-btn-text: #FFFFFF;
+  --color-input-bg: #FFFFFF;
+
+  --color-success-bg: rgba(16, 185, 129, 0.12);
+  --color-success-text: #059669;
+  --color-success-border: rgba(16, 185, 129, 0.25);
+
+  --color-error-bg: rgba(239, 68, 68, 0.12);
+  --color-error-text: #DC2626;
+  --color-error-border: rgba(239, 68, 68, 0.25);
+
+  --color-badge-special-bg: rgba(245, 158, 11, 0.12);
+  --color-badge-special-text: #D97706;
+  --color-badge-special-border: rgba(245, 158, 11, 0.25);
+
+  --color-badge-daily-bg: rgba(176, 137, 104, 0.10);
+  --color-badge-daily-text: #9A7458;
+  --color-badge-daily-border: rgba(176, 137, 104, 0.25);
+
+  --color-overlay-bg: rgba(15, 23, 42, 0.55);
+  --color-qr-bg: #FFFFFF;
+  --color-qr-fg: #1C1917;
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html.light {
+  color-scheme: light;
+  --color-bg: #FAF7F2;
+  --color-bg-alt: #F4EFEB;
+  --page-bg-gradient: linear-gradient(135deg, #FAF7F2 0%, #F5EFEB 50%, #EDE4DC 100%);
+  /* RULES.md Section 3: light brown accent #B08968 */
+  --color-accent: #B08968;
+  --color-accent-hover: #9A7458;
+  --color-secondary: #0D9488;
+  --color-secondary-hover: #0F766E;
+  --color-text: #1C1917;
+  --color-text-muted: #78716C;
+  --color-card-bg: rgba(255, 255, 255, 0.92);
+  --color-card-solid: #FFFFFF;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-hover: rgba(176, 137, 104, 0.4);
+  --color-btn-text: #FFFFFF;
+  --color-input-bg: #FFFFFF;
+
+  --color-success-bg: rgba(16, 185, 129, 0.12);
+  --color-success-text: #059669;
+  --color-success-border: rgba(16, 185, 129, 0.25);
+
+  --color-error-bg: rgba(239, 68, 68, 0.12);
+  --color-error-text: #DC2626;
+  --color-error-border: rgba(239, 68, 68, 0.25);
+
+  --color-badge-special-bg: rgba(245, 158, 11, 0.12);
+  --color-badge-special-text: #D97706;
+  --color-badge-special-border: rgba(245, 158, 11, 0.25);
+
+  --color-badge-daily-bg: rgba(176, 137, 104, 0.10);
+  --color-badge-daily-text: #9A7458;
+  --color-badge-daily-border: rgba(176, 137, 104, 0.25);
+
+  --color-overlay-bg: rgba(15, 23, 42, 0.55);
+  --color-qr-bg: #FFFFFF;
+  --color-qr-fg: #1C1917;
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html.dark {
+  color-scheme: dark;
+  /* Deep Midnight Obsidian Palette */
+  --color-bg: #070612;
+  --color-bg-alt: #0e0d1f;
+  --page-bg-gradient: linear-gradient(135deg, #06050e 0%, #0e0d1f 50%, #080714 100%);
+  --color-accent: #6C63FF;
+  --color-accent-hover: #5950EC;
+  --color-secondary: #4ECDC4;
+  --color-secondary-hover: #3dbdb4;
+  --color-text: #FFFFFF;
+  --color-text-muted: rgba(255, 255, 255, 0.65);
+  --color-card-bg: rgba(16, 14, 28, 0.75);
+  --color-card-solid: #110f22;
+  --color-border: rgba(255, 255, 255, 0.09);
+  --color-border-hover: rgba(108, 99, 255, 0.4);
+  --color-btn-text: #FFFFFF;
+  --color-input-bg: rgba(255, 255, 255, 0.05);
+
+  /* Modern Neon & Glass Status Tokens */
+  --color-success-bg: rgba(52, 211, 153, 0.12);
+  --color-success-text: #34D399;
+  --color-success-border: rgba(52, 211, 153, 0.25);
+
+  --color-error-bg: rgba(248, 113, 113, 0.12);
+  --color-error-text: #F87171;
+  --color-error-border: rgba(248, 113, 113, 0.25);
+
+  --color-badge-special-bg: rgba(251, 191, 36, 0.12);
+  --color-badge-special-text: #FBBF24;
+  --color-badge-special-border: rgba(251, 191, 36, 0.25);
+
+  --color-badge-daily-bg: rgba(108, 99, 255, 0.12);
+  --color-badge-daily-text: #A5B4FC;
+  --color-badge-daily-border: rgba(108, 99, 255, 0.25);
+
+  --color-overlay-bg: rgba(4, 3, 10, 0.82);
+  --color-qr-bg: #FFFFFF;
+  --color-qr-fg: #070612;
+
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Glassmorphism & Modern UI Utility Classes */
+.glass-panel {
+  background: var(--color-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  color: var(--color-text);
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+html.dark .glass-panel {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+.glass-input {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  transition: all 0.2s ease;
+}
+
+.glass-input:focus {
+  border-color: rgba(176, 137, 104, 0.6);
+  box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.15);
+  outline: none;
+}
+
+html.dark .glass-input:focus {
+  border-color: rgba(108, 99, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+}
+
+.glass-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.btn-gradient {
+  /* Light mode: warm brown gradient per RULES.md | Dark mode: purple gradient */
+  background: linear-gradient(135deg, #B08968 0%, #9A7458 100%);
+  color: #FFFFFF !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+html.dark .btn-gradient {
+  background: linear-gradient(135deg, #6C63FF 0%, #4ECDC4 100%);
+}
+
+.btn-gradient * {
+  color: #FFFFFF !important;
+}
+
+.btn-gradient:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(176, 137, 104, 0.4);
+}
+
+html.dark .btn-gradient:hover:not(:disabled) {
+  box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
+}
+
+.btn-gradient:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.page-dark-obsidian {
+  min-height: 100vh;
+  background: var(--page-bg-gradient) !important;
+  color: var(--color-text) !important;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.nav-glass {
+  background: var(--color-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* ==============================================================================
+   Automatic Theme Inversion Rules for Seamless Light Mode
+   ============================================================================== */
+
+html.light [style*="#06050e"],
+html.light [style*="#070612"],
+html.light [style*="#0e0d1f"],
+html.light [style*="#080714"] {
+  background: var(--page-bg-gradient) !important;
+  color: var(--color-text) !important;
+}
+
+html.light [style*="rgba(16, 14, 28"],
+html.light [style*="rgba(16,14,28"] {
+  background-color: var(--color-card-bg) !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+html.light [style*="rgba(255, 255, 255, 0.08)"],
+html.light [style*="rgba(255, 255, 255, 0.09)"],
+html.light [style*="rgba(255, 255, 255, 0.1)"] {
+  border-color: var(--color-border) !important;
+}
+
+html.light [style*="rgba(255, 255, 255, 0.03)"],
+html.light [style*="rgba(255, 255, 255, 0.05)"] {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+/* Text adaptations in light mode */
+html.light .text-white:not(.btn-gradient):not(.btn-gradient *):not([data-keep-white]):not([data-keep-white] *) {
+  color: #1C1917 !important;
+}
+
+html.light .text-slate-100:not(.btn-gradient *),
+html.light .text-slate-200:not(.btn-gradient *) {
+  color: #1C1917 !important;
+}
+
+html.light .text-slate-300:not(.btn-gradient *) {
+  color: #44403C !important;
+}
+
+html.light .text-slate-400:not(.btn-gradient *) {
+  color: #78716C !important;
+}
+
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: #FFFFFF !important;
+  color: #1C1917 !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #9CA3AF !important;
+}
+
+/* Ambient glow adjustments — light mode uses warm brown glows */
+html.light [style*="radial-gradient(circle, rgba(108,99,255"],
+html.light [style*="radial-gradient(circle, rgba(108, 99, 255"] {
+  background: radial-gradient(circle, rgba(176, 137, 104, 0.06) 0%, transparent 70%) !important;
+}
+
+html.light [style*="radial-gradient(circle, rgba(78,205,196"],
+html.light [style*="radial-gradient(circle, rgba(78, 205, 196"] {
+  background: radial-gradient(circle, rgba(176, 137, 104, 0.04) 0%, transparent 70%) !important;
 }

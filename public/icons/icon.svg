@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FAF7F2"/>
+      <stop offset="100%" stop-color="#EFE8DE"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C49B76"/>
+      <stop offset="100%" stop-color="#9C7556"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#2D2727" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  
+  <!-- Outer subtle border ring -->
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="#B08968" stroke-width="4" stroke-opacity="0.25"/>
+
+  <!-- Center Card Emblem with Shadow -->
+  <g filter="url(#shadow)">
+    <!-- Central Shield / Starburst Emblem -->
+    <rect x="116" y="116" width="280" height="280" rx="64" fill="url(#accentGrad)"/>
+    
+    <!-- Loyalty Star & Points Geometry -->
+    <!-- Center 8-point geometric star -->
+    <path d="M256 168 L274 220 L328 238 L274 256 L256 308 L238 256 L184 238 L238 220 Z" fill="#FAF7F2"/>
+    
+    <!-- 4 Satellite Loyalty Dots -->
+    <circle cx="210" cy="192" r="10" fill="#FAF7F2" fill-opacity="0.85"/>
+    <circle cx="302" cy="192" r="10" fill="#FAF7F2" fill-opacity="0.85"/>
+    <circle cx="210" cy="284" r="10" fill="#FAF7F2" fill-opacity="0.85"/>
+    <circle cx="302" cy="284" r="10" fill="#FAF7F2" fill-opacity="0.85"/>
+    
+    <!-- Bottom Loyalty Arc -->
+    <path d="M206 332 Q256 352 306 332" fill="none" stroke="#FAF7F2" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>
