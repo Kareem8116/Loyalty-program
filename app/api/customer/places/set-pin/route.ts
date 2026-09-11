@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     // Verify the link belongs to this user
     const { data: link, error: linkError } = await adminClient
       .from('customer_auth_links')
-      .select('id, auth_user_id')
+      .select('id, auth_user_id, customer_id')
       .eq('id', linkId)
       .eq('auth_user_id', user.id)
       .maybeSingle();
@@ -70,8 +70,6 @@ export async function POST(req: NextRequest) {
         console.error('set-pin (all) error:', updateError);
         return NextResponse.json({ success: false, error: 'Failed to set PIN for all places' }, { status: 500 });
       }
-
-      return NextResponse.json({ success: true, appliedToAll: true });
     } else {
       // Set PIN for this specific link only
       const { error: updateError } = await adminClient
@@ -87,9 +85,22 @@ export async function POST(req: NextRequest) {
         console.error('set-pin error:', updateError);
         return NextResponse.json({ success: false, error: 'Failed to set PIN' }, { status: 500 });
       }
-
-      return NextResponse.json({ success: true, appliedToAll: false });
     }
+
+    // Fetch customer's qr_token so frontend can redirect immediately
+    const { data: customer } = await adminClient
+      .from('customers')
+      .select('qr_token')
+      .eq('id', link.customer_id)
+      .maybeSingle();
+
+    return NextResponse.json({ 
+      success: true, 
+      appliedToAll: Boolean(applyToAllPlaces),
+      customer: {
+        qrToken: customer?.qr_token || null
+      }
+    });
   } catch (err: any) {
     console.error('set-pin error:', err);
     return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });

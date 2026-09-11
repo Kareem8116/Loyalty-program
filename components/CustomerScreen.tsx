@@ -1,8 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { User, Sparkles, Calendar, ShieldCheck, X, RefreshCw, Tag, Clock, Award, History, ArrowDownLeft, ArrowUpRight, Gift } from 'lucide-react';
+import JsBarcode from 'jsbarcode';
+import { 
+  User, Sparkles, Calendar, ShieldCheck, X, RefreshCw, Tag, Clock, Award, History, 
+  ArrowDownLeft, ArrowUpRight, Gift, QrCode, ScanBarcode, ArrowRight, ArrowLeft, Copy, Check 
+} from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import LanguageSwitcher from './LanguageSwitcher';
 import Link from 'next/link';
@@ -71,6 +75,62 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
   const { t, locale, isRtl } = useLocale();
   const [scanUrl, setScanUrl] = useState('');
   const [aiRecommendation, setAiRecommendation] = useState<string | null>(null);
+
+  // Barcode & QR Code state
+  const barcodeRef = useRef<SVGSVGElement | null>(null);
+  const [codeFormat, setCodeFormat] = useState<'qr' | 'barcode'>('qr');
+  const [copiedCode, setCopiedCode] = useState(false);
+
+  const rawCode: string = (customer as any).short_code || customer.qr_token || '';
+  const cleanCode = rawCode.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const formattedCode = cleanCode.length === 9
+    ? `${cleanCode.slice(0, 3)}-${cleanCode.slice(3, 6)}-${cleanCode.slice(6, 9)}`
+    : cleanCode.length > 12
+    ? `${cleanCode.slice(0, 8)}…`
+    : cleanCode;
+
+  // Load saved code format from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('customer_code_format');
+      if (saved === 'qr' || saved === 'barcode') {
+        setCodeFormat(saved);
+      }
+    } catch {}
+  }, []);
+
+  const handleFormatChange = (format: 'qr' | 'barcode') => {
+    setCodeFormat(format);
+    try {
+      localStorage.setItem('customer_code_format', format);
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (codeFormat === 'barcode' && barcodeRef.current && cleanCode) {
+      try {
+        JsBarcode(barcodeRef.current, cleanCode, {
+          format: 'CODE128',
+          lineColor: '#000000',
+          width: cleanCode.length > 15 ? 1.5 : 2.2,
+          height: 85,
+          displayValue: false,
+          background: '#ffffff',
+          margin: 10,
+        });
+      } catch (err) {
+        console.error('JsBarcode render error:', err);
+      }
+    }
+  }, [codeFormat, cleanCode]);
+
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(formattedCode);
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
+    } catch {}
+  };
 
   // 24.7: Fetch smart AI recommendation in the background if enabled (Fail-silent)
   useEffect(() => {
@@ -182,19 +242,36 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                - أيقونة تبديل light/dark mode (يمين)
            ========================================================================= */}
         <header className="flex items-center justify-between w-full pt-2 pb-4">
-          <Link
-            href={`/account?token=${customer.qr_token}`}
-            id="account-btn"
-            aria-label={t('customer.userAccount')}
-            className="w-10 h-10 rounded-full flex items-center justify-center transition-transform active:scale-95 shadow-sm"
-            style={{
-              backgroundColor: 'var(--color-card-bg)',
-              color: 'var(--color-accent)',
-              border: '1px solid var(--color-border)',
-            }}
-          >
-            <User className="w-5 h-5" />
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/account?token=${customer.qr_token}`}
+              id="account-btn"
+              aria-label={t('customer.userAccount')}
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-transform active:scale-95 shadow-sm"
+              style={{
+                backgroundColor: 'var(--color-card-bg)',
+                color: 'var(--color-accent)',
+                border: '1px solid var(--color-border)',
+              }}
+            >
+              <User className="w-5 h-5" />
+            </Link>
+
+            <Link
+              href="/my-places"
+              id="back-to-places-btn"
+              aria-label={t('customer.myPlacesBtn')}
+              className="h-10 px-3 rounded-full flex items-center gap-1.5 text-xs font-bold transition-transform active:scale-95 shadow-sm border"
+              style={{
+                backgroundColor: 'var(--color-card-bg)',
+                borderColor: 'var(--color-border)',
+                color: 'var(--color-text)',
+              }}
+            >
+              {isRtl ? <ArrowRight className="w-3.5 h-3.5" /> : <ArrowLeft className="w-3.5 h-3.5" />}
+              <span className="hidden sm:inline">{t('customer.myPlacesBtn')}</span>
+            </Link>
+          </div>
 
           <div className="text-center">
             <span 
@@ -217,7 +294,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
 
         {/* =========================================================================
             2. MIDDLE (المنتصف):
-               - QR/Barcode كبير وواضح
+               - QR/Barcode كبير وواضح مع إمكانية التبديل
                - عدد النقاط تحته مباشرة
            ========================================================================= */}
         <main className="flex flex-col items-center my-auto py-6">
@@ -229,42 +306,88 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
               border: '1px solid var(--color-border)',
             }}
           >
-            {/* QR Code Container */}
+            {/* Format Toggle: QR Code vs Barcode */}
             <div 
-              className="p-4 rounded-2xl shadow-inner flex items-center justify-center"
-              style={{ backgroundColor: 'var(--color-qr-bg)', border: '2px dashed var(--color-border)' }}
+              className="flex items-center gap-1.5 p-1 rounded-2xl mb-4 border shadow-xs"
+              style={{
+                backgroundColor: 'var(--color-bg)',
+                borderColor: 'var(--color-border)',
+              }}
             >
-              <QRCodeSVG
-                value={scanUrl || customer.qr_token}
-                size={220}
-                level="M"
-                includeMargin={false}
-                fgColor="#2D2727"
-                bgColor="#FFFFFF"
-              />
+              <button
+                type="button"
+                id="toggle-qr-mode"
+                onClick={() => handleFormatChange('qr')}
+                className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  codeFormat === 'qr' ? 'shadow-xs' : 'opacity-60 hover:opacity-100'
+                }`}
+                style={codeFormat === 'qr' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
+              >
+                <QrCode className="w-3.5 h-3.5 shrink-0" />
+                <span>{t('customer.qrCodeTab')}</span>
+              </button>
+
+              <button
+                type="button"
+                id="toggle-barcode-mode"
+                onClick={() => handleFormatChange('barcode')}
+                className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  codeFormat === 'barcode' ? 'shadow-xs' : 'opacity-60 hover:opacity-100'
+                }`}
+                style={codeFormat === 'barcode' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
+              >
+                <ScanBarcode className="w-3.5 h-3.5 shrink-0" />
+                <span>{t('customer.barcodeTab')}</span>
+              </button>
             </div>
 
-            {/* Phase 26.3: Short code or token hint — easy for cashier to type manually */}
-            <div className="flex flex-col items-center gap-0.5 mt-3" dir="ltr">
-              <div className="flex items-center gap-1.5 text-[11px] opacity-75">
-                <ShieldCheck className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-accent)' }} />
-                <span className="font-mono font-bold tracking-[0.15em] text-sm" id="customer-short-code">
-                  {(() => {
-                    const code: string = (customer as any).short_code || customer.qr_token;
-                    const clean = code.toUpperCase().replace(/-/g, '');
-                    // Format as XXX-XXX-XXX for readability
-                    if (clean.length === 9) {
-                      return `${clean.slice(0, 3)}-${clean.slice(3, 6)}-${clean.slice(6, 9)}`;
-                    }
-                    return clean.length > 12 ? `${clean.slice(0, 8)}…` : clean;
-                  })()}
-                </span>
+            {/* Code Display Container */}
+            {codeFormat === 'qr' ? (
+              <div 
+                className="p-3.5 rounded-2xl shadow-inner flex items-center justify-center transition-all bg-white"
+                style={{ border: '2px dashed var(--color-border)' }}
+              >
+                <QRCodeSVG
+                  value={scanUrl || customer.qr_token}
+                  size={220}
+                  level="L"
+                  includeMargin={true}
+                  fgColor="#000000"
+                  bgColor="#FFFFFF"
+                />
               </div>
-              {(customer as any).short_code && (
-                <span className="text-[10px] opacity-40 font-medium">
-                  {isRtl ? 'كود يدوي للكاشير' : 'Manual cashier code'}
+            ) : (
+              <div 
+                className="p-3.5 rounded-2xl shadow-inner flex flex-col items-center justify-center transition-all bg-white w-full overflow-hidden"
+                style={{ border: '2px dashed var(--color-border)' }}
+              >
+                <svg ref={barcodeRef} className="max-w-full h-auto" />
+              </div>
+            )}
+
+            {/* Phase 26.3: Formatted Quick Code with 1-Tap Copy */}
+            <div className="flex flex-col items-center gap-1 mt-3.5" dir="ltr">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border bg-black/5 dark:bg-white/5" style={{ borderColor: 'var(--color-border)' }}>
+                <ShieldCheck className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-accent)' }} />
+                <span className="font-mono font-bold tracking-[0.18em] text-sm" id="customer-short-code">
+                  {formattedCode}
                 </span>
-              )}
+                <button
+                  type="button"
+                  onClick={handleCopyCode}
+                  className="p-1 rounded-md opacity-70 hover:opacity-100 hover:bg-black/10 dark:hover:bg-white/10 transition-all cursor-pointer"
+                  title={t('customer.copyCode')}
+                >
+                  {copiedCode ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-500" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                </button>
+              </div>
+              <span className="text-[11px] opacity-60 font-medium text-center">
+                {t('customer.scanPrompt')}
+              </span>
             </div>
 
             {/* Points Count DIRECTLY BELOW the QR Code (إلزامي في RULES.md) */}

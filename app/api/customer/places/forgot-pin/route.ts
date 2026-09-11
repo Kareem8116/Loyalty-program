@@ -177,7 +177,28 @@ export async function POST(req: NextRequest) {
         .update({ used: true })
         .eq('id', otpRecord.id);
 
-      return NextResponse.json({ success: true, message: 'PIN reset successfully.' });
+      // Fetch customer qr_token for direct redirect
+      const { data: linkData } = await adminClient
+        .from('customer_auth_links')
+        .select('customer_id')
+        .eq('id', linkId)
+        .maybeSingle();
+
+      let qrToken: string | null = null;
+      if (linkData?.customer_id) {
+        const { data: cust } = await adminClient
+          .from('customers')
+          .select('qr_token')
+          .eq('id', linkData.customer_id)
+          .maybeSingle();
+        qrToken = cust?.qr_token || null;
+      }
+
+      return NextResponse.json({ 
+        success: true, 
+        message: 'PIN reset successfully.',
+        customer: { qrToken }
+      });
 
     } else {
       return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 });

@@ -44,7 +44,13 @@
     "typeReferral": "مكافأة إحالة",
     "viewHistory": "عرض سجل العمليات",
     "redeemedItem": "المكافأة: {item}",
-    "expiresOn": "تنتهي في: {date}"
+    "expiresOn": "تنتهي في: {date}",
+    "qrCodeTab": "رمز QR",
+    "barcodeTab": "باركود خطي",
+    "myPlacesBtn": "أماكني",
+    "scanPrompt": "امسح الرمز أو أعطِ الكود للكاشير",
+    "codeCopied": "تم نسخ الكود!",
+    "copyCode": "نسخ الكود"
   },
   "account": {
     "title": "الحساب الشخصي",

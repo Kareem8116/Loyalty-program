@@ -448,6 +448,11 @@ export default function MyPlacesPage() {
       if (data.success) {
         setUnlockedCustomer(data.customer);
         closeModal();
+        const targetQrToken = data.customer?.qrToken || (selectedPlace as any)?.qrToken;
+        if (targetQrToken) {
+          router.push(`/card/${targetQrToken}`);
+          return;
+        }
         await refreshPlaces();
       } else if (data.error === 'LOCKED') {
         setPinError('الوصول مقفول مؤقتاً. يرجى المحاولة لاحقاً.');
@@ -498,6 +503,11 @@ export default function MyPlacesPage() {
 
       if (data.success) {
         closeModal();
+        const targetQrToken = data.customer?.qrToken || (selectedPlace as any)?.qrToken;
+        if (targetQrToken) {
+          router.push(`/card/${targetQrToken}`);
+          return;
+        }
         await refreshPlaces();
       } else {
         setPinError('فشل تعيين الرمز السري. يرجى المحاولة مرة أخرى.');
@@ -549,6 +559,11 @@ export default function MyPlacesPage() {
         });
         if (data.success) {
           closeModal();
+          const targetQrToken = data.customer?.qrToken || (selectedPlace as any)?.qrToken;
+          if (targetQrToken) {
+            router.push(`/card/${targetQrToken}`);
+            return;
+          }
           await refreshPlaces();
         } else if (data.error === 'INVALID_OTP') {
           setForgotError('رمز التحقق غير صحيح أو منتهي الصلاحية.');
@@ -855,6 +870,11 @@ export default function MyPlacesPage() {
                     }}
                     placeholder="• • • •"
                     autoFocus
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && pin.length === 4 && !pinLoading) {
+                        handleVerifyPin();
+                      }
+                    }}
                   />
 
                   {pinError && <div className="mp-modal-error">{pinError}</div>}

@@ -44,7 +44,13 @@
     "typeReferral": "Referral Bonus",
     "viewHistory": "View Transaction History",
     "redeemedItem": "Redeemed: {item}",
-    "expiresOn": "Expires: {date}"
+    "expiresOn": "Expires: {date}",
+    "qrCodeTab": "QR Code",
+    "barcodeTab": "Barcode",
+    "myPlacesBtn": "My Places",
+    "scanPrompt": "Scan code or give to cashier",
+    "codeCopied": "Code copied!",
+    "copyCode": "Copy code"
   },
   "account": {
     "title": "Personal Account",
