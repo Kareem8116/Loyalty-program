@@ -833,7 +833,24 @@
     "simulatedSmsTitle": "Simulated SMS Message (Test Mode):",
     "fillOtp": "Auto-fill Code",
     "step1Email": "Step 1 of 2: Verify Email Address",
-    "step2Phone": "Step 2 of 2: Verify Mobile Number"
+    "step2Phone": "Step 2 of 2: Verify Mobile Number",
+    "securityTitle": "Security & Password",
+    "changePassword": "Change Password",
+    "passwordLabel": "Password",
+    "passwordMasked": "••••••••",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Min 8 characters (letters & numbers)",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter new password to confirm",
+    "otpDeliveryChannel": "Send verification OTP code via:",
+    "sendToPhone": "Mobile Phone",
+    "sendToEmail": "Email Address",
+    "sendPasswordOtpBtn": "Send Verification Code to Change Password",
+    "verifyPasswordTitle": "Confirm Password Change",
+    "passwordSuccess": "Password has been changed and updated successfully!",
+    "rateLimit15Min": "Maximum OTP requests exceeded (5 attempts per 15 minutes). Please wait and try again later.",
+    "rateLimitNotice": "Maximum 5 verification codes allowed per 15 minutes to secure your account.",
+    "resendReady": "Resend new code now"
   }
 }
 

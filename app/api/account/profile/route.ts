@@ -9,10 +9,13 @@ import {
   getOtpCooldownRemaining, 
   getPhoneOtpCooldownRemaining,
   normalizeEmail,
-  normalizePhone 
+  normalizePhone,
+  generatePasswordChangeOtp,
+  verifyPasswordChangeOtp,
+  check15MinOtpRateLimit
 } from '@/lib/otp';
 import { sendVerificationOtpEmail } from '@/lib/email';
-import { validateEgyptianPhone, validateEmail } from '@/lib/validation';
+import { validateEgyptianPhone, validateEmail, validatePassword } from '@/lib/validation';
 
 /**
  * Helper to authenticate request and get current user
@@ -475,6 +478,160 @@ export async function PATCH(req: NextRequest) {
           },
         });
       }
+    }
+
+    // ──── 4. REQUEST OTP FOR PASSWORD CHANGE (VIA EMAIL OR PHONE) ────
+    if (action === 'request_password_otp') {
+      const { type, target } = body;
+      if (!type || (type !== 'email' && type !== 'phone')) {
+        return NextResponse.json(
+          { success: false, error: 'نوع التحقق غير صالح (يجب أن يكون email أو phone)' },
+          { status: 400 }
+        );
+      }
+
+      let destination = target ? String(target).trim() : '';
+
+      // EMAIL FLOW
+      if (type === 'email') {
+        if (!destination) {
+          destination = user.email || '';
+        }
+        const val = validateEmail(destination);
+        if (!val.isValid) {
+          return NextResponse.json({ success: false, error: 'البريد الإلكتروني غير صالح' }, { status: 400 });
+        }
+        const cleanEmail = normalizeEmail(destination);
+
+        const otpRes = await generatePasswordChangeOtp(cleanEmail, 'email');
+        if (!otpRes.success) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: otpRes.message || (otpRes.error === 'MAX_OTP_PER_15_MIN_EXCEEDED'
+                ? 'تجاوزت الحد الأقصى لإرسال رمز التحقق (5 محاولات خلال 15 دقيقة). يرجى الانتظار والمحاولة لاحقاً.'
+                : `يرجى الانتظار ${otpRes.cooldownRemaining || 60} ثانية قبل طلب رمز جديد.`),
+              cooldownRemaining: otpRes.cooldownRemaining,
+              code: otpRes.error,
+            },
+            { status: 429 }
+          );
+        }
+
+        // Send Email
+        const recipientName = user.user_metadata?.full_name || user.user_metadata?.name;
+        await sendVerificationOtpEmail(cleanEmail, otpRes.otp!, recipientName);
+
+        return NextResponse.json({
+          success: true,
+          type: 'email',
+          target: cleanEmail,
+          message: 'تم إرسال رمز التحقق المكون من 6 أرقام إلى بريدك الإلكتروني بنجاح.',
+          cooldownSeconds: 60,
+        });
+      }
+
+      // PHONE FLOW
+      if (type === 'phone') {
+        if (!destination) {
+          destination = (user.user_metadata?.phone || user.phone || '').replace(/^\+20/, '0');
+        }
+        if (!destination) {
+          return NextResponse.json(
+            { success: false, error: 'لم يتم تعيين رقم موبايل لهذا الحساب بعد. يرجى إدخال رقم الموبايل أو اختيار البريد الإلكتروني.' },
+            { status: 400 }
+          );
+        }
+        const val = validateEgyptianPhone(destination);
+        if (!val.isValid) {
+          return NextResponse.json({ success: false, error: val.errorMessage || 'رقم الموبايل غير صالح' }, { status: 400 });
+        }
+        const cleanPhone = val.cleanPhone;
+
+        const otpRes = await generatePasswordChangeOtp(cleanPhone, 'phone');
+        if (!otpRes.success) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: otpRes.message || (otpRes.error === 'MAX_OTP_PER_15_MIN_EXCEEDED'
+                ? 'تجاوزت الحد الأقصى لإرسال رمز التحقق (5 محاولات خلال 15 دقيقة). يرجى الانتظار والمحاولة لاحقاً.'
+                : `يرجى الانتظار ${otpRes.cooldownRemaining || 60} ثانية قبل طلب رمز جديد.`),
+              cooldownRemaining: otpRes.cooldownRemaining,
+              code: otpRes.error,
+            },
+            { status: 429 }
+          );
+        }
+
+        return NextResponse.json({
+          success: true,
+          type: 'phone',
+          target: cleanPhone,
+          message: 'تم إرسال رمز التحقق إلى رقم هاتفك بنجاح.',
+          cooldownSeconds: 60,
+          simulatedSms: {
+            phone: cleanPhone,
+            otp: otpRes.otp,
+          },
+        });
+      }
+    }
+
+    // ──── 5. VERIFY OTP AND COMMIT PASSWORD UPDATE ────
+    if (action === 'verify_password_change') {
+      const { type, target, otp, newPassword } = body;
+      if (!type || (type !== 'email' && type !== 'phone')) {
+        return NextResponse.json({ success: false, error: 'نوع التحقق غير صالح' }, { status: 400 });
+      }
+      if (!target || !otp) {
+        return NextResponse.json({ success: false, error: 'رمز التحقق والوجهة مطلوبان' }, { status: 400 });
+      }
+
+      // Validate password
+      const pwdVal = validatePassword(newPassword || '');
+      if (!pwdVal.isValid) {
+        return NextResponse.json({ success: false, error: pwdVal.errorMessage || 'كلمة المرور غير صالحة' }, { status: 400 });
+      }
+
+      const cleanTarget = type === 'email' ? normalizeEmail(target) : normalizePhone(target);
+      const verifyRes = await verifyPasswordChangeOtp(cleanTarget, type, String(otp));
+
+      if (!verifyRes.valid) {
+        const errorMsg = verifyRes.error === 'MAX_ATTEMPTS_EXCEEDED'
+          ? 'تم تجاوز الحد الأقصى للمحاولات، تم إلغاء الرمز. يرجى طلب رمز جديد.'
+          : verifyRes.error === 'EXPIRED_OR_NOT_FOUND'
+          ? 'رمز التحقق غير صحيح أو انتهت صلاحيته'
+          : `رمز التحقق غير صحيح. المحاولات المتبقية: ${verifyRes.attemptsLeft ?? 0}`;
+
+        return NextResponse.json(
+          {
+            success: false,
+            error: errorMsg,
+            code: verifyRes.error,
+            attemptsLeft: verifyRes.attemptsLeft,
+          },
+          { status: 400 }
+        );
+      }
+
+      // Update password in Supabase Auth
+      const { error: updateErr } = await adminClient.auth.admin.updateUserById(
+        user.id,
+        { password: String(newPassword).trim() }
+      );
+
+      if (updateErr) {
+        console.error('Failed to update password in auth:', updateErr);
+        return NextResponse.json(
+          { success: false, error: updateErr.message || 'فشل تحديث كلمة المرور في قاعدة البيانات' },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'تم تغيير وتحديث كلمة المرور بنجاح!',
+      });
     }
 
     return NextResponse.json(

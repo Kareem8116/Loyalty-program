@@ -831,9 +831,25 @@
     "invalidOtp": "رمز التحقق غير صحيح أو منتهي الصلاحية.",
     "otpAttemptsLeft": "رمز غير صحيح. المحاولات المتبقية: {count}",
     "simulatedSmsTitle": "رسالة SMS تجريبية (بيئة الاختبار):",
-    "fillOtp": "إدراج الرمز تلقائياً",
     "step1Email": "خطوة 1 من 2: تأكيد البريد الإلكتروني",
-    "step2Phone": "خطوة 2 من 2: تأكيد رقم الموبايل"
+    "step2Phone": "خطوة 2 من 2: تأكيد رقم الموبايل",
+    "securityTitle": "الأمان وكلمة المرور",
+    "changePassword": "تغيير كلمة المرور",
+    "passwordLabel": "كلمة المرور",
+    "passwordMasked": "••••••••",
+    "newPassword": "كلمة المرور الجديدة",
+    "newPasswordPlaceholder": "8 خانات على الأقل (حروف وأرقام)",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور للتحقق",
+    "otpDeliveryChannel": "إرسال رمز التحقق OTP لتأكيد كلمة المرور عبر:",
+    "sendToPhone": "رقم الموبايل",
+    "sendToEmail": "البريد الإلكتروني",
+    "sendPasswordOtpBtn": "إرسال رمز التحقق لتغيير كلمة المرور",
+    "verifyPasswordTitle": "تأكيد تغيير كلمة المرور",
+    "passwordSuccess": "تم تغيير وتحديث كلمة المرور بنجاح!",
+    "rateLimit15Min": "تجاوزت الحد الأقصى لإرسال رمز التحقق (5 محاولات خلال 15 دقيقة). يرجى الانتظار والمحاولة لاحقاً.",
+    "rateLimitNotice": "مسموح بـ 5 رموز تحقق كحد أقصى كل 15 دقيقة لحماية حسابك.",
+    "resendReady": "إعادة إرسال رمز جديد الآن"
   }
 }
 
