@@ -77,6 +77,13 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
   const [isSubmittingReversal, setIsSubmittingReversal] = useState(false);
   const [reversalError, setReversalError] = useState<string | null>(null);
 
+  // UX: Success flash animation on balance card
+  const [successFlash, setSuccessFlash] = useState(false);
+  const triggerSuccessFlash = () => {
+    setSuccessFlash(true);
+    setTimeout(() => setSuccessFlash(false), 1200);
+  };
+
   const getAuthHeaders = async (): Promise<Record<string, string>> => {
     const { data: { session } } = await supabase.auth.getSession();
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
@@ -231,6 +238,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
       setDailyLimitError(null);
       setPointsBalance(data.newBalance);
+      triggerSuccessFlash();
       setStatusMessage({ 
         type: 'success', 
         text: data.message || t('cashierControl.addSuccess', { points: calculatedPointsToAdd }) 
@@ -367,6 +375,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       }
 
       setPointsBalance(data.newBalance);
+      triggerSuccessFlash();
       setStatusMessage({ 
         type: 'success', 
         text: t('cashierControl.redeemSuccess', { 
@@ -424,8 +433,8 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
     try {
       const res = await fetch(`/api/customer/${customer.qr_token}/history?limit=30`);
       const data = await res.json();
-      if (data.success && data.history?.transactions) {
-        setCustomerHistory(data.history.transactions);
+      if (data.success && data.transactions) {
+        setCustomerHistory(data.transactions);
       }
     } catch (err) {
       console.error('Failed to load customer history:', err);
@@ -503,17 +512,25 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           </button>
         </div>
 
-        <div className="pt-3 flex items-baseline justify-between">
+        <div 
+          className="pt-3 flex items-baseline justify-between"
+        >
           <span className="text-xs opacity-70">{t('cashierControl.pointsBalanceLabel')}</span>
-          <div className="flex items-baseline gap-1.5">
-            <span 
-              className="text-3xl font-black"
-              style={{ color: 'var(--color-accent)' }}
-              id="cashier-points-display"
-            >
-              {pointsBalance.toLocaleString()}
+          <div className="flex flex-col items-end">
+            <div className="flex items-baseline gap-1.5">
+              <span 
+                className="text-3xl font-black transition-all duration-300"
+                style={{ color: successFlash ? '#22c55e' : 'var(--color-accent)' }}
+                id="cashier-points-display"
+              >
+                {pointsBalance.toLocaleString()}
+              </span>
+              <span className="text-xs opacity-80">{t('cashierControl.pts')}</span>
+            </div>
+            {/* Monetary value of customer's points */}
+            <span className="text-[11px] opacity-55 font-mono">
+              ≈ {(pointsBalance * currencyPerPoint).toFixed(2)} {t('common.currencyUnit')}
             </span>
-            <span className="text-xs opacity-80">{t('cashierControl.pts')}</span>
           </div>
         </div>
       </div>

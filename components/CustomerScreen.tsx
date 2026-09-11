@@ -58,6 +58,10 @@ interface CustomerScreenProps {
       font_family?: string;
       layout_variant?: 'centered-classic' | 'qr-top' | 'horizontal-offers';
     };
+    rates?: {
+      points_per_currency_unit: number;
+      currency_per_point: number;
+    };
   };
 }
 
@@ -154,6 +158,37 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
   const [isLoadingOffers, setIsLoadingOffers] = useState(false);
   const [transactionsList, setTransactionsList] = useState<CustomerTransaction[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  // PWA Install Prompt
+  const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<any>(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem('pwa_install_dismissed');
+    if (dismissed) return;
+    const handler = (e: any) => {
+      e.preventDefault();
+      setDeferredInstallPrompt(e);
+      setShowInstallBanner(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler as any);
+    return () => window.removeEventListener('beforeinstallprompt', handler as any);
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    const { outcome } = await deferredInstallPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setShowInstallBanner(false);
+      setDeferredInstallPrompt(null);
+    }
+  };
+
+  const dismissInstallBanner = () => {
+    setShowInstallBanner(false);
+    try { localStorage.setItem('pwa_install_dismissed', '1'); } catch {}
+  };
 
   useEffect(() => {
     // Generate full URL for the QR code
@@ -425,6 +460,39 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                   {t('customer.pointsUnit')}
                 </span>
               </div>
+
+              {/* Points monetary value: shows how much the balance is worth in currency */}
+              {customer.rates && customer.points_balance > 0 && (
+                <div
+                  className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold"
+                  style={{
+                    backgroundColor: 'rgba(var(--color-accent-rgb, 108,99,255), 0.1)',
+                    color: 'var(--color-accent)',
+                    border: '1px solid rgba(var(--color-accent-rgb, 108,99,255), 0.2)',
+                  }}
+                  id="customer-points-value"
+                >
+                  <span>≈</span>
+                  <span className="font-mono font-bold">
+                    {(customer.points_balance * customer.rates.currency_per_point).toFixed(2)}
+                  </span>
+                  <span>{t('common.currencyUnit')}</span>
+                </div>
+              )}
+
+              {/* Earn rate hint — shows business-specific earn rate */}
+              {customer.rates && (
+                <div
+                  className="mt-2 text-[11px] opacity-55 font-medium"
+                  id="customer-earn-rate-hint"
+                >
+                  {isRtl
+                    ? `كل ${(1 / customer.rates.points_per_currency_unit).toFixed(0)} ${t('common.currencyUnit')} = نقطة`
+                    : `${(1 / customer.rates.points_per_currency_unit).toFixed(0)} ${t('common.currencyUnit')} = 1 pt`
+                  }
+                </div>
+              )}
+
 
               {/* 17.4: Progress towards next tier */}
               {customer.tier?.nextTier && (
@@ -810,7 +878,44 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
           </div>
         </div>
       )}
+
+      {/* PWA Install Banner */}
+      {showInstallBanner && (
+        <div
+          className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between gap-3 px-4 py-3 rounded-2xl shadow-2xl border backdrop-blur-xl"
+          style={{
+            backgroundColor: 'var(--color-card-bg)',
+            borderColor: 'var(--color-accent)',
+            maxWidth: '400px',
+            margin: '0 auto',
+          }}
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="text-xl">📲</span>
+            <div>
+              <p className="text-xs font-bold">{isRtl ? 'أضف للشاشة الرئيسية' : 'Add to Home Screen'}</p>
+              <p className="text-[11px] opacity-60">{isRtl ? 'وصول أسرع لنقاطك' : 'Quick access to your points'}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleInstallApp}
+              id="pwa-install-btn"
+              className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95"
+              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
+            >
+              {isRtl ? 'تثبيت' : 'Install'}
+            </button>
+            <button
+              onClick={dismissInstallBanner}
+              id="pwa-dismiss-btn"
+              className="p-1 rounded-lg opacity-60 hover:opacity-100 transition-all"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-

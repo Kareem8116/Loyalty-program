@@ -23,6 +23,10 @@ export interface CustomerData {
   referred_by?: string | null;
   features?: Record<string, boolean>;
   branding?: Partial<BusinessBranding>;
+  rates?: {
+    points_per_currency_unit: number;
+    currency_per_point: number;
+  };
   created_at: string;
 }
 
@@ -316,6 +320,25 @@ export async function getCustomerByQrToken(
     console.warn('business_branding fetch non-blocking error:', brandingErr);
   }
 
+  // Fetch redemption rates to show monetary value of points to customer
+  let rates = { points_per_currency_unit: 1.0, currency_per_point: 0.1 };
+  try {
+    const { data: rateData } = await adminClient
+      .from('redemption_rates')
+      .select('points_per_currency_unit, currency_per_point')
+      .eq('business_id', customer.business_id)
+      .maybeSingle();
+
+    if (rateData) {
+      rates = {
+        points_per_currency_unit: Number(rateData.points_per_currency_unit) || 1.0,
+        currency_per_point: Number(rateData.currency_per_point) || 0.1,
+      };
+    }
+  } catch (ratesErr) {
+    console.warn('redemption_rates fetch non-blocking error:', ratesErr);
+  }
+
   return {
     id: customer.id,
     business_id: customer.business_id,
@@ -331,6 +354,7 @@ export async function getCustomerByQrToken(
     referred_by: customer.referred_by,
     features,
     branding,
+    rates,
     business_name: businessName,
     created_at: customer.created_at,
   };

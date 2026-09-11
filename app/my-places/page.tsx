@@ -430,9 +430,10 @@ export default function MyPlacesPage() {
   };
 
   // ─── Verify PIN ───
-  const handleVerifyPin = async () => {
+  const handleVerifyPin = async (overridePin?: string) => {
     if (!selectedPlace) return;
-    const pinVal = validatePin(pin);
+    const pinToUse = overridePin ?? pin;
+    const pinVal = validatePin(pinToUse);
     if (!pinVal.isValid) {
       setPinError(pinVal.errorMessage || 'الرمز السري (PIN) يجب أن يكون 4 أرقام بالضبط');
       return;
@@ -442,7 +443,7 @@ export default function MyPlacesPage() {
     try {
       const data = await apiCall('/api/customer/places/verify-pin', {
         linkId: selectedPlace.linkId,
-        pin,
+        pin: pinToUse,
       });
 
       if (data.success) {
@@ -471,22 +472,24 @@ export default function MyPlacesPage() {
   };
 
   // ─── Set PIN ───
-  const handleSetPin = async () => {
+  const handleSetPin = async (overrideVal?: string) => {
     if (!selectedPlace) return;
-    const pinVal = validatePin(pin);
-    if (!pinVal.isValid) {
-      setPinError(pinVal.errorMessage || 'الرمز السري (PIN) يجب أن يكون 4 أرقام بالضبط');
-      return;
-    }
-
     if (pinStep === 'enter') {
+      const pinToUse = overrideVal ?? pin;
+      const pinVal = validatePin(pinToUse);
+      if (!pinVal.isValid) {
+        setPinError(pinVal.errorMessage || 'الرمز السري (PIN) يجب أن يكون 4 أرقام بالضبط');
+        return;
+      }
+      setPin(pinToUse);
       setPinStep('confirm');
       setConfirmPin('');
       return;
     }
 
     // confirm step
-    if (pin !== confirmPin) {
+    const confirmToUse = overrideVal ?? confirmPin;
+    if (pin !== confirmToUse) {
       setPinError('الرمزان السريان غير متطابقان. يرجى المحاولة مرة أخرى.');
       setConfirmPin('');
       return;
@@ -867,6 +870,10 @@ export default function MyPlacesPage() {
                     onChange={e => {
                       const v = normalizeDigits(e.target.value).slice(0, 4);
                       setPin(v);
+                      // Auto-submit when 4 digits entered
+                      if (v.length === 4 && !pinLoading) {
+                        handleVerifyPin(v);
+                      }
                     }}
                     placeholder="• • • •"
                     autoFocus
@@ -883,7 +890,7 @@ export default function MyPlacesPage() {
                     <button
                       id="pin-verify-submit"
                       className="mp-modal-btn"
-                      onClick={handleVerifyPin}
+                      onClick={() => handleVerifyPin()}
                       disabled={pin.length !== 4 || pinLoading}
                     >
                       {pinLoading ? 'جاري التحقق...' : 'تحقق'}
@@ -930,7 +937,17 @@ export default function MyPlacesPage() {
                     value={pinStep === 'enter' ? pin : confirmPin}
                     onChange={e => {
                       const v = normalizeDigits(e.target.value).slice(0, 4);
-                      pinStep === 'enter' ? setPin(v) : setConfirmPin(v);
+                      if (pinStep === 'enter') {
+                        setPin(v);
+                        if (v.length === 4 && !pinLoading) {
+                          handleSetPin(v);
+                        }
+                      } else {
+                        setConfirmPin(v);
+                        if (v.length === 4 && !pinLoading) {
+                          handleSetPin(v);
+                        }
+                      }
                     }}
                     placeholder="• • • •"
                     autoFocus
@@ -954,7 +971,7 @@ export default function MyPlacesPage() {
                     <button
                       id="pin-set-submit"
                       className="mp-modal-btn"
-                      onClick={handleSetPin}
+                      onClick={() => handleSetPin()}
                       disabled={(pinStep === 'enter' ? pin.length !== 4 : confirmPin.length !== 4) || pinLoading}
                     >
                       {pinLoading

@@ -75,6 +75,16 @@ export default function AdminDashboardPage() {
   const [maxOfflineTransactions, setMaxOfflineTransactions] = useState('25');
   const [isSavingSettings, setIsSavingSettings] = useState(false);
 
+  // Points summary stats (daily/monthly) for owner dashboard
+  const [pointsSummary, setPointsSummary] = useState<{
+    todayIssued: number;
+    todayRedeemed: number;
+    monthIssued: number;
+    monthRedeemed: number;
+    totalCustomers: number;
+    isLoading: boolean;
+  }>({ todayIssued: 0, todayRedeemed: 0, monthIssued: 0, monthRedeemed: 0, totalCustomers: 0, isLoading: false });
+
   // Tab 4: Phase 9.5 & 9.5.2 Branding state
   const [brandingDisplayName, setBrandingDisplayName] = useState('');
   const [brandingLogoUrl, setBrandingLogoUrl] = useState('');
@@ -348,7 +358,51 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const loadPointsSummary = async (bId: string) => {
+    setPointsSummary(prev => ({ ...prev, isLoading: true }));
+    try {
+      const headers = await getAuthHeaders();
+      const today = new Date().toISOString().split('T')[0];
+
+      const [dailyRes, custRes] = await Promise.all([
+        fetch(`/api/admin/daily-review?businessId=${bId}&date=${today}`, { headers }),
+        fetch(`/api/admin/customers?businessId=${bId}`, { headers }),
+      ]);
+
+      const [dailyData, custData] = await Promise.all([
+        dailyRes.json(), custRes.json()
+      ]);
+
+      // daily-review returns transactions list; compute stats from them
+      const txs: any[] = dailyData?.transactions || [];
+      const todayIssued = txs.filter((t: any) => t.points_change > 0).reduce((s: number, t: any) => s + t.points_change, 0);
+      const todayRedeemed = Math.abs(txs.filter((t: any) => t.points_change < 0).reduce((s: number, t: any) => s + t.points_change, 0));
+
+      // Month totals (approximate from customer balances if no separate API)
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+      const monthRes = await fetch(`/api/admin/daily-review?businessId=${bId}&date=${today}&since=${encodeURIComponent(monthStart)}`, { headers });
+      const monthData = await monthRes.json().catch(() => ({}));
+      const monthTxs: any[] = monthData?.transactions || [];
+      const monthIssued = monthTxs.filter((t: any) => t.points_change > 0).reduce((s: number, t: any) => s + t.points_change, 0);
+      const monthRedeemed = Math.abs(monthTxs.filter((t: any) => t.points_change < 0).reduce((s: number, t: any) => s + t.points_change, 0));
+
+      setPointsSummary({
+        todayIssued,
+        todayRedeemed,
+        monthIssued: monthIssued || todayIssued,
+        monthRedeemed: monthRedeemed || todayRedeemed,
+        totalCustomers: custData?.customers?.length || 0,
+        isLoading: false,
+      });
+    } catch (err) {
+      console.error('Error loading points summary:', err);
+      setPointsSummary(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
   const loadBranding = async (bId: string) => {
+
     try {
       const res = await fetch(`/api/admin/branding?businessId=${bId}`, {
         headers: await getAuthHeaders(),
@@ -1502,7 +1556,7 @@ export default function AdminDashboardPage() {
           </button>
 
           <button
-            onClick={() => { setActiveTab('settings'); setFeedback(null); }}
+            onClick={() => { setActiveTab('settings'); setFeedback(null); if (businessId) loadPointsSummary(businessId); }}
             id="tab-settings"
             className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
               activeTab === 'settings' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
@@ -2094,6 +2148,56 @@ export default function AdminDashboardPage() {
            ========================================================================= */}
         {activeTab === 'settings' && (
           <div className="flex flex-col gap-6">
+
+            {/* ── Points Summary Dashboard ── */}
+            <div
+              className="p-5 rounded-3xl border shadow-sm"
+              style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-sm font-bold flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                  {isRtl ? 'ملخص النقاط' : 'Points Summary'}
+                </h2>
+                {pointsSummary.isLoading && <RefreshCw className="w-3.5 h-3.5 animate-spin opacity-50" />}
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                {/* Today */}
+                <div className="p-3 rounded-2xl" style={{ backgroundColor: 'var(--color-bg)' }}>
+                  <span className="text-[11px] opacity-60 uppercase tracking-wider block mb-2">{isRtl ? 'اليوم' : 'Today'}</span>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] opacity-70">{isRtl ? 'أضيف' : 'Issued'}</span>
+                      <span className="text-sm font-black" style={{ color: '#22c55e' }}>+{pointsSummary.todayIssued.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] opacity-70">{isRtl ? 'استُبدل' : 'Redeemed'}</span>
+                      <span className="text-sm font-black" style={{ color: 'var(--color-error-text)' }}>-{pointsSummary.todayRedeemed.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+                {/* This Month */}
+                <div className="p-3 rounded-2xl" style={{ backgroundColor: 'var(--color-bg)' }}>
+                  <span className="text-[11px] opacity-60 uppercase tracking-wider block mb-2">{isRtl ? 'الشهر' : 'This Month'}</span>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] opacity-70">{isRtl ? 'أضيف' : 'Issued'}</span>
+                      <span className="text-sm font-black" style={{ color: '#22c55e' }}>+{pointsSummary.monthIssued.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] opacity-70">{isRtl ? 'استُبدل' : 'Redeemed'}</span>
+                      <span className="text-sm font-black" style={{ color: 'var(--color-error-text)' }}>-{pointsSummary.monthRedeemed.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* Total Customers */}
+              <div className="mt-3 pt-3 border-t flex items-center justify-between" style={{ borderColor: 'var(--color-border)' }}>
+                <span className="text-xs opacity-70">{isRtl ? 'إجمالي العملاء المسجلين' : 'Total Registered Customers'}</span>
+                <span className="text-lg font-black" style={{ color: 'var(--color-accent)' }}>{pointsSummary.totalCustomers.toLocaleString()}</span>
+              </div>
+            </div>
+
             <form 
               onSubmit={handleSaveSettings}
             className="p-6 rounded-3xl border shadow-sm flex flex-col gap-4"
