@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [successNotice, setSuccessNotice] = useState<string | null>(null);
+  const [successNotice, setSuccessNotice] = useState(false);
 
   // Step 1: Request OTP / Reset code
   const handleRequestOtp = async (e: React.FormEvent) => {
@@ -42,7 +42,7 @@ export default function ForgotPasswordPage() {
 
     setIsLoading(true);
     setErrorMsg(null);
-    setSuccessNotice(null);
+    setSuccessNotice(false);
 
     try {
       const res = await fetch('/api/auth/reset-password', {
@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
         throw new Error(data.error || t('common.error'));
       }
 
-      setSuccessNotice(data.message || t('forgotPassword.genericNotice'));
+      setSuccessNotice(true);
       setStep(2);
     } catch (err: any) {
       setErrorMsg(err.message || t('common.error'));
@@ -161,7 +161,7 @@ export default function ForgotPasswordPage() {
             </h1>
             <p className="text-xs max-w-xs leading-relaxed opacity-60">
               {step === 1 && t('forgotPassword.subtitle')}
-              {step === 2 && t('forgotPassword.step2Subtitle')}
+              {step === 2 && t('forgotPassword.step2Subtitle', { email })}
               {step === 3 && t('forgotPassword.step3Subtitle')}
             </p>
           </div>
@@ -192,7 +192,7 @@ export default function ForgotPasswordPage() {
               }}
             >
               <CheckCircle size={18} weight="light" className="shrink-0 mt-0.5" />
-              <span>{successNotice}</span>
+              <span>{t('forgotPassword.genericNotice')}</span>
             </div>
           )}
 
