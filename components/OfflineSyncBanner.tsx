@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Wifi, WifiOff, RefreshCw, AlertCircle, CheckCircle2, X } from 'lucide-react';
+import { WifiHigh, WifiSlash, CircleNotch, WarningCircle, CheckCircle, X } from '@phosphor-icons/react';
 import { useLocale } from './LocaleProvider';
 import { supabase } from '@/lib/supabase';
 import {
@@ -120,20 +120,24 @@ export default function OfflineSyncBanner({
       {/* 1. Offline or Pending Sync Banner */}
       {(!isOnline || pendingCount > 0) && (
         <div
-          className="p-3 rounded-2xl border shadow-sm flex items-center justify-between gap-3 text-xs transition-colors"
+          className="p-3.5 rounded-2xl border-[0.5px] shadow-sm flex items-center justify-between gap-3 text-xs transition-colors backdrop-blur-md"
           style={{
             backgroundColor: !isOnline ? 'var(--color-error-bg)' : 'var(--color-card-bg)',
             borderColor: !isOnline ? 'var(--color-error-border)' : 'var(--color-border)',
             color: !isOnline ? 'var(--color-error-text)' : 'var(--color-text)',
           }}
         >
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-2.5 min-w-0">
             <span
               className={`p-1.5 rounded-xl shrink-0 flex items-center justify-center ${
-                !isOnline ? 'bg-red-500/15 text-red-500' : 'bg-emerald-500/15 text-emerald-500'
+                !isOnline ? 'bg-rose-500/15 text-rose-500' : 'bg-emerald-500/15 text-emerald-500'
               }`}
             >
-              {!isOnline ? <WifiOff className="w-4 h-4" /> : <Wifi className="w-4 h-4" />}
+              {!isOnline ? (
+                <WifiSlash weight="light" className="w-4 h-4" />
+              ) : (
+                <WifiHigh weight="light" className="w-4 h-4" />
+              )}
             </span>
 
             <div className="flex flex-col min-w-0">
@@ -154,13 +158,11 @@ export default function OfflineSyncBanner({
             id="sync-offline-queue-btn"
             onClick={handleSync}
             disabled={!isOnline || isSyncing || pendingCount === 0}
-            className="py-1.5 px-3 rounded-xl font-bold shrink-0 transition-transform active:scale-95 flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed shadow-xs"
-            style={{
-              backgroundColor: 'var(--color-accent)',
-              color: 'var(--color-btn-text)',
-            }}
+            className="ios-btn-primary py-1.5 px-3 rounded-xl font-bold shrink-0 transition-transform active:scale-95 flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed text-xs"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+            {isSyncing ? (
+              <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
+            ) : null}
             <span>
               {isSyncing
                 ? t('cashierControl.syncing') || 'جاري المزامنة...'
@@ -173,7 +175,7 @@ export default function OfflineSyncBanner({
       {/* 2. Success feedback message after sync */}
       {syncFeedback && (
         <div
-          className="p-2.5 rounded-2xl border text-xs flex items-center justify-between gap-2"
+          className="p-3 rounded-2xl border-[0.5px] text-xs flex items-center justify-between gap-2 backdrop-blur-md"
           style={{
             backgroundColor: 'var(--color-success-bg)',
             borderColor: 'var(--color-success-border)',
@@ -181,15 +183,15 @@ export default function OfflineSyncBanner({
           }}
         >
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <CheckCircle weight="light" className="w-4 h-4 shrink-0" />
             <span className="font-medium">{syncFeedback}</span>
           </div>
           <button
             type="button"
             onClick={() => setSyncFeedback(null)}
-            className="opacity-70 hover:opacity-100"
+            className="opacity-70 hover:opacity-100 transition-opacity"
           >
-            <X className="w-3.5 h-3.5" />
+            <X weight="light" className="w-4 h-4" />
           </button>
         </div>
       )}
@@ -197,7 +199,7 @@ export default function OfflineSyncBanner({
       {/* 3. Failed transactions alert (Phase 32.5 & 32.6) */}
       {failedItems.length > 0 && (
         <div
-          className="p-3 rounded-2xl border flex flex-col gap-2 text-xs"
+          className="p-3.5 rounded-2xl border-[0.5px] flex flex-col gap-2 text-xs backdrop-blur-md"
           style={{
             backgroundColor: 'var(--color-error-bg)',
             borderColor: 'var(--color-error-border)',
@@ -206,7 +208,7 @@ export default function OfflineSyncBanner({
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-1.5 font-bold">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+              <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
               <span>
                 {t('cashierControl.syncFailedAlert', { count: failedItems.length }) ||
                   `فشلت مزامنة ${failedItems.length} عملية غير متصلة:`}

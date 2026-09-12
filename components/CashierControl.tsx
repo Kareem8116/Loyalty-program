@@ -1,7 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { PlusCircle, MinusCircle, RefreshCw, Coffee, Receipt, Check, AlertCircle, ArrowLeft, ShieldAlert, RotateCcw, History } from 'lucide-react';
+import {
+  PlusCircle, MinusCircle, CircleNotch, Coffee, Receipt, Check,
+  WarningCircle, ArrowLeft, ArrowRight, ShieldWarning, ArrowCounterClockwise, ClockCounterClockwise
+} from '@phosphor-icons/react';
 import { useLocale } from './LocaleProvider';
 import { supabase } from '@/lib/supabase';
 import OfflineSyncBanner from './OfflineSyncBanner';
@@ -507,7 +510,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             className="flex items-center gap-1 text-xs py-1 px-2.5 rounded-lg border transition-all active:scale-95"
             style={{ borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
           >
-            <ArrowLeft className={`w-3.5 h-3.5 ${isRtl ? '' : 'rotate-180'}`} />
+            <ArrowLeft weight="light" className={`w-3.5 h-3.5 ${isRtl ? '' : 'rotate-180'}`} />
             <span>{t('cashierControl.anotherScan')}</span>
           </button>
         </div>
@@ -546,7 +549,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           }}
         >
           <div className="flex items-center gap-2 font-bold text-sm">
-            <ShieldAlert className="w-5 h-5 shrink-0" />
+            <ShieldWarning weight="light" className="w-5 h-5 shrink-0" />
             <span>{t('cashierControl.dailyLimitExceeded')}</span>
           </div>
           <p className="text-xs opacity-80">
@@ -569,7 +572,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             borderColor: statusMessage.type === 'success' ? 'var(--color-success-border)' : 'var(--color-error-border)',
           }}
         >
-          {statusMessage.type === 'success' ? <Check className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+          {statusMessage.type === 'success' ? <Check weight="light" className="w-4 h-4 shrink-0" /> : <WarningCircle weight="light" className="w-4 h-4 shrink-0" />}
           <span>{statusMessage.text}</span>
         </div>
       )}
@@ -588,7 +591,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           }`}
           style={activeTab === 'add' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
         >
-          <PlusCircle className="w-3.5 h-3.5" />
+          <PlusCircle weight="light" className="w-3.5 h-3.5" />
           <span>{t('cashierControl.addTab')}</span>
         </button>
 
@@ -601,7 +604,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           }`}
           style={activeTab === 'redeem' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
         >
-          <MinusCircle className="w-3.5 h-3.5" />
+          <MinusCircle weight="light" className="w-3.5 h-3.5" />
           <span>{t('cashierControl.redeemTab')}</span>
         </button>
 
@@ -618,7 +621,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           }`}
           style={activeTab === 'reversal' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
         >
-          <RotateCcw className="w-3.5 h-3.5" />
+          <ArrowCounterClockwise weight="light" className="w-3.5 h-3.5" />
           <span>{isRtl ? 'استرجاع' : 'Returns'}</span>
         </button>
       </div>
@@ -629,7 +632,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       {activeTab === 'add' && (
         <form 
           onSubmit={handleAddPoints}
-          className="rounded-3xl p-5 border shadow-sm flex flex-col gap-4 backdrop-blur-xl"
+          className="glass-card rounded-3xl p-5 flex flex-col gap-4"
           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
         >
           <div className="flex items-center justify-between text-xs pb-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
@@ -673,7 +676,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   required
                 />
-                <Receipt className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'left-3' : 'right-3'}`} />
+                <Receipt weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
               <span className="text-[11px] opacity-60 mt-1 block">
                 {t('cashierControl.rateHint', { rate: pointsPerCurrency })}
@@ -737,7 +740,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             disabled={calculatedPointsToAdd <= 0 || isSubmitting}
             className="w-full py-3 rounded-xl text-xs font-bold transition-all shadow-lg active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 btn-gradient"
           >
-            {isSubmitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <PlusCircle className="w-4 h-4" />}
+            {isSubmitting ? <CircleNotch weight="light" className="w-4 h-4 animate-spin" /> : <PlusCircle weight="light" className="w-4 h-4" />}
             <span>{isSubmitting ? t('cashierControl.adding') : t('cashierControl.confirmAdd')}</span>
           </button>
 
@@ -750,7 +753,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
               className="w-full py-2.5 px-3 rounded-xl text-xs font-bold border flex items-center justify-center gap-1.5 transition-all active:scale-95"
               style={{ borderColor: 'var(--color-accent)', color: 'var(--color-accent)' }}
             >
-              <ShieldAlert className="w-4 h-4" />
+              <ShieldWarning weight="light" className="w-4 h-4" />
               <span>{t('cashierControl.retryWithManager')}</span>
             </button>
           )}
@@ -763,7 +766,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       {activeTab === 'redeem' && (
         <form 
           onSubmit={handleRedeemPoints}
-          className="rounded-3xl p-5 border shadow-sm flex flex-col gap-4 backdrop-blur-xl"
+          className="glass-card rounded-3xl p-5 flex flex-col gap-4"
           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
         >
           <div className="flex items-center justify-between text-xs pb-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
@@ -826,7 +829,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                         }}
                       >
                         <div className="flex items-center gap-2">
-                          <Coffee className="w-3.5 h-3.5 opacity-60" />
+                          <Coffee weight="light" className="w-3.5 h-3.5 opacity-60" />
                           <span className="font-semibold">{item.name}</span>
                         </div>
                         <div className={isRtl ? 'text-left' : 'text-right'}>
@@ -876,7 +879,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
           {!hasEnoughPoints && calculatedPointsToDeduct > 0 && (
             <p className="text-[11px] text-center font-medium flex items-center justify-center gap-1" style={{ color: 'var(--color-error-text)' }}>
-              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+              <WarningCircle weight="light" className="w-3.5 h-3.5 shrink-0" />
               <span>{t('cashierControl.insufficientBalance')}</span>
             </p>
           )}
@@ -887,7 +890,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             disabled={calculatedPointsToDeduct <= 0 || !hasEnoughPoints || isSubmitting}
             className="w-full py-3 rounded-xl text-xs font-bold transition-all shadow-lg active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 btn-gradient"
           >
-            {isSubmitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <MinusCircle className="w-4 h-4" />}
+            {isSubmitting ? <CircleNotch weight="light" className="w-4 h-4 animate-spin" /> : <MinusCircle weight="light" className="w-4 h-4" />}
             <span>{isSubmitting ? t('cashierControl.redeeming') : t('cashierControl.confirmRedeem')}</span>
           </button>
         </form>
@@ -901,7 +904,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             style={{ backgroundColor: 'rgba(16, 14, 28, 0.95)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
           >
             <div className="flex items-center gap-2">
-              <ShieldAlert className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
+              <ShieldWarning weight="light" className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
               <h3 className="text-sm font-bold">{t('cashierControl.customerPinRequired')}</h3>
             </div>
             <p className="text-xs opacity-80 leading-relaxed">
@@ -951,7 +954,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             style={{ backgroundColor: 'rgba(16, 14, 28, 0.95)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
           >
             <div className="flex items-center gap-2">
-              <ShieldAlert className="w-5 h-5 text-amber-500" />
+              <ShieldWarning weight="light" className="w-5 h-5 text-amber-500" />
               <h3 className="text-sm font-bold">{t('cashierControl.managerPinRequired')}</h3>
             </div>
             <p className="text-xs opacity-80 leading-relaxed">
@@ -1001,7 +1004,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
         >
           <div className="flex items-center justify-between pb-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
             <div className="flex items-center gap-2">
-              <RotateCcw className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+              <ArrowCounterClockwise weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
               <h3 className="text-xs font-bold">{isRtl ? 'العمليات الأخيرة وإمكانية الاسترجاع' : 'Recent Transactions & Reversals'}</h3>
             </div>
             <button
@@ -1011,7 +1014,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
               className="p-1 rounded-lg border text-xs opacity-70 hover:opacity-100 transition-all cursor-pointer"
               style={{ borderColor: 'var(--color-border)' }}
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoadingHistory ? 'animate-spin' : ''}`} />
+              <CircleNotch weight="light" className={`w-3.5 h-3.5 ${isLoadingHistory ? 'animate-spin' : ''}`} />
             </button>
           </div>
 
@@ -1021,7 +1024,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
           {isLoadingHistory ? (
             <div className="flex items-center justify-center py-8">
-              <RefreshCw className="w-5 h-5 animate-spin opacity-50" />
+              <CircleNotch weight="light" className="w-5 h-5 animate-spin opacity-50" />
             </div>
           ) : customerHistory.length === 0 ? (
             <p className="text-xs opacity-60 text-center py-6">
@@ -1093,7 +1096,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
-              <RotateCcw className="w-5 h-5" />
+              <ArrowCounterClockwise weight="light" className="w-5 h-5" />
               <span>{isRtl ? 'تأكيد استرجاع العملية' : 'Confirm Transaction Reversal'}</span>
             </div>
 
@@ -1146,7 +1149,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 className="flex-1 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
-                {isSubmittingReversal ? <RefreshCw className="w-3.5 h-3.5 animate-spin mx-auto" /> : (isRtl ? 'تأكيد الاسترجاع' : 'Confirm Reversal')}
+                {isSubmittingReversal ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin mx-auto" /> : (isRtl ? 'تأكيد الاسترجاع' : 'Confirm Reversal')}
               </button>
             </div>
           </form>

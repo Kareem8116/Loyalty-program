@@ -7,17 +7,9 @@ import { useLocale } from '@/components/LocaleProvider';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import ThemeToggle from '@/components/ThemeToggle';
 import {
-  Handshake,
-  Plus,
-  Check,
-  X,
-  RefreshCw,
-  ArrowLeft,
-  Clock,
-  ShieldCheck,
-  AlertCircle,
-  Building2,
-} from 'lucide-react';
+  Handshake, Plus, Check, X, CircleNotch, ArrowLeft, ArrowRight,
+  Clock, ShieldCheck, WarningCircle, Buildings
+} from '@phosphor-icons/react';
 
 interface Partnership {
   id: string;
@@ -163,17 +155,17 @@ export default function PartnershipsPage() {
   const statusBadge = (p: Partnership) => {
     if (p.status === 'active') return (
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.7rem', fontWeight: 600, color: '#16a34a', background: '#dcfce7', padding: '2px 8px', borderRadius: '9999px' }}>
-        <ShieldCheck style={{ width: 10, height: 10 }} /> {isRtl ? 'نشطة' : 'Active'}
+        <ShieldCheck weight="light" style={{ width: 10, height: 10 }} /> {isRtl ? 'نشطة' : 'Active'}
       </span>
     );
     if (p.status === 'pending') return (
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.7rem', fontWeight: 600, color: '#b45309', background: '#fef3c7', padding: '2px 8px', borderRadius: '9999px' }}>
-        <Clock style={{ width: 10, height: 10 }} /> {isRtl ? 'قيد الانتظار' : 'Pending'}
+        <Clock weight="light" style={{ width: 10, height: 10 }} /> {isRtl ? 'قيد الانتظار' : 'Pending'}
       </span>
     );
     return (
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.7rem', fontWeight: 600, color: '#dc2626', background: '#fee2e2', padding: '2px 8px', borderRadius: '9999px' }}>
-        <X style={{ width: 10, height: 10 }} /> {isRtl ? 'مرفوضة' : 'Rejected'}
+        <X weight="light" style={{ width: 10, height: 10 }} /> {isRtl ? 'مرفوضة' : 'Rejected'}
       </span>
     );
   };
@@ -207,7 +199,7 @@ export default function PartnershipsPage() {
             fontSize: '0.8rem', fontWeight: 600,
           }}
         >
-          <ArrowLeft style={{ width: 14, height: 14 }} />
+          <ArrowLeft weight="light" style={{ width: 14, height: 14 }} />
           {isRtl ? 'رجوع' : 'Back'}
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -220,7 +212,7 @@ export default function PartnershipsPage() {
         {/* Title */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <Handshake style={{ width: 22, height: 22, color: 'var(--color-accent)' }} />
+            <Handshake weight="light" style={{ width: 22, height: 22, color: 'var(--color-accent)' }} />
             <h1 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700 }}>
               {isRtl ? 'الشراكات' : 'Partnerships'}
             </h1>
@@ -235,7 +227,7 @@ export default function PartnershipsPage() {
                 cursor: 'pointer', color: 'var(--color-text)',
               }}
             >
-              <RefreshCw style={{ width: 14, height: 14 }} />
+              <CircleNotch weight="light" style={{ width: 14, height: 14 }} />
             </button>
             <button
               onClick={() => setShowForm(!showForm)}
@@ -247,7 +239,7 @@ export default function PartnershipsPage() {
                 cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600,
               }}
             >
-              <Plus style={{ width: 14, height: 14 }} />
+              <Plus weight="light" style={{ width: 14, height: 14 }} />
               {isRtl ? 'طلب شراكة' : 'Request'}
             </button>
           </div>
@@ -261,7 +253,7 @@ export default function PartnershipsPage() {
             color: feedback.type === 'success' ? '#15803d' : '#dc2626',
             display: 'flex', alignItems: 'center', gap: '0.5rem',
           }}>
-            {feedback.type === 'success' ? <Check style={{ width: 16, height: 16 }} /> : <AlertCircle style={{ width: 16, height: 16 }} />}
+            {feedback.type === 'success' ? <Check weight="light" style={{ width: 16, height: 16 }} /> : <WarningCircle weight="light" style={{ width: 16, height: 16 }} />}
             {feedback.text}
           </div>
         )}
@@ -360,7 +352,7 @@ export default function PartnershipsPage() {
             background: 'var(--color-card-bg)', borderRadius: '16px',
             border: '1px solid var(--color-border)',
           }}>
-            <Building2 style={{ width: 40, height: 40, opacity: 0.25, margin: '0 auto 0.75rem' }} />
+            <Buildings weight="light" style={{ width: 40, height: 40, opacity: 0.25, margin: '0 auto 0.75rem' }} />
             <p style={{ margin: 0, opacity: 0.5, fontSize: '0.9rem' }}>
               {isRtl ? 'لا توجد شراكات حتى الآن' : 'No partnerships yet'}
             </p>
@@ -416,7 +408,7 @@ export default function PartnershipsPage() {
                           opacity: actingId === p.id ? 0.6 : 1,
                         }}
                       >
-                        <X style={{ width: 12, height: 12, display: 'inline', marginInlineEnd: '0.2rem' }} />
+                        <X weight="light" style={{ width: 12, height: 12, display: 'inline', marginInlineEnd: '0.2rem' }} />
                         {isRtl ? 'رفض' : 'Reject'}
                       </button>
                       <button
@@ -430,7 +422,7 @@ export default function PartnershipsPage() {
                           opacity: actingId === p.id ? 0.6 : 1,
                         }}
                       >
-                        <Check style={{ width: 12, height: 12, display: 'inline', marginInlineEnd: '0.2rem' }} />
+                        <Check weight="light" style={{ width: 12, height: 12, display: 'inline', marginInlineEnd: '0.2rem' }} />
                         {isRtl ? 'قبول' : 'Accept'}
                       </button>
                     </div>

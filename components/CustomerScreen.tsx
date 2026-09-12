@@ -4,9 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import JsBarcode from 'jsbarcode';
 import { 
-  User, Sparkles, Calendar, ShieldCheck, X, RefreshCw, Tag, Clock, Award, History, 
-  ArrowDownLeft, ArrowUpRight, Gift, QrCode, ScanBarcode, ArrowRight, ArrowLeft, Copy, Check 
-} from 'lucide-react';
+  User, Sparkle, Calendar, ShieldCheck, X, ArrowsClockwise, Tag, Clock, Medal, ClockCounterClockwise, 
+  ArrowDownLeft, ArrowUpRight, Gift, QrCode, Barcode, ArrowRight, ArrowLeft, Copy, Check 
+} from '@phosphor-icons/react';
 import ThemeToggle from './ThemeToggle';
 import LanguageSwitcher from './LanguageSwitcher';
 import Link from 'next/link';
@@ -294,16 +294,15 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
 
             <Link
               href="/my-places"
-              id="back-to-places-btn"
-              aria-label={t('customer.myPlacesBtn')}
-              className="h-10 px-3 rounded-full flex items-center gap-1.5 text-xs font-bold transition-transform active:scale-95 shadow-sm border"
+              id="customer-my-places-btn"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-xs border transition-transform active:scale-95"
               style={{
                 backgroundColor: 'var(--color-card-bg)',
                 borderColor: 'var(--color-border)',
                 color: 'var(--color-text)',
               }}
             >
-              {isRtl ? <ArrowRight className="w-3.5 h-3.5" /> : <ArrowLeft className="w-3.5 h-3.5" />}
+              {isRtl ? <ArrowRight size={14} weight="light" /> : <ArrowLeft size={14} weight="light" />}
               <span className="hidden sm:inline">{t('customer.myPlacesBtn')}</span>
             </Link>
           </div>
@@ -335,17 +334,13 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
         <main className="flex flex-col items-center my-auto py-6">
           {/* Card Container */}
           <div 
-            className="w-full rounded-3xl p-6 flex flex-col items-center shadow-lg transition-transform"
-            style={{
-              backgroundColor: 'var(--color-card-bg)',
-              border: '1px solid var(--color-border)',
-            }}
+            className="w-full glass-card p-6 flex flex-col items-center transition-transform"
           >
             {/* Format Toggle: QR Code vs Barcode */}
             <div 
               className="flex items-center gap-1.5 p-1 rounded-2xl mb-4 border shadow-xs"
               style={{
-                backgroundColor: 'var(--color-bg)',
+                backgroundColor: 'var(--color-input-bg)',
                 borderColor: 'var(--color-border)',
               }}
             >
@@ -358,7 +353,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                 }`}
                 style={codeFormat === 'qr' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
               >
-                <QrCode className="w-3.5 h-3.5 shrink-0" />
+                <QrCode size={14} weight="light" className="shrink-0" />
                 <span>{t('customer.qrCodeTab')}</span>
               </button>
 
@@ -371,7 +366,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                 }`}
                 style={codeFormat === 'barcode' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
               >
-                <ScanBarcode className="w-3.5 h-3.5 shrink-0" />
+                <Barcode size={14} weight="light" className="shrink-0" />
                 <span>{t('customer.barcodeTab')}</span>
               </button>
             </div>
@@ -403,7 +398,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
             {/* Phase 26.3: Formatted Quick Code with 1-Tap Copy */}
             <div className="flex flex-col items-center gap-1 mt-3.5" dir="ltr">
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border bg-black/5 dark:bg-white/5" style={{ borderColor: 'var(--color-border)' }}>
-                <ShieldCheck className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-accent)' }} />
+                <ShieldCheck size={16} weight="light" className="shrink-0" style={{ color: 'var(--color-accent)' }} />
                 <span className="font-mono font-bold tracking-[0.18em] text-sm" id="customer-short-code">
                   {formattedCode}
                 </span>
@@ -414,9 +409,9 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                   title={t('customer.copyCode')}
                 >
                   {copiedCode ? (
-                    <Check className="w-3.5 h-3.5 text-emerald-500" />
+                    <Check size={14} weight="light" className="text-emerald-500" />
                   ) : (
-                    <Copy className="w-3.5 h-3.5" />
+                    <Copy size={14} weight="light" />
                   )}
                 </button>
               </div>
@@ -426,20 +421,20 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
             </div>
 
             {/* Points Count DIRECTLY BELOW the QR Code (إلزامي في RULES.md) */}
-            <div className="mt-6 text-center w-full pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
+            <div className="mt-6 text-center w-full pt-4 border-t" style={{ borderColor: 'var(--color-separator)' }}>
               {/* 17.4: Membership Tier Badge */}
               {customer.tier?.currentTier && (
                 <div className="flex items-center justify-center mb-2.5">
                   <div
                     className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold shadow-xs border transition-transform hover:scale-105"
                     style={{
-                      backgroundColor: 'var(--color-bg)',
+                      backgroundColor: 'var(--color-input-bg)',
                       borderColor: 'var(--color-accent)',
                       color: 'var(--color-accent)',
                     }}
                     id="customer-tier-badge"
                   >
-                    <Award className="w-4 h-4 shrink-0" />
+                    <Medal size={16} weight="light" className="shrink-0" />
                     <span>{customer.tier.currentTier.name}</span>
                   </div>
                 </div>
@@ -532,7 +527,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                   }}
                   id="expiring-points-alert"
                 >
-                  <Clock className="w-3.5 h-3.5 shrink-0" />
+                  <Clock size={14} weight="light" className="shrink-0" />
                   <span>{t('customer.expiringAlert', { points: customer.expiring_points_30d || 0 })}</span>
                 </div>
               )}
@@ -542,13 +537,13 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                 <div 
                   className="mt-3.5 w-full p-3 rounded-2xl border flex items-start gap-2.5 text-xs text-center justify-center transition-all"
                   style={{ 
-                    backgroundColor: 'var(--color-bg)', 
+                    backgroundColor: 'var(--color-input-bg)', 
                     borderColor: 'var(--color-accent)',
                     color: 'var(--color-text)'
                   }}
                   id="ai-recommendation-banner"
                 >
-                  <Sparkles className="w-4 h-4 shrink-0 mt-0.5" style={{ color: 'var(--color-accent)' }} />
+                  <Sparkle size={16} weight="light" className="shrink-0 mt-0.5" style={{ color: 'var(--color-accent)' }} />
                   <p className="leading-relaxed font-medium">{aiRecommendation}</p>
                 </div>
               )}
@@ -560,12 +555,12 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                   onClick={openHistoryModal}
                   className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-transform active:scale-95 border shadow-2xs"
                   style={{
-                    backgroundColor: 'var(--color-bg)',
+                    backgroundColor: 'var(--color-input-bg)',
                     borderColor: 'var(--color-border)',
                     color: 'var(--color-accent)',
                   }}
                 >
-                  <History className="w-3.5 h-3.5" />
+                  <ClockCounterClockwise size={14} weight="light" />
                   <span>{t('customer.viewHistory')}</span>
                 </button>
               </div>
@@ -573,66 +568,54 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
           </div>
         </main>
 
-        {/* =========================================================================
-            3. BOTTOM (تحت):
-               - 6.3 أيقونات العروض الخاصة
-               - 6.4 العروض اليومية
-               - 18.2 سجل العمليات
-           ========================================================================= */}
-        {/* =========================================================================
-            3. BOTTOM (تحت):
-               - 6.3 أيقونات العروض الخاصة (تختفي تماماً لو معطلة)
-               - 6.4 العروض اليومية (تختفي تماماً لو معطلة)
-               - 18.2 سجل العمليات
-           ========================================================================= */}
         <footer className="w-full pt-4 pb-2">
           <div className={`flex items-center gap-2 ${layoutVariant === 'horizontal-offers' ? 'overflow-x-auto pb-1 no-scrollbar' : ''}`} id="customer-screen-footer-actions">
-            {/* Special Offers (6.3 & 22.8) */}
+            {/* Special Offers */}
             {customer.features?.offers !== false && (
               <button
                 id="special-offers-btn"
                 onClick={() => openOffersModal('special')}
-                className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl transition-all active:scale-95 shadow-sm font-medium text-xs text-center"
+                className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl transition-all active:scale-95 shadow-xs font-medium text-xs text-center"
                 style={{
                   backgroundColor: 'var(--color-card-bg)',
                   color: 'var(--color-text)',
                   border: '1px solid var(--color-border)',
                 }}
               >
-                <Sparkles className="w-4 h-4 shrink-0" style={{ color: 'var(--color-accent)' }} />
+                <Sparkle size={16} weight="light" className="shrink-0" style={{ color: 'var(--color-accent)' }} />
                 <span className="truncate">{t('customer.specialOffers')}</span>
               </button>
             )}
 
-            {/* Daily Offers (6.4 & 22.8) */}
+            {/* Daily Offers */}
             {customer.features?.daily_offers !== false && (
               <button
                 id="daily-offers-btn"
                 onClick={() => openOffersModal('daily')}
-                className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl transition-all active:scale-95 shadow-sm font-medium text-xs text-center"
+                className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl transition-all active:scale-95 shadow-xs font-medium text-xs text-center"
                 style={{
                   backgroundColor: 'var(--color-card-bg)',
                   color: 'var(--color-text)',
                   border: '1px solid var(--color-border)',
                 }}
               >
-                <Calendar className="w-4 h-4 shrink-0" style={{ color: 'var(--color-accent)' }} />
+                <Calendar size={16} weight="light" className="shrink-0" style={{ color: 'var(--color-accent)' }} />
                 <span className="truncate">{t('customer.dailyOffers')}</span>
               </button>
             )}
 
-            {/* Transaction History (18.2) */}
+            {/* Transaction History */}
             <button
               id="history-btn"
               onClick={openHistoryModal}
-              className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl transition-all active:scale-95 shadow-sm font-medium text-xs text-center"
+              className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl transition-all active:scale-95 shadow-xs font-medium text-xs text-center"
               style={{
                 backgroundColor: 'var(--color-card-bg)',
                 color: 'var(--color-text)',
                 border: '1px solid var(--color-border)',
               }}
             >
-              <History className="w-4 h-4 shrink-0" style={{ color: 'var(--color-accent)' }} />
+              <ClockCounterClockwise size={16} weight="light" className="shrink-0" style={{ color: 'var(--color-accent)' }} />
               <span className="truncate">{t('customer.transactionHistory')}</span>
             </button>
           </div>
@@ -655,14 +638,14 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-4 border-b mb-4" style={{ borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-between pb-4 border-b mb-4" style={{ borderColor: 'var(--color-separator)' }}>
               <div className="flex items-center gap-2">
                 {activeModal === 'special' ? (
-                  <Sparkles className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
+                  <Sparkle size={20} weight="light" style={{ color: 'var(--color-accent)' }} />
                 ) : activeModal === 'daily' ? (
-                  <Calendar className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
+                  <Calendar size={20} weight="light" style={{ color: 'var(--color-accent)' }} />
                 ) : (
-                  <History className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
+                  <ClockCounterClockwise size={20} weight="light" style={{ color: 'var(--color-accent)' }} />
                 )}
                 <h3 className="text-base font-bold">
                   {activeModal === 'special' 
@@ -678,7 +661,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                 className="w-8 h-8 rounded-full flex items-center justify-center border transition-transform active:scale-95"
                 style={{ borderColor: 'var(--color-border)' }}
               >
-                <X className="w-4 h-4" />
+                <X size={16} weight="light" />
               </button>
             </div>
 
@@ -687,12 +670,12 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
               <div className="flex flex-col gap-2.5 max-h-80 overflow-y-auto" id="transactions-list-container">
                 {isLoadingHistory ? (
                   <div className="py-8 flex flex-col items-center justify-center opacity-70">
-                    <RefreshCw className="w-6 h-6 animate-spin mb-2" />
+                    <ArrowsClockwise size={24} weight="light" className="animate-spin mb-2" />
                     <span className="text-xs">{t('customer.loadingHistory')}</span>
                   </div>
                 ) : transactionsList.length === 0 ? (
                   <div className="py-8 text-center opacity-60 flex flex-col items-center" id="empty-transactions-message">
-                    <History className="w-8 h-8 mb-2 opacity-40" />
+                    <ClockCounterClockwise size={32} weight="light" className="mb-2 opacity-40" />
                     <p className="text-xs font-medium">
                       {t('customer.noTransactions')}
                     </p>
@@ -708,37 +691,37 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                       <div
                         key={tx.id}
                         className="p-3 rounded-2xl border flex items-center justify-between gap-3 transition-all"
-                        style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                        style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)' }}
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
                           <div
                             className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 border"
                             style={{
                               backgroundColor: isPositive
-                                ? 'rgba(16, 185, 129, 0.12)'
+                                ? 'var(--color-success-bg)'
                                 : isExpired
-                                ? 'rgba(239, 68, 68, 0.12)'
-                                : 'rgba(245, 158, 11, 0.12)',
+                                ? 'var(--color-error-bg)'
+                                : 'var(--color-badge-special-bg)',
                               borderColor: isPositive
-                                ? 'rgba(16, 185, 129, 0.3)'
+                                ? 'var(--color-success-border)'
                                 : isExpired
-                                ? 'rgba(239, 68, 68, 0.3)'
-                                : 'rgba(245, 158, 11, 0.3)',
+                                ? 'var(--color-error-border)'
+                                : 'var(--color-badge-special-border)',
                               color: isPositive
-                                ? '#10b981'
+                                ? 'var(--color-success-text)'
                                 : isExpired
-                                ? '#ef4444'
-                                : 'var(--color-accent)',
+                                ? 'var(--color-error-text)'
+                                : 'var(--color-badge-special-text)',
                             }}
                           >
                             {isPositive ? (
-                              <ArrowDownLeft className="w-4 h-4" />
+                              <ArrowDownLeft size={16} weight="light" />
                             ) : isExpired ? (
-                              <Clock className="w-4 h-4" />
+                              <Clock size={16} weight="light" />
                             ) : isReferral ? (
-                              <Gift className="w-4 h-4" />
+                              <Gift size={16} weight="light" />
                             ) : (
-                              <ArrowUpRight className="w-4 h-4" />
+                              <ArrowUpRight size={16} weight="light" />
                             )}
                           </div>
 
@@ -766,17 +749,15 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                                 minute: '2-digit',
                               })}
                             </span>
-                            {/* Phase 18.1: Branch name */}
                             {tx.branch_name && (
                               <span className="text-[10px] opacity-50 truncate">
                                 {tx.branch_name}
                               </span>
                             )}
-                            {/* Phase 14+18.2: Expiry date — earn rows only */}
                             {tx.type === 'earned' && tx.expires_at && (
                               <span
                                 className="text-[10px] font-medium"
-                                style={{ color: new Date(tx.expires_at) < new Date() ? '#ef4444' : '#f59e0b' }}
+                                style={{ color: new Date(tx.expires_at) < new Date() ? 'var(--color-error-text)' : 'var(--color-warning-text)' }}
                               >
                                 {t('customer.expiresOn', {
                                   date: new Date(tx.expires_at).toLocaleDateString(undefined, {
@@ -791,11 +772,11 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                         </div>
 
                         <div
-                          className="shrink-0 font-bold font-mono text-xs px-2 py-0.5 rounded-full border"
+                          className="shrink-0 font-bold font-mono text-xs px-2.5 py-0.5 rounded-full border"
                           style={{
-                            backgroundColor: isPositive ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
-                            borderColor: isPositive ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)',
-                            color: isPositive ? '#10b981' : '#ef4444',
+                            backgroundColor: isPositive ? 'var(--color-success-bg)' : 'var(--color-error-bg)',
+                            borderColor: isPositive ? 'var(--color-success-border)' : 'var(--color-error-border)',
+                            color: isPositive ? 'var(--color-success-text)' : 'var(--color-error-text)',
                           }}
                         >
                           {isPositive ? `+${tx.points_change}` : `${tx.points_change}`}
@@ -809,12 +790,12 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
               <div className="flex flex-col gap-3 max-h-72 overflow-y-auto">
                 {isLoadingOffers ? (
                   <div className="py-8 flex flex-col items-center justify-center opacity-70">
-                    <RefreshCw className="w-6 h-6 animate-spin mb-2" />
+                    <ArrowsClockwise size={24} weight="light" className="animate-spin mb-2" />
                     <span className="text-xs">{t('customer.loadingOffers')}</span>
                   </div>
                 ) : offersList.length === 0 ? (
                   <div className="py-8 text-center opacity-60 flex flex-col items-center">
-                    <Tag className="w-8 h-8 mb-2 opacity-40" />
+                    <Tag size={32} weight="light" className="mb-2 opacity-40" />
                     <p className="text-xs font-medium">
                       {activeModal === 'special' 
                         ? t('customer.noSpecialOffers') 
@@ -826,9 +807,8 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                     <div 
                       key={offer.id}
                       className="p-4 rounded-2xl border flex flex-col gap-1.5 transition-all overflow-hidden"
-                      style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                      style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)' }}
                     >
-                      {/* 6.1.3: Offer image or themed fallback placeholder */}
                       {offer.image_url ? (
                         <div className="w-full h-32 rounded-xl overflow-hidden mb-1.5 relative border" style={{ borderColor: 'var(--color-border)' }}>
                           <img 
@@ -843,7 +823,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         >
                           <div className="flex items-center gap-2 text-xs font-semibold" style={{ color: 'var(--color-accent)' }}>
-                            <Tag className="w-4 h-4" />
+                            <Tag size={16} weight="light" />
                             <span>{offer.type === 'special' ? t('customer.specialBadge') : t('customer.dailyBadge')}</span>
                           </div>
                         </div>
@@ -866,11 +846,10 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
               </div>
             )}
 
-            <div className="mt-4 pt-3 border-t text-center" style={{ borderColor: 'var(--color-border)' }}>
+            <div className="mt-4 pt-3 border-t text-center" style={{ borderColor: 'var(--color-separator)' }}>
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-full py-2.5 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm"
-                style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
+                className="ios-btn-primary w-full"
               >
                 {t('customer.close')}
               </button>
@@ -882,10 +861,8 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
       {/* PWA Install Banner */}
       {showInstallBanner && (
         <div
-          className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between gap-3 px-4 py-3 rounded-2xl shadow-2xl border backdrop-blur-xl"
+          className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between gap-3 px-4 py-3 rounded-2xl shadow-2xl border glass-card"
           style={{
-            backgroundColor: 'var(--color-card-bg)',
-            borderColor: 'var(--color-accent)',
             maxWidth: '400px',
             margin: '0 auto',
           }}
@@ -901,17 +878,16 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
             <button
               onClick={handleInstallApp}
               id="pwa-install-btn"
-              className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95"
-              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
+              className="ios-btn-primary py-1.5 px-3 text-xs"
             >
               {isRtl ? 'تثبيت' : 'Install'}
             </button>
             <button
               onClick={dismissInstallBanner}
               id="pwa-dismiss-btn"
-              className="p-1 rounded-lg opacity-60 hover:opacity-100 transition-all"
+              className="p-1.5 rounded-lg opacity-60 hover:opacity-100 transition-all"
             >
-              <X className="w-4 h-4" />
+              <X size={16} weight="light" />
             </button>
           </div>
         </div>

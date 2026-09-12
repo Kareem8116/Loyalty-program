@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Html5QrcodeScanner, Html5QrcodeScanType } from 'html5-qrcode';
-import { Camera, ScanBarcode, Usb, AlertCircle, RefreshCw, Zap, Search } from 'lucide-react';
+import { Camera, Barcode, Usb, WarningCircle, CircleNotch, Lightning, MagnifyingGlass } from '@phosphor-icons/react';
 import { useLocale } from './LocaleProvider';
 import { extractCustomerToken } from '@/lib/tokens';
 
@@ -160,7 +160,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
             opacity: scannerMode === 'external' ? 1 : 0.7,
           }}
         >
-          <ScanBarcode className="w-4 h-4" />
+          <Barcode weight="light" className="w-4 h-4" />
           <span>{t('qrScanner.modeExternal')}</span>
         </button>
 
@@ -174,7 +174,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
             opacity: scannerMode === 'camera' ? 1 : 0.7,
           }}
         >
-          <Camera className="w-4 h-4" />
+          <Camera weight="light" className="w-4 h-4" />
           <span>{t('qrScanner.modeCamera')}</span>
         </button>
       </div>
@@ -182,7 +182,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
       {/* External Hardware Scanner Mode (USB / Bluetooth HID) */}
       {scannerMode === 'external' && (
         <div 
-          className="w-full rounded-3xl p-6 border shadow-sm flex flex-col items-center justify-center relative overflow-hidden min-h-[300px]"
+          className="glass-card w-full rounded-3xl p-6 flex flex-col items-center justify-center relative overflow-hidden min-h-[300px]"
           style={{
             backgroundColor: 'var(--color-card-bg)',
             borderColor: 'var(--color-border)',
@@ -211,7 +211,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
               backgroundColor: 'var(--color-bg)',
             }}
           >
-            <ScanBarcode className="w-12 h-12 animate-pulse" style={{ color: 'var(--color-accent)' }} />
+            <Barcode weight="light" className="w-12 h-12 animate-pulse" style={{ color: 'var(--color-accent)' }} />
             <div 
               className="w-full h-0.5 animate-pulse absolute top-1/2 -translate-y-1/2 opacity-70"
               style={{ backgroundColor: 'var(--color-accent)' }}
@@ -242,7 +242,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
                   color: 'var(--color-text)',
                 }}
               />
-              <Usb className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
+              <Usb weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
             </div>
 
             <button
@@ -255,7 +255,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
                 color: 'var(--color-btn-text)',
               }}
             >
-              <Search className="w-3.5 h-3.5" />
+              <MagnifyingGlass weight="light" className="w-3.5 h-3.5" />
               <span>{isLoading ? t('common.loading') : t('qrScanner.externalSubmit')}</span>
             </button>
           </form>
@@ -269,7 +269,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
                 color: 'var(--color-btn-text)',
               }}
             >
-              <RefreshCw className="w-8 h-8 animate-spin mb-2" />
+              <CircleNotch weight="light" className="w-8 h-8 animate-spin mb-2" />
               <span className="text-xs font-medium">{t('common.loading')}</span>
             </div>
           )}
@@ -280,7 +280,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
       {scannerMode === 'camera' && (
         <div className="w-full flex flex-col items-center">
           <div 
-            className="w-full rounded-3xl p-4 border shadow-sm flex flex-col items-center justify-center relative overflow-hidden min-h-[280px]"
+            className="glass-card w-full rounded-3xl p-4 flex flex-col items-center justify-center relative overflow-hidden min-h-[280px]"
             style={{
               backgroundColor: 'var(--color-card-bg)',
               borderColor: 'var(--color-border)',
@@ -313,7 +313,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
 
             {cameraError && (
               <div className="p-6 text-center flex flex-col items-center">
-                <AlertCircle className="w-10 h-10 mb-2 opacity-70" style={{ color: 'var(--color-accent)' }} />
+                <WarningCircle weight="light" className="w-10 h-10 mb-2 opacity-70" style={{ color: 'var(--color-accent)' }} />
                 <p className="text-xs opacity-80 mb-3">{cameraError}</p>
                 <span className="text-xs font-semibold" style={{ color: 'var(--color-accent)' }}>
                   {t('qrScanner.manualLabel')}
@@ -329,7 +329,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
                   color: 'var(--color-btn-text)',
                 }}
               >
-                <RefreshCw className="w-8 h-8 animate-spin mb-2" />
+                <CircleNotch weight="light" className="w-8 h-8 animate-spin mb-2" />
                 <span className="text-xs font-medium">{t('common.loading')}</span>
               </div>
             )}
@@ -352,7 +352,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
                     color: 'var(--color-text)',
                   }}
                 />
-                <Usb className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
+                <Usb weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
               </div>
               <button
                 type="submit"

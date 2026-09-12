@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Lock, Mail, ArrowRight, ShieldAlert, RefreshCw, AlertCircle } from 'lucide-react';
+import { Lock, EnvelopeSimple, ArrowRight, ArrowLeft, ShieldWarning, CircleNotch, WarningCircle } from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
@@ -79,7 +79,7 @@ export default function SuperAdminLoginPage() {
     <main
       className="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors duration-300 relative overflow-hidden"
       style={{
-        background: 'var(--page-bg-gradient)',
+        background: 'transparent',
         color: 'var(--color-text)'
       }}
     >
@@ -116,7 +116,7 @@ export default function SuperAdminLoginPage() {
               borderColor: 'var(--color-border)',
             }}
           >
-            <ArrowRight className={`w-5 h-5 ${isRtl ? '' : 'rotate-180'}`} />
+            <ArrowRight weight="light" className={`w-5 h-5 ${isRtl ? '' : 'rotate-180'}`} />
           </Link>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#6C63FF' }} />
@@ -146,7 +146,7 @@ export default function SuperAdminLoginPage() {
                 color: '#A5B4FC',
               }}
             >
-              <ShieldAlert className="w-3 h-3" style={{ color: '#A5B4FC' }} />
+              <ShieldWarning weight="light" className="w-3 h-3" style={{ color: '#A5B4FC' }} />
               <span>الإدارة المركزية • Super Admin Command</span>
             </div>
 
@@ -158,7 +158,7 @@ export default function SuperAdminLoginPage() {
                 boxShadow: '0 10px 25px rgba(108, 99, 255, 0.35)',
               }}
             >
-              <ShieldAlert className="w-8 h-8" />
+              <ShieldWarning weight="light" className="w-8 h-8" />
             </div>
             <h1 className="text-xl font-bold mb-1 tracking-tight text-white">{t('superAdmin.loginTitle')}</h1>
             <p className="text-xs max-w-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
@@ -175,7 +175,7 @@ export default function SuperAdminLoginPage() {
                 borderColor: 'rgba(248, 113, 113, 0.25)',
               }}
             >
-              <AlertCircle className="w-4 h-4 shrink-0" />
+              <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
@@ -198,7 +198,7 @@ export default function SuperAdminLoginPage() {
                     borderColor: 'rgba(255, 255, 255, 0.1)',
                   }}
                 />
-                <Mail className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-3' : 'left-3'}`} style={{ color: 'rgba(108,99,255,0.6)' }} />
+                <EnvelopeSimple weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-3' : 'left-3'}`} style={{ color: 'rgba(108,99,255,0.6)' }} />
               </div>
             </div>
 
@@ -219,7 +219,7 @@ export default function SuperAdminLoginPage() {
                     borderColor: 'rgba(255, 255, 255, 0.1)',
                   }}
                 />
-                <Lock className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-3' : 'left-3'}`} style={{ color: 'rgba(108,99,255,0.6)' }} />
+                <Lock weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-3' : 'left-3'}`} style={{ color: 'rgba(108,99,255,0.6)' }} />
               </div>
             </div>
 
@@ -246,14 +246,14 @@ export default function SuperAdminLoginPage() {
                 boxShadow: '0 8px 25px rgba(108, 99, 255, 0.4)',
               }}
             >
-              {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ShieldAlert className="w-4 h-4" />}
+              {isLoading ? <CircleNotch weight="light" className="w-4 h-4 animate-spin" /> : <ShieldWarning weight="light" className="w-4 h-4" />}
               <span>{isLoading ? t('superAdmin.signingIn') : t('superAdmin.signIn')}</span>
             </button>
           </form>
         </div>
 
         <footer className="text-center text-[11px] py-3 flex items-center justify-center gap-1.5" style={{ color: 'rgba(255,255,255,0.25)' }}>
-          <Lock className="w-3.5 h-3.5" />
+          <Lock weight="light" className="w-3.5 h-3.5" />
           <span>{t('superAdmin.footer') || 'منطقة سيادية • جميع العمليات مراقبة ومسجلة أمنياً'}</span>
         </footer>
       </div>

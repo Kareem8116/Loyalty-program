@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Lock, Mail, ArrowRight, ScanLine, AlertCircle, Store, Loader2 } from 'lucide-react';
+import { Lock, EnvelopeSimple, ArrowRight, QrCode, WarningCircle, CircleNotch, Storefront } from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
@@ -60,93 +60,128 @@ export default function CashierLoginPage() {
   };
 
   return (
-    <main 
-      className="min-h-screen flex flex-col items-center justify-center p-4 selection:bg-purple-500/30 transition-colors"
-      style={{ background: 'var(--page-bg-gradient)', color: 'var(--color-text)' }}
-    >
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-purple-900/10 blur-[120px]" />
-        <div className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] rounded-full bg-teal-900/10 blur-[120px]" />
-      </div>
-
-      <div className="w-full max-w-md relative z-10">
-        <div className="flex justify-between items-center mb-8">
+    <main className="page-bg min-h-screen flex flex-col items-center justify-center p-4 transition-colors">
+      <div className="w-full max-w-sm relative z-10 my-auto">
+        {/* Navigation Bar */}
+        <div className="flex justify-between items-center mb-6">
           <Link 
             href="/" 
-            className="p-2 rounded-xl border transition-colors"
-            style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
+            className="w-10 h-10 rounded-full flex items-center justify-center border transition-transform active:scale-95"
+            style={{
+              backgroundColor: 'var(--color-input-bg)',
+              borderColor: 'var(--color-border)',
+              color: 'var(--color-text)',
+            }}
           >
-            <ArrowRight className={`w-5 h-5 ${isRtl ? '' : 'rotate-180'}`} />
+            <ArrowRight size={18} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
           </Link>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
+            <span className="text-xs font-semibold tracking-wider uppercase opacity-75">Cashier Portal</span>
+          </div>
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
         </div>
 
-        <div 
-          className="backdrop-blur-xl border p-8 rounded-3xl shadow-2xl transition-colors"
-          style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)', color: 'var(--color-text)' }}
-        >
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-600 to-teal-600 flex items-center justify-center shadow-lg shadow-purple-900/20">
-              <ScanLine className="w-8 h-8 text-white" />
+        {/* Login Card */}
+        <div className="glass-card p-6 sm:p-7 transition-all">
+          <div className="text-center mb-6 flex flex-col items-center">
+            <div
+              className="w-16 h-16 mb-3 rounded-2xl flex items-center justify-center shadow-md transition-transform"
+              style={{
+                backgroundColor: 'var(--color-accent)',
+                color: 'var(--color-accent-text)',
+              }}
+            >
+              <QrCode size={32} weight="light" />
             </div>
-            <h1 className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>{t('cashierLogin.title')}</h1>
-            <p className="text-sm mt-2" style={{ color: 'var(--color-text-muted)' }}>{t('cashierLogin.subtitle')}</p>
+            <h1 className="text-xl font-bold tracking-tight" style={{ color: 'var(--color-text)' }}>
+              {t('cashierLogin.title')}
+            </h1>
+            <p className="text-xs mt-1 opacity-60">
+              {t('cashierLogin.subtitle')}
+            </p>
           </div>
 
           {errorMsg && (
-            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0" />
+            <div
+              className="mb-4 p-3 rounded-xl border text-xs flex items-center gap-2"
+              style={{
+                backgroundColor: 'var(--color-error-bg)',
+                color: 'var(--color-error-text)',
+                borderColor: 'var(--color-error-border)',
+              }}
+            >
+              <WarningCircle size={18} weight="light" className="shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium" style={{ color: 'var(--color-text-muted)' }}>{t('cashierLogin.email')}</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3.5 w-4 h-4 opacity-50" />
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <div>
+              <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="cashier-email-input">
+                {t('cashierLogin.email')}
+              </label>
+              <div className="relative flex items-center">
                 <input
                   type="email"
+                  id="cashier-email-input"
+                  dir="ltr"
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border py-3 pl-10 pr-4 rounded-xl text-sm focus:outline-none focus:border-purple-500/50 transition-colors"
-                  style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)', color: 'var(--color-text)' }}
-                  required
+                  placeholder="cashier@example.com"
+                  className="ios-input"
                 />
+                <EnvelopeSimple size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium" style={{ color: 'var(--color-text-muted)' }}>{t('cashierLogin.password')}</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3.5 w-4 h-4 opacity-50" />
+            <div>
+              <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="cashier-password-input">
+                {t('cashierLogin.password')}
+              </label>
+              <div className="relative flex items-center">
                 <input
                   type="password"
+                  id="cashier-password-input"
+                  dir="ltr"
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border py-3 pl-10 pr-4 rounded-xl text-sm focus:outline-none focus:border-purple-500/50 transition-colors"
-                  style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)', color: 'var(--color-text)' }}
-                  required
+                  placeholder="••••••••"
+                  className="ios-input"
                 />
+                <Lock size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
             <button
               type="submit"
+              id="cashier-login-btn"
               disabled={isLoading}
-              className="w-full btn-gradient py-3 rounded-xl text-sm font-bold shadow-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mt-4"
+              className="ios-btn-primary w-full mt-2"
             >
-              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : t('cashierLogin.signIn')}
+              {isLoading ? (
+                <>
+                  <CircleNotch size={18} weight="light" className="animate-spin" />
+                  <span>{t('cashierLogin.signingIn')}</span>
+                </>
+              ) : (
+                <>
+                  <Storefront size={18} weight="light" />
+                  <span>{t('cashierLogin.signIn')}</span>
+                </>
+              )}
             </button>
           </form>
         </div>
 
-        <footer className="mt-8 text-center text-[#444] text-[11px] flex items-center justify-center gap-1.5">
-          <Store className="w-3.5 h-3.5" />
-          <span>{t('cashierLogin.footer')}</span>
+        <footer className="text-center text-[11px] py-4 flex items-center justify-center gap-1.5 opacity-40">
+          <Storefront size={14} weight="light" />
+          <span>Pointat Cashier Station</span>
         </footer>
       </div>
     </main>

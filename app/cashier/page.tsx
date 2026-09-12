@@ -3,7 +3,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, ShieldAlert, LogOut, RefreshCw, User, Trash2, AlertTriangle, X, AlertCircle, Keyboard } from 'lucide-react';
+import { 
+  ArrowRight, ArrowLeft, ShieldWarning, SignOut, CircleNotch, 
+  User, Trash, Warning, X, WarningCircle, Keyboard 
+} from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import QrScanner from '@/components/QrScanner';
@@ -153,12 +156,9 @@ export default function CashierPage() {
 
   if (isVerifyingSession) {
     return (
-      <main
-        className="min-h-screen flex items-center justify-center p-4"
-        style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)' }}
-      >
+      <main className="page-bg min-h-screen flex items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3">
-          <RefreshCw className="w-6 h-6 animate-spin" style={{ color: 'var(--color-accent)' }} />
+          <CircleNotch weight="light" className="w-6 h-6 animate-spin" style={{ color: 'var(--color-accent)' }} />
           <span className="text-xs opacity-70">{t('common.loading')}</span>
         </div>
       </main>
@@ -166,48 +166,24 @@ export default function CashierPage() {
   }
 
   return (
-    <main 
-      className="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors duration-300 relative overflow-hidden"
-      style={{
-        background: 'var(--page-bg-gradient)',
-        color: 'var(--color-text)'
-      }}
-    >
-      {/* Ambient background glows */}
-      <div style={{
-        position: 'absolute',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(108,99,255,0.07) 0%, transparent 70%)',
-        top: '-150px',
-        right: '-150px',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute',
-        width: '500px',
-        height: '500px',
-        background: 'radial-gradient(circle, rgba(78,205,196,0.05) 0%, transparent 70%)',
-        bottom: '0px',
-        left: '-100px',
-        pointerEvents: 'none',
-      }} />
-
+    <main className="page-bg min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors duration-300 relative overflow-hidden">
       <div className="w-full max-w-sm flex flex-col flex-1 py-2 relative z-10">
         {/* Header */}
-        <header className="flex items-center justify-between w-full pb-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
+        <header className="page-header flex items-center justify-between w-full pb-4">
           <div className="flex items-center gap-2">
             <Link
               href="/"
               aria-label={t('common.home')}
-              className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition-transform active:scale-95"
+              className="w-10 h-10 rounded-full flex items-center justify-center glass-card transition-transform active:scale-95"
               style={{
-                backgroundColor: 'var(--color-card-bg)',
-                color: 'var(--color-accent)',
-                borderColor: 'var(--color-border)',
+                color: 'var(--color-text)',
               }}
             >
-              <ArrowRight className={`w-5 h-5 ${isRtl ? '' : 'rotate-180'}`} />
+              {isRtl ? (
+                <ArrowRight weight="light" className="w-5 h-5" />
+              ) : (
+                <ArrowLeft weight="light" className="w-5 h-5" />
+              )}
             </Link>
 
             <button
@@ -219,14 +195,12 @@ export default function CashierPage() {
               id="cashier-profile-btn"
               title={t('accountDeletion.profileTitle')}
               aria-label={t('accountDeletion.profileTitle')}
-              className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition-transform active:scale-95 cursor-pointer"
+              className="w-10 h-10 rounded-full flex items-center justify-center glass-card transition-transform active:scale-95 cursor-pointer"
               style={{
-                backgroundColor: 'var(--color-card-bg)',
-                color: 'var(--color-accent)',
-                borderColor: 'var(--color-border)',
+                color: 'var(--color-text)',
               }}
             >
-              <User className="w-4 h-4" />
+              <User weight="light" className="w-4 h-4" />
             </button>
 
             <button
@@ -234,14 +208,9 @@ export default function CashierPage() {
               id="cashier-logout-btn"
               title={t('cashierLogin.logout')}
               aria-label={t('cashierLogin.logout')}
-              className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition-transform active:scale-95 cursor-pointer"
-              style={{
-                backgroundColor: 'var(--color-card-bg)',
-                color: 'var(--color-error-text)',
-                borderColor: 'var(--color-border)',
-              }}
+              className="w-10 h-10 rounded-full flex items-center justify-center glass-card transition-transform active:scale-95 cursor-pointer text-rose-500"
             >
-              <LogOut className="w-4 h-4" />
+              <SignOut weight="light" className="w-4 h-4" />
             </button>
           </div>
 
@@ -270,14 +239,14 @@ export default function CashierPage() {
 
           {scanError && (
             <div 
-              className="w-full mb-4 p-3 rounded-2xl border text-xs flex items-center gap-2"
+              className="w-full mb-4 p-3 rounded-2xl border-[0.5px] text-xs flex items-center gap-2 backdrop-blur-md"
               style={{
                 backgroundColor: 'var(--color-error-bg)',
                 color: 'var(--color-error-text)',
                 borderColor: 'var(--color-error-border)',
               }}
             >
-              <ShieldAlert className="w-4 h-4 shrink-0" />
+              <ShieldWarning weight="light" className="w-4 h-4 shrink-0" />
               <span>{scanError}</span>
             </div>
           )}
@@ -291,10 +260,9 @@ export default function CashierPage() {
                 id="external-reader-form"
               >
                 <div
-                  className="flex items-center gap-2 px-3 py-2.5 rounded-2xl border"
-                  style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+                  className="glass-card flex items-center gap-2 px-3 py-2.5 rounded-2xl"
                 >
-                  <Keyboard className="w-4 h-4 shrink-0 opacity-40" />
+                  <Keyboard weight="light" className="w-4 h-4 shrink-0 opacity-40" />
                   <input
                     ref={externalInputRef}
                     id="external-qr-input"
@@ -302,7 +270,7 @@ export default function CashierPage() {
                     value={externalInput}
                     onChange={(e) => setExternalInput(e.target.value)}
                     placeholder={isRtl ? 'أدخل كود العميل أو امسح بالجهاز الخارجي...' : 'Enter customer code or scan with external device...'}
-                    className="flex-1 bg-transparent text-xs focus:outline-none font-mono"
+                    className="flex-1 bg-transparent text-xs focus:outline-hidden font-mono"
                     autoComplete="off"
                     autoCorrect="off"
                     spellCheck={false}
@@ -312,8 +280,7 @@ export default function CashierPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="text-[10px] font-bold px-2 py-1 rounded-lg transition-all"
-                      style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
+                      className="ios-btn-primary text-[10px] font-bold px-2 py-1 rounded-lg transition-all"
                     >
                       {isRtl ? 'بحث' : 'Go'}
                     </button>
@@ -344,7 +311,7 @@ export default function CashierPage() {
           }}
           dangerZone={
             <div
-              className="p-4 rounded-2xl border"
+              className="p-4 rounded-2xl border-[0.5px]"
               style={{
                 backgroundColor: 'rgba(239, 68, 68, 0.05)',
                 borderColor: 'rgba(239, 68, 68, 0.25)',
@@ -352,7 +319,7 @@ export default function CashierPage() {
             >
               {deleteCashierError && (
                 <div className="p-2.5 mb-3 rounded-xl border text-xs text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                   <span>{deleteCashierError}</span>
                 </div>
               )}
@@ -360,7 +327,7 @@ export default function CashierPage() {
               {!showCashierDeleteConfirm ? (
                 <>
                   <div className="flex items-center gap-2 mb-1.5 text-rose-500">
-                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    <Warning weight="light" className="w-4 h-4 shrink-0" />
                     <span className="text-xs font-bold">{t('accountDeletion.dangerZone')}</span>
                   </div>
                   <p className="text-[11px] opacity-75 mb-3 leading-relaxed">
@@ -373,7 +340,7 @@ export default function CashierPage() {
                     className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                     style={{ backgroundColor: '#EF4444' }}
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash weight="light" className="w-3.5 h-3.5" />
                     <span>{t('accountDeletion.deleteCashierAccount')}</span>
                   </button>
                 </>
@@ -383,7 +350,7 @@ export default function CashierPage() {
                     className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
                     style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
                   >
-                    <AlertTriangle className="w-5 h-5" />
+                    <Warning weight="light" className="w-5 h-5" />
                   </div>
                   <h3 className="text-xs font-bold text-rose-500 mb-1">
                     {isRtl ? 'تأكيد الحذف النهائي' : 'Confirm Permanent Deletion'}
@@ -396,8 +363,8 @@ export default function CashierPage() {
                       type="button"
                       onClick={() => setShowCashierDeleteConfirm(false)}
                       disabled={isDeletingCashier}
-                      className="flex-1 py-2 rounded-xl border text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
-                      style={{ borderColor: 'var(--color-border)' }}
+                      className="flex-1 py-2 rounded-xl border-[0.5px] text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
+                      style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
                     >
                       {t('accountDeletion.cancelButton')}
                     </button>
@@ -411,12 +378,12 @@ export default function CashierPage() {
                     >
                       {isDeletingCashier ? (
                         <>
-                          <RefreshCw className="w-3 h-3 animate-spin" />
+                          <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
                           <span>{t('accountDeletion.deleting')}</span>
                         </>
                       ) : (
                         <>
-                          <Trash2 className="w-3 h-3" />
+                          <Trash weight="light" className="w-3.5 h-3.5" />
                           <span>{t('accountDeletion.deleteButton')}</span>
                         </>
                       )}

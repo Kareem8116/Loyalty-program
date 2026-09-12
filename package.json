@@ -10,6 +10,7 @@
     "test:rls": "jest tests/rls --testTimeout=60000"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "@sentry/nextjs": "^10.74.0",
     "@supabase/supabase-js": "^2.114.0",
     "@types/jsbarcode": "^3.11.4",

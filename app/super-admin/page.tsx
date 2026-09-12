@@ -3,34 +3,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Shield,
-  Building2,
-  Users,
-  GitBranch,
-  Calendar,
-  Power,
-  PowerOff,
-  Plus,
-  ChevronDown,
-  ChevronUp,
-  RefreshCw,
-  LogOut,
-  AlertCircle,
-  CheckCircle,
-  Globe,
-  X,
-  Sliders,
-  Bell,
-  Key,
-  Save,
-  Check,
-  Sparkles,
-  MessageSquare,
-  User,
-  Trash2,
-  AlertTriangle,
-  Search,
-} from 'lucide-react';
+  Shield, Buildings, Users, GitBranch, Calendar, Power, Plus,
+  CaretDown, CaretUp, CircleNotch, SignOut, WarningCircle, CheckCircle,
+  Globe, X, Sliders, Bell, Key, FloppyDisk, Check, Sparkle, ChatText,
+  User, Trash, Warning, MagnifyingGlass
+} from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
@@ -643,7 +620,7 @@ export default function SuperAdminDashboard() {
         className="min-h-screen flex items-center justify-center relative overflow-hidden"
         style={{ background: 'var(--page-bg-gradient)' }}
       >
-        <RefreshCw className="w-6 h-6 animate-spin" style={{ color: '#6C63FF' }} />
+        <CircleNotch weight="light" className="w-6 h-6 animate-spin" style={{ color: '#6C63FF' }} />
       </main>
     );
   }
@@ -689,7 +666,7 @@ export default function SuperAdminDashboard() {
               color: '#fff',
             }}
           >
-            <Shield className="w-5 h-5" />
+            <Shield weight="light" className="w-5 h-5" />
           </div>
           <div>
             <h1 className="text-sm font-bold">{t('superAdmin.dashboardTitle')}</h1>
@@ -711,7 +688,7 @@ export default function SuperAdminDashboard() {
             className="w-9 h-9 rounded-full flex items-center justify-center border transition-all hover:opacity-80 active:scale-95 cursor-pointer"
             style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}
           >
-            <User className="w-4 h-4" />
+            <User weight="light" className="w-4 h-4" />
           </button>
           <button
             onClick={handleLogout}
@@ -719,7 +696,7 @@ export default function SuperAdminDashboard() {
             style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}
             aria-label={t('superAdmin.logout')}
           >
-            <LogOut className="w-4 h-4" />
+            <SignOut weight="light" className="w-4 h-4" />
           </button>
         </div>
       </header>
@@ -735,9 +712,9 @@ export default function SuperAdminDashboard() {
               borderColor: 'var(--color-error-border)',
             }}
           >
-            <AlertCircle className="w-4 h-4 shrink-0" />
+            <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
             <span className="flex-1">{errorMsg}</span>
-            <button onClick={() => setErrorMsg(null)}><X className="w-3 h-3" /></button>
+            <button onClick={() => setErrorMsg(null)}><X weight="light" className="w-3 h-3" /></button>
           </div>
         )}
         {successMsg && (
@@ -749,9 +726,9 @@ export default function SuperAdminDashboard() {
               borderColor: 'var(--color-success-border)',
             }}
           >
-            <CheckCircle className="w-4 h-4 shrink-0" />
+            <CheckCircle weight="light" className="w-4 h-4 shrink-0" />
             <span className="flex-1">{successMsg}</span>
-            <button onClick={() => setSuccessMsg(null)}><X className="w-3 h-3" /></button>
+            <button onClick={() => setSuccessMsg(null)}><X weight="light" className="w-3 h-3" /></button>
           </div>
         )}
 
@@ -773,7 +750,7 @@ export default function SuperAdminDashboard() {
                 : {}
             }
           >
-            <Building2 className="w-4 h-4" />
+            <Buildings weight="light" className="w-4 h-4" />
             <span>{t('superAdmin.tabBusinesses')}</span>
             <span
               className="text-[10px] px-2 py-0.5 rounded-full"
@@ -801,7 +778,7 @@ export default function SuperAdminDashboard() {
                 : {}
             }
           >
-            <Users className="w-4 h-4" />
+            <Users weight="light" className="w-4 h-4" />
             <span>{t('superAdmin.tabUsers')}</span>
             <span
               className="text-[10px] px-2 py-0.5 rounded-full"
@@ -827,13 +804,13 @@ export default function SuperAdminDashboard() {
             className="w-full flex items-center justify-between p-4 text-sm font-semibold transition-colors hover:opacity-80"
           >
             <div className="flex items-center gap-2">
-              <Plus className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+              <Plus weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
               <span>{t('superAdmin.createTitle')}</span>
             </div>
             {showCreateForm ? (
-              <ChevronUp className="w-4 h-4 opacity-50" />
+              <CaretUp weight="light" className="w-4 h-4 opacity-50" />
             ) : (
-              <ChevronDown className="w-4 h-4 opacity-50" />
+              <CaretDown weight="light" className="w-4 h-4 opacity-50" />
             )}
           </button>
 
@@ -874,7 +851,7 @@ export default function SuperAdminDashboard() {
                     className={`w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden ${isRtl ? 'pr-9' : 'pl-9'}`}
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
-                  <Globe className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
+                  <Globe weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
                 </div>
               </div>
 
@@ -965,7 +942,7 @@ export default function SuperAdminDashboard() {
                   color: 'var(--color-btn-text)',
                 }}
               >
-                {isCreating ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                {isCreating ? <CircleNotch weight="light" className="w-4 h-4 animate-spin" /> : <Plus weight="light" className="w-4 h-4" />}
                 <span>{isCreating ? t('superAdmin.creating') : t('superAdmin.createBtn')}</span>
               </button>
             </form>
@@ -979,14 +956,14 @@ export default function SuperAdminDashboard() {
 
         {isLoading ? (
           <div className="flex justify-center py-12">
-            <RefreshCw className="w-5 h-5 animate-spin" style={{ color: 'var(--color-accent)' }} />
+            <CircleNotch weight="light" className="w-5 h-5 animate-spin" style={{ color: 'var(--color-accent)' }} />
           </div>
         ) : businesses.length === 0 ? (
           <div
             className="text-center py-12 rounded-2xl border"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
-            <Building2 className="w-10 h-10 mx-auto mb-3 opacity-30" />
+            <Buildings weight="light" className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="text-xs opacity-60">{t('superAdmin.noBusiness')}</p>
           </div>
         ) : (
@@ -1004,11 +981,11 @@ export default function SuperAdminDashboard() {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <Building2 className="w-4 h-4 shrink-0" style={{ color: 'var(--color-accent)' }} />
+                      <Buildings weight="light" className="w-4 h-4 shrink-0" style={{ color: 'var(--color-accent)' }} />
                       <span className="text-sm font-bold truncate">{biz.name}</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-[11px] opacity-60">
-                      <Globe className="w-3 h-3" />
+                      <Globe weight="light" className="w-3 h-3" />
                       <span dir="ltr">{biz.subdomain}</span>
                     </div>
                   </div>
@@ -1032,17 +1009,17 @@ export default function SuperAdminDashboard() {
                   style={{ backgroundColor: 'var(--color-bg)' }}
                 >
                   <div className="flex items-center gap-1">
-                    <Users className="w-3 h-3 opacity-50" />
+                    <Users weight="light" className="w-3 h-3 opacity-50" />
                     <span className="font-medium">{biz.customer_count}</span>
                     <span className="opacity-60">{t('superAdmin.customers')}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <GitBranch className="w-3 h-3 opacity-50" />
+                    <GitBranch weight="light" className="w-3 h-3 opacity-50" />
                     <span className="font-medium">{biz.branch_count}</span>
                     <span className="opacity-60">{t('superAdmin.branches')}</span>
                   </div>
                   <div className={`flex items-center gap-1 ${isRtl ? 'mr-auto' : 'ml-auto'}`}>
-                    <Calendar className="w-3 h-3 opacity-50" />
+                    <Calendar weight="light" className="w-3 h-3 opacity-50" />
                     <span className="opacity-60">
                       {new Date(biz.created_at).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', {
                         year: 'numeric',
@@ -1065,7 +1042,7 @@ export default function SuperAdminDashboard() {
                       color: 'var(--color-accent)',
                     }}
                   >
-                    <Sliders className="w-3.5 h-3.5" />
+                    <Sliders weight="light" className="w-3.5 h-3.5" />
                     <span>{t('features.btnManage')}</span>
                   </button>
 
@@ -1080,7 +1057,7 @@ export default function SuperAdminDashboard() {
                     }}
                     id={`branding-btn-${biz.id}`}
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <Sparkle weight="light" className="w-3.5 h-3.5" />
                     <span>{isRtl ? 'الهوية' : 'Branding'}</span>
                   </button>
 
@@ -1095,11 +1072,11 @@ export default function SuperAdminDashboard() {
                     }}
                   >
                     {togglingId === biz.id ? (
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
                     ) : biz.is_active ? (
-                      <PowerOff className="w-3.5 h-3.5" />
+                      <Power weight="light" className="w-3.5 h-3.5" />
                     ) : (
-                      <Power className="w-3.5 h-3.5" />
+                      <Power weight="light" className="w-3.5 h-3.5" />
                     )}
                     <span>
                       {biz.is_active ? t('superAdmin.statusInactive') : t('superAdmin.statusActive')}
@@ -1125,7 +1102,7 @@ export default function SuperAdminDashboard() {
             <span className="text-[11px] opacity-60 font-medium">{t('superAdmin.tabUsers')}</span>
             <div className="flex items-baseline justify-between mt-1">
               <span className="text-xl font-extrabold">{usersList.length}</span>
-              <Users className="w-4 h-4 opacity-40 text-purple-400" />
+              <Users weight="light" className="w-4 h-4 opacity-40 text-purple-400" />
             </div>
           </div>
 
@@ -1138,7 +1115,7 @@ export default function SuperAdminDashboard() {
               <span className="text-xl font-extrabold text-amber-500">
                 {usersList.filter((u) => u.roles.some((r) => r.role === 'owner') || u.primaryRole === 'owner').length}
               </span>
-              <Building2 className="w-4 h-4 opacity-40 text-amber-500" />
+              <Buildings weight="light" className="w-4 h-4 opacity-40 text-amber-500" />
             </div>
           </div>
 
@@ -1151,7 +1128,7 @@ export default function SuperAdminDashboard() {
               <span className="text-xl font-extrabold text-blue-500">
                 {usersList.filter((u) => u.roles.some((r) => r.role === 'cashier') || u.primaryRole === 'cashier').length}
               </span>
-              <GitBranch className="w-4 h-4 opacity-40 text-blue-500" />
+              <GitBranch weight="light" className="w-4 h-4 opacity-40 text-blue-500" />
             </div>
           </div>
 
@@ -1164,7 +1141,7 @@ export default function SuperAdminDashboard() {
               <span className="text-xl font-extrabold text-emerald-500">
                 {usersList.filter((u) => u.customerLinks.length > 0 || u.roles.some((r) => r.role === 'customer') || u.primaryRole === 'customer').length}
               </span>
-              <User className="w-4 h-4 opacity-40 text-emerald-500" />
+              <User weight="light" className="w-4 h-4 opacity-40 text-emerald-500" />
             </div>
           </div>
         </div>
@@ -1176,7 +1153,7 @@ export default function SuperAdminDashboard() {
         >
           {/* Search Input */}
           <div className="relative flex-1 min-w-[180px]">
-            <Search className="w-4 h-4 absolute top-1/2 -translate-y-1/2 start-3 opacity-40" />
+            <MagnifyingGlass weight="light" className="w-4 h-4 absolute top-1/2 -translate-y-1/2 start-3 opacity-40" />
             <input
               type="text"
               value={userSearchQuery}
@@ -1191,7 +1168,7 @@ export default function SuperAdminDashboard() {
                 onClick={() => setUserSearchQuery('')}
                 className="absolute top-1/2 -translate-y-1/2 end-2.5 opacity-50 hover:opacity-100 p-0.5"
               >
-                <X className="w-3.5 h-3.5" />
+                <X weight="light" className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
@@ -1222,21 +1199,21 @@ export default function SuperAdminDashboard() {
             className="p-2 rounded-xl border transition-all hover:opacity-80 active:scale-95 disabled:opacity-50 cursor-pointer"
             style={{ borderColor: 'var(--color-border)' }}
           >
-            <RefreshCw className={`w-4 h-4 ${isLoadingUsers ? 'animate-spin' : ''}`} />
+            <CircleNotch weight="light" className={`w-4 h-4 ${isLoadingUsers ? 'animate-spin' : ''}`} />
           </button>
         </div>
 
         {/* Users List Container */}
         {isLoadingUsers ? (
           <div className="flex justify-center py-12">
-            <RefreshCw className="w-5 h-5 animate-spin" style={{ color: 'var(--color-accent)' }} />
+            <CircleNotch weight="light" className="w-5 h-5 animate-spin" style={{ color: 'var(--color-accent)' }} />
           </div>
         ) : filteredUsers.length === 0 ? (
           <div
             className="text-center py-12 rounded-2xl border"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
-            <Users className="w-10 h-10 mx-auto mb-3 opacity-30" />
+            <Users weight="light" className="w-10 h-10 mx-auto mb-3 opacity-30" />
             <p className="text-xs opacity-60">{t('superAdmin.noUsersFound')}</p>
           </div>
         ) : (
@@ -1269,9 +1246,9 @@ export default function SuperAdminDashboard() {
                         }}
                       >
                         {isSuper ? (
-                          <Shield className="w-4 h-4" />
+                          <Shield weight="light" className="w-4 h-4" />
                         ) : (
-                          <User className="w-4 h-4" />
+                          <User weight="light" className="w-4 h-4" />
                         )}
                       </div>
 
@@ -1305,7 +1282,7 @@ export default function SuperAdminDashboard() {
                             color: '#A855F7',
                           }}
                         >
-                          <Shield className="w-3 h-3" />
+                          <Shield weight="light" className="w-3 h-3" />
                           <span>{t('superAdmin.cannotDeleteSelf')}</span>
                         </span>
                       ) : (
@@ -1319,7 +1296,7 @@ export default function SuperAdminDashboard() {
                           style={{ borderColor: 'rgba(239, 68, 68, 0.3)' }}
                           title={t('common.delete')}
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash weight="light" className="w-3.5 h-3.5" />
                           <span>{t('common.delete')}</span>
                         </button>
                       )}
@@ -1384,7 +1361,7 @@ export default function SuperAdminDashboard() {
                           className="px-2 py-0.5 rounded-md text-[10px] font-medium border flex items-center gap-1 opacity-80"
                           style={{ borderColor: 'var(--color-border)' }}
                         >
-                          <Building2 className="w-2.5 h-2.5 opacity-60" />
+                          <Buildings weight="light" className="w-2.5 h-2.5 opacity-60" />
                           <span>{r.businessName}</span>
                           {r.branchName && <span className="opacity-60">({r.branchName})</span>}
                         </span>
@@ -1439,7 +1416,7 @@ export default function SuperAdminDashboard() {
             className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
             style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
           >
-            <AlertTriangle className="w-6 h-6" />
+            <Warning weight="light" className="w-6 h-6" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="text-base font-bold text-rose-500">
@@ -1459,7 +1436,7 @@ export default function SuperAdminDashboard() {
             className="w-8 h-8 rounded-full flex items-center justify-center border transition-opacity hover:opacity-80"
             style={{ borderColor: 'var(--color-border)' }}
           >
-            <X className="w-4 h-4" />
+            <X weight="light" className="w-4 h-4" />
           </button>
         </div>
 
@@ -1519,7 +1496,7 @@ export default function SuperAdminDashboard() {
               color: 'var(--color-error-text)',
             }}
           >
-            <AlertCircle className="w-4 h-4 shrink-0" />
+            <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
             <span className="flex-1">{deleteUserError}</span>
           </div>
         )}
@@ -1549,12 +1526,12 @@ export default function SuperAdminDashboard() {
           >
             {isDeletingUser ? (
               <>
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
                 <span>{t('accountDeletion.deleting')}</span>
               </>
             ) : (
               <>
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash weight="light" className="w-3.5 h-3.5" />
                 <span>{t('common.delete')}</span>
               </>
             )}
@@ -1584,7 +1561,7 @@ export default function SuperAdminDashboard() {
                   color: confirmToggle.is_active ? 'var(--color-error-text)' : 'var(--color-success-text)',
                 }}
               >
-                {confirmToggle.is_active ? <PowerOff className="w-6 h-6" /> : <Power className="w-6 h-6" />}
+                {confirmToggle.is_active ? <Power weight="light" className="w-6 h-6" /> : <Power weight="light" className="w-6 h-6" />}
               </div>
               <p className="text-sm font-semibold">
                 {confirmToggle.is_active
@@ -1609,7 +1586,7 @@ export default function SuperAdminDashboard() {
                   color: 'var(--color-card-bg)',
                 }}
               >
-                {togglingId === confirmToggle.id && <RefreshCw className="w-3 h-3 animate-spin" />}
+                {togglingId === confirmToggle.id && <CircleNotch weight="light" className="w-3 h-3 animate-spin" />}
                 <span>{confirmToggle.is_active ? t('superAdmin.statusInactive') : t('superAdmin.statusActive')}</span>
               </button>
             </div>
@@ -1633,7 +1610,7 @@ export default function SuperAdminDashboard() {
             <div className="flex items-start justify-between border-b pb-3" style={{ borderColor: 'var(--color-border)' }}>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <Sliders className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
+                  <Sliders weight="light" className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
                   <h3 className="text-sm font-bold">{t('features.title')}</h3>
                 </div>
                 <p className="text-[11px] opacity-60">
@@ -1646,7 +1623,7 @@ export default function SuperAdminDashboard() {
                 className="w-8 h-8 rounded-full flex items-center justify-center border transition-opacity hover:opacity-80"
                 style={{ borderColor: 'var(--color-border)' }}
               >
-                <X className="w-4 h-4" />
+                <X weight="light" className="w-4 h-4" />
               </button>
             </div>
 
@@ -1660,14 +1637,14 @@ export default function SuperAdminDashboard() {
                   borderColor: featuresFeedback.type === 'success' ? 'var(--color-success-border)' : 'var(--color-error-border)',
                 }}
               >
-                {featuresFeedback.type === 'success' ? <Check className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+                {featuresFeedback.type === 'success' ? <Check weight="light" className="w-4 h-4 shrink-0" /> : <WarningCircle weight="light" className="w-4 h-4 shrink-0" />}
                 <span className="flex-1">{featuresFeedback.text}</span>
               </div>
             )}
 
             {featuresLoading ? (
               <div className="py-12 flex flex-col items-center justify-center opacity-70">
-                <RefreshCw className="w-6 h-6 animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
+                <CircleNotch weight="light" className="w-6 h-6 animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
                 <span className="text-xs">{t('features.loadingFeatures')}</span>
               </div>
             ) : (
@@ -1686,7 +1663,7 @@ export default function SuperAdminDashboard() {
                       color: 'var(--color-accent)',
                     }}
                   >
-                    <CheckCircle className="w-3.5 h-3.5" />
+                    <CheckCircle weight="light" className="w-3.5 h-3.5" />
                     <span>{t('features.enableAll')}</span>
                   </button>
                   <button
@@ -1701,7 +1678,7 @@ export default function SuperAdminDashboard() {
                       color: 'var(--color-text)',
                     }}
                   >
-                    <PowerOff className="w-3.5 h-3.5" />
+                    <Power weight="light" className="w-3.5 h-3.5" />
                     <span>{t('features.disableAll')}</span>
                   </button>
                 </div>
@@ -1720,7 +1697,7 @@ export default function SuperAdminDashboard() {
                         className="w-8 h-8 rounded-full flex items-center justify-center shadow-xs"
                         style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                       >
-                        <Bell className="w-4 h-4" />
+                        <Bell weight="light" className="w-4 h-4" />
                       </div>
                       <div>
                         <h4 className="text-xs font-bold">{t('features.notificationsTitle')}</h4>
@@ -1806,7 +1783,7 @@ export default function SuperAdminDashboard() {
                         className="w-8 h-8 rounded-full flex items-center justify-center shadow-xs"
                         style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                       >
-                        <MessageSquare className="w-4 h-4" />
+                        <ChatText weight="light" className="w-4 h-4" />
                       </div>
                       <div>
                         <h4 className="text-xs font-bold">{isRtl ? 'إشعارات الرسائل القصيرة (SMS)' : 'SMS Notifications'}</h4>
@@ -1905,7 +1882,7 @@ export default function SuperAdminDashboard() {
                         className="w-8 h-8 rounded-full flex items-center justify-center shadow-xs"
                         style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                       >
-                        <Sparkles className="w-4 h-4" />
+                        <Sparkle weight="light" className="w-4 h-4" />
                       </div>
                       <div>
                         <h4 className="text-xs font-bold">{t('features.aiRecommendationsTitle')}</h4>
@@ -2004,7 +1981,7 @@ export default function SuperAdminDashboard() {
                   className="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
                   style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                 >
-                  {isSavingFeatures ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                  {isSavingFeatures ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk weight="light" className="w-3.5 h-3.5" />}
                   <span>{isSavingFeatures ? t('features.saving') : t('features.saveSettings')}</span>
                 </button>
               </div>
@@ -2022,7 +1999,7 @@ export default function SuperAdminDashboard() {
           >
             <div className="flex items-center justify-between pb-3 mb-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
+                <Sparkle weight="light" className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
                 <div>
                   <h3 className="text-sm font-bold">{isRtl ? 'هوية وتصميم المكان' : 'Business Branding & Design'}</h3>
                   <span className="text-[11px] opacity-60">{selectedBizForBranding.name} ({selectedBizForBranding.subdomain})</span>
@@ -2033,7 +2010,7 @@ export default function SuperAdminDashboard() {
                 className="w-8 h-8 rounded-full flex items-center justify-center border transition-colors hover:opacity-75"
                 style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
               >
-                <X className="w-4 h-4" />
+                <X weight="light" className="w-4 h-4" />
               </button>
             </div>
 
@@ -2061,14 +2038,14 @@ export default function SuperAdminDashboard() {
                       : 'var(--color-error-text)',
                 }}
               >
-                <AlertCircle className="w-4 h-4 shrink-0" />
+                <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                 <span>{brandingFeedback.text}</span>
               </div>
             )}
 
             {brandingLoading ? (
               <div className="py-12 flex justify-center">
-                <RefreshCw className="w-6 h-6 animate-spin" style={{ color: 'var(--color-accent)' }} />
+                <CircleNotch weight="light" className="w-6 h-6 animate-spin" style={{ color: 'var(--color-accent)' }} />
               </div>
             ) : (
               <div className="flex flex-col gap-4">
@@ -2144,7 +2121,7 @@ export default function SuperAdminDashboard() {
                   if (pCheck.passesAA && aCheck.passesAA) {
                     return (
                       <div className="p-2.5 rounded-xl border text-xs flex items-center gap-2" style={{ backgroundColor: 'rgba(34, 197, 94, 0.08)', borderColor: 'rgba(34, 197, 94, 0.25)', color: '#16A34A' }}>
-                        <CheckCircle className="w-4 h-4 shrink-0" />
+                        <CheckCircle weight="light" className="w-4 h-4 shrink-0" />
                         <span>{isRtl ? 'الألوان تحقق معايير التباين وسهولة القراءة (WCAG AA Pass)' : 'Colors pass accessibility contrast standards (WCAG AA Pass)'}</span>
                       </div>
                     );
@@ -2153,7 +2130,7 @@ export default function SuperAdminDashboard() {
                   return (
                     <div className="p-3 rounded-xl border text-xs flex flex-col gap-2" style={{ backgroundColor: 'rgba(234, 88, 12, 0.08)', borderColor: 'rgba(234, 88, 12, 0.3)', color: '#C2410C' }}>
                       <div className="flex items-center gap-1.5 font-bold">
-                        <AlertCircle className="w-4 h-4 shrink-0" />
+                        <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                         <span>{isRtl ? 'تنبيه سهولة القراءة والتباين (WCAG AA)' : 'Accessibility Contrast Warning (WCAG AA)'}</span>
                       </div>
                       {!pCheck.passesAA && (
@@ -2264,7 +2241,7 @@ export default function SuperAdminDashboard() {
                   className="w-full py-3 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-2 flex items-center justify-center gap-1.5 disabled:opacity-50"
                   style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                 >
-                  {isSavingBranding ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                  {isSavingBranding ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk weight="light" className="w-3.5 h-3.5" />}
                   <span>{isSavingBranding ? t('features.saving') : (isRtl ? 'حفظ هوية وتصميم المكان' : 'Save Branding Settings')}</span>
                 </button>
               </div>
@@ -2308,7 +2285,7 @@ export default function SuperAdminDashboard() {
             }}
           >
             <div className="flex items-center gap-2 mb-2 text-rose-500">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <Warning weight="light" className="w-4 h-4 shrink-0" />
               <span className="text-xs font-bold">{t('accountDeletion.dangerZone')}</span>
             </div>
             <p className="text-[11px] opacity-75 mb-3 leading-relaxed">
@@ -2330,7 +2307,7 @@ export default function SuperAdminDashboard() {
               className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
               style={{ backgroundColor: '#EF4444' }}
             >
-              <Trash2 className="w-3.5 h-3.5" />
+              <Trash weight="light" className="w-3.5 h-3.5" />
               <span>{t('accountDeletion.deleteSuperAdminAccount')}</span>
             </button>
           </div>
@@ -2362,7 +2339,7 @@ export default function SuperAdminDashboard() {
                 className="w-14 h-14 mx-auto mb-3 rounded-2xl flex items-center justify-center animate-pulse"
                 style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
               >
-                <AlertTriangle className="w-8 h-8" />
+                <Warning weight="light" className="w-8 h-8" />
               </div>
               <h2 className="text-base font-bold text-rose-500">
                 {isRtl ? 'تأكيد أمني فائق - حذف حساب السوبر أدمن' : 'CRITICAL SECURITY CONFIRMATION'}
@@ -2378,7 +2355,7 @@ export default function SuperAdminDashboard() {
                 className="p-3 mb-4 rounded-xl border text-xs text-rose-400 flex items-center gap-2"
                 style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
               >
-                <AlertCircle className="w-4 h-4 shrink-0" />
+                <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                 <span>{deleteSuperAdminError}</span>
               </div>
             )}
@@ -2471,7 +2448,7 @@ export default function SuperAdminDashboard() {
                 {(typedConfirmationPhrase.trim() === 'حذف حساب السوبر أدمن نهائياً' ||
                   typedConfirmationPhrase.trim() === 'DELETE SUPER ADMIN ACCOUNT') ? (
                   <span className="text-emerald-500 font-bold flex items-center gap-1">
-                    <CheckCircle className="w-3.5 h-3.5" />
+                    <CheckCircle weight="light" className="w-3.5 h-3.5" />
                     {isRtl ? 'العبارة مطابقة تماماً ✓' : 'Phrase matched accurately ✓'}
                   </span>
                 ) : (
@@ -2517,12 +2494,12 @@ export default function SuperAdminDashboard() {
               >
                 {isDeletingSuperAdmin ? (
                   <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
                     <span>{t('accountDeletion.deleting')}</span>
                   </>
                 ) : (
                   <>
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash weight="light" className="w-3.5 h-3.5" />
                     <span>{t('accountDeletion.deleteButton')}</span>
                   </>
                 )}

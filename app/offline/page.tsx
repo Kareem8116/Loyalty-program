@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { WifiOff, RefreshCw, Smartphone } from 'lucide-react';
+import { WifiSlash, CircleNotch } from '@phosphor-icons/react';
 import { useLocale } from '@/components/LocaleProvider';
 
 export default function OfflinePage() {
@@ -9,24 +9,22 @@ export default function OfflinePage() {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-6"
-      style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)' }}
+      className="page-bg min-h-screen flex items-center justify-center p-6"
       dir={isRtl ? 'rtl' : 'ltr'}
     >
       <div 
-        className="w-full max-w-md p-8 rounded-3xl border text-center space-y-6 shadow-2xl"
-        style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+        className="glass-card w-full max-w-md p-8 rounded-3xl text-center space-y-6 shadow-2xl"
       >
         {/* Icon */}
         <div 
-          className="w-20 h-20 mx-auto rounded-3xl flex items-center justify-center shadow-lg border"
+          className="w-20 h-20 mx-auto rounded-3xl flex items-center justify-center shadow-lg border-[0.5px]"
           style={{ 
             backgroundColor: 'rgba(239, 68, 68, 0.1)', 
             borderColor: 'rgba(239, 68, 68, 0.25)',
             color: '#EF4444' 
           }}
         >
-          <WifiOff className="w-10 h-10" />
+          <WifiSlash weight="light" className="w-10 h-10" />
         </div>
 
         {/* Text */}
@@ -46,13 +44,9 @@ export default function OfflinePage() {
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="w-full h-13 px-6 rounded-2xl text-sm font-bold transition-all active:scale-98 shadow-md flex items-center justify-center gap-2.5 cursor-pointer"
-            style={{
-              backgroundColor: 'var(--color-accent)',
-              color: 'var(--color-btn-text)',
-            }}
+            className="ios-btn-primary w-full h-13 px-6 rounded-2xl text-sm font-bold transition-all active:scale-98 flex items-center justify-center gap-2.5 cursor-pointer"
           >
-            <RefreshCw className="w-4 h-4" />
+            <CircleNotch weight="light" className="w-4 h-4" />
             <span>{isRtl ? 'إعادة المحاولة' : 'Try Again'}</span>
           </button>
         </div>

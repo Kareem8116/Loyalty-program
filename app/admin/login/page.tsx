@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Lock, Mail, ArrowRight, Building2, BarChart3, ShieldCheck, RefreshCw, AlertCircle } from 'lucide-react';
+import { Lock, EnvelopeSimple, ArrowRight, Buildings, ChartBar, CircleNotch, WarningCircle } from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
         throw new Error(error?.message || t('admin.loginFailed'));
       }
 
-      // Phase 29: Mandatory OTP Email Verification Guard
+      // Mandatory OTP Email Verification Guard
       const isEmailVerified = data.user.user_metadata?.email_verified === true || (Boolean(data.user.email_confirmed_at) && data.user.user_metadata?.email_verified !== false);
       if (!isEmailVerified) {
         await supabase.auth.signOut();
@@ -65,7 +65,6 @@ export default function AdminLoginPage() {
         throw new Error(t('admin.roleError'));
       }
 
-      // COMPLETE ISOLATION: Admin portal is strictly for Store Managers (owner, branch_admin)
       const allowedAdminRoles = ['owner', 'branch_admin'];
       if (!userRole || !allowedAdminRoles.includes(userRole.role)) {
         await supabase.auth.signOut();
@@ -78,7 +77,6 @@ export default function AdminLoginPage() {
         }
       }
 
-      // Store active business info in localStorage for convenient navigation
       if (userRole.business_id) {
         localStorage.setItem('admin_business_id', userRole.business_id);
       }
@@ -93,51 +91,25 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main
-      className="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors duration-300 relative overflow-hidden"
-      style={{
-        background: 'var(--page-bg-gradient)',
-        color: 'var(--color-text)'
-      }}
-    >
-      {/* Ambient Background Glows */}
-      <div style={{
-        position: 'absolute',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(108,99,255,0.09) 0%, transparent 70%)',
-        top: '-200px',
-        right: '-200px',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute',
-        width: '450px',
-        height: '450px',
-        background: 'radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%)',
-        bottom: '-120px',
-        left: '-120px',
-        pointerEvents: 'none',
-      }} />
-
-      <div className="w-full max-w-sm flex flex-col flex-1 py-2 relative z-10">
+    <main className="page-bg min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors">
+      <div className="w-full max-w-sm flex flex-col flex-1 py-2 relative z-10 my-auto">
         {/* Header */}
         <header className="flex items-center justify-between w-full pb-4">
           <Link
             href="/"
             aria-label={t('common.home')}
-            className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition-transform active:scale-95"
+            className="w-10 h-10 rounded-full flex items-center justify-center border transition-transform active:scale-95"
             style={{
-              backgroundColor: 'rgba(16, 14, 28, 0.75)',
-              color: '#6C63FF',
-              borderColor: 'rgba(255, 255, 255, 0.08)',
+              backgroundColor: 'var(--color-input-bg)',
+              borderColor: 'var(--color-border)',
+              color: 'var(--color-text)',
             }}
           >
-            <ArrowRight className={`w-5 h-5 ${isRtl ? '' : 'rotate-180'}`} />
+            <ArrowRight size={18} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
           </Link>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#6C63FF' }} />
-            <span className="text-xs font-mono font-bold tracking-wider uppercase" style={{ color: '#A5B4FC' }}>Merchant Suite</span>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
+            <span className="text-xs font-semibold tracking-wider uppercase opacity-75">Merchant Suite</span>
           </div>
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
@@ -146,40 +118,23 @@ export default function AdminLoginPage() {
         </header>
 
         {/* Login Card */}
-        <div
-          className="rounded-3xl p-6 sm:p-7 border shadow-2xl my-auto flex flex-col gap-5 backdrop-blur-xl"
-          style={{
-            backgroundColor: 'rgba(16, 14, 28, 0.75)',
-            borderColor: 'rgba(255, 255, 255, 0.08)',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(108, 99, 255, 0.08)'
-          }}
-        >
+        <div className="glass-card p-6 sm:p-7 my-auto flex flex-col gap-5 transition-all">
           <div className="text-center flex flex-col items-center">
-            {/* Badge */}
+            {/* Icon */}
             <div
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase mb-3.5 border"
+              className="w-16 h-16 mb-3 rounded-2xl flex items-center justify-center shadow-md transition-transform"
               style={{
-                backgroundColor: 'rgba(108, 99, 255, 0.12)',
-                borderColor: 'rgba(108, 99, 255, 0.28)',
-                color: '#A5B4FC',
+                backgroundColor: 'var(--color-accent)',
+                color: 'var(--color-accent-text)',
               }}
             >
-              <Building2 className="w-3 h-3" style={{ color: '#A5B4FC' }} />
-              <span>إدارة المتجر • Merchant Suite</span>
+              <ChartBar size={32} weight="light" />
             </div>
 
-            <div
-              className="w-16 h-16 mb-3 rounded-2xl flex items-center justify-center shadow-lg"
-              style={{
-                background: 'linear-gradient(135deg, #6C63FF, #4ECDC4)',
-                color: '#ffffff',
-                boxShadow: '0 10px 25px rgba(108, 99, 255, 0.35)',
-              }}
-            >
-              <BarChart3 className="w-8 h-8" />
-            </div>
-            <h1 className="text-xl font-bold mb-1 tracking-tight text-white">{t('admin.loginTitle')}</h1>
-            <p className="text-xs max-w-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            <h1 className="text-xl font-bold mb-1 tracking-tight" style={{ color: 'var(--color-text)' }}>
+              {t('admin.loginTitle')}
+            </h1>
+            <p className="text-xs max-w-xs leading-relaxed opacity-60">
               {t('admin.loginSubtitle')}
             </p>
           </div>
@@ -188,20 +143,22 @@ export default function AdminLoginPage() {
             <div
               className="p-3 rounded-xl border text-xs flex items-center gap-2"
               style={{
-                backgroundColor: 'rgba(248, 113, 113, 0.12)',
-                color: '#F87171',
-                borderColor: 'rgba(248, 113, 113, 0.25)',
+                backgroundColor: 'var(--color-error-bg)',
+                color: 'var(--color-error-text)',
+                borderColor: 'var(--color-error-border)',
               }}
             >
-              <AlertCircle className="w-4 h-4 shrink-0" />
+              <WarningCircle size={18} weight="light" className="shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           <form onSubmit={handleLogin} className="flex flex-col gap-3.5">
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.7)' }}>{t('admin.email')}</label>
-              <div className="relative">
+              <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="admin-email-input">
+                {t('admin.email')}
+              </label>
+              <div className="relative flex items-center">
                 <input
                   type="email"
                   id="admin-email-input"
@@ -210,19 +167,17 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@example.com"
-                  className={`w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-none transition-all text-white ${isRtl ? 'pr-9' : 'pl-9'}`}
-                  style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                  }}
+                  className="ios-input"
                 />
-                <Mail className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-3' : 'left-3'}`} style={{ color: 'rgba(108,99,255,0.6)' }} />
+                <EnvelopeSimple size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.7)' }}>{t('admin.password')}</label>
-              <div className="relative">
+              <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="admin-password-input">
+                {t('admin.password')}
+              </label>
+              <div className="relative flex items-center">
                 <input
                   type="password"
                   id="admin-password-input"
@@ -231,23 +186,19 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={`w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-none transition-all text-white ${isRtl ? 'pr-9' : 'pl-9'}`}
-                  style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                  }}
+                  className="ios-input"
                 />
-                <Lock className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-3' : 'left-3'}`} style={{ color: 'rgba(108,99,255,0.6)' }} />
+                <Lock size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
-            <div className="flex justify-between items-center -mt-1 text-[11px]">
-              <span className="font-mono text-[10px]" style={{ color: 'rgba(78,205,196,0.6)' }}>ROLE: OWNER / MANAGER</span>
+            <div className="flex justify-between items-center text-[11px] pt-1">
+              <span className="font-mono text-[10px] opacity-60 uppercase">Owner / Manager</span>
               <Link
                 href="/forgot-password"
                 id="admin-forgot-password-link"
-                className="font-semibold transition-colors"
-                style={{ color: '#6C63FF' }}
+                className="font-semibold transition-opacity hover:opacity-80"
+                style={{ color: 'var(--color-text)' }}
               >
                 {t('admin.forgotPassword')}
               </Link>
@@ -257,21 +208,25 @@ export default function AdminLoginPage() {
               type="submit"
               id="admin-login-btn"
               disabled={isLoading}
-              className="w-full py-3.5 rounded-xl text-xs font-bold transition-all shadow-lg mt-2 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
-              style={{
-                background: 'linear-gradient(135deg, #6C63FF 0%, #4ECDC4 100%)',
-                color: '#ffffff',
-                boxShadow: '0 8px 25px rgba(108, 99, 255, 0.4)',
-              }}
+              className="ios-btn-primary w-full mt-2"
             >
-              {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <BarChart3 className="w-4 h-4" />}
-              <span>{isLoading ? t('admin.signingIn') : t('admin.signIn')}</span>
+              {isLoading ? (
+                <>
+                  <CircleNotch size={18} weight="light" className="animate-spin" />
+                  <span>{t('admin.signingIn')}</span>
+                </>
+              ) : (
+                <>
+                  <Buildings size={18} weight="light" />
+                  <span>{t('admin.signIn')}</span>
+                </>
+              )}
             </button>
           </form>
         </div>
 
-        <footer className="text-center text-[11px] py-3 flex items-center justify-center gap-1.5" style={{ color: 'rgba(255,255,255,0.25)' }}>
-          <Building2 className="w-3.5 h-3.5" />
+        <footer className="text-center text-[11px] py-3 flex items-center justify-center gap-1.5 opacity-40">
+          <Buildings size={14} weight="light" />
           <span>{t('admin.footer')}</span>
         </footer>
       </div>

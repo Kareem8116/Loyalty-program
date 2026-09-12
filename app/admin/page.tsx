@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { 
-  Coffee, Users, Settings, Plus, Trash2, QrCode, 
-  LogOut, RefreshCw, Check, AlertCircle, ArrowRight, Sparkles, Image as ImageIcon, X,
-  Handshake, ArrowLeftRight, Send, ShieldAlert, ClipboardList, Award, Edit2, Save, Gift,
-  BarChart3, TrendingUp, PieChart, Receipt, Flag, UserPlus, CheckCircle, Palette, RotateCcw,
-  User, AlertTriangle
-} from 'lucide-react';
+import {
+  Coffee, Users, Gear, Plus, Trash, QrCode,
+  SignOut, CircleNotch, Check, WarningCircle, ArrowRight, ArrowLeft, Sparkle, Image as ImageIcon, X,
+  Handshake, ArrowsLeftRight, PaperPlaneTilt, ShieldWarning, ClipboardText, Medal, PencilSimple, FloppyDisk, Gift,
+  ChartBar, TrendUp, ChartPie, Receipt, Flag, UserPlus, CheckCircle, Palette, ArrowCounterClockwise,
+  User, Warning
+} from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
@@ -1349,7 +1349,7 @@ export default function AdminDashboardPage() {
   if (isLoading) {
     return (
       <main className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ background: 'var(--page-bg-gradient)' }}>
-        <RefreshCw className="w-8 h-8 animate-spin" style={{ color: '#6C63FF' }} />
+        <CircleNotch weight="light" className="w-8 h-8 animate-spin" style={{ color: '#6C63FF' }} />
       </main>
     );
   }
@@ -1362,7 +1362,7 @@ export default function AdminDashboardPage() {
         color: 'var(--color-text)'
       }}
     >
-      {/* Ambient background glows */}
+      
       <div style={{
         position: 'absolute',
         width: '600px',
@@ -1396,7 +1396,7 @@ export default function AdminDashboardPage() {
               className="w-9 h-9 rounded-full flex items-center justify-center border shadow-xs transition-transform active:scale-95"
               style={{ borderColor: 'var(--color-border)' }}
             >
-              <ArrowRight className={`w-4 h-4 ${isRtl ? '' : 'rotate-180'}`} />
+              <ArrowRight weight="light" className={`w-4 h-4 ${isRtl ? '' : 'rotate-180'}`} />
             </Link>
             <div>
               <div className="flex items-center gap-2">
@@ -1427,7 +1427,7 @@ export default function AdminDashboardPage() {
               className="w-9 h-9 rounded-full flex items-center justify-center border transition-all hover:opacity-80 active:scale-95 cursor-pointer"
               style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)', color: 'var(--color-accent)' }}
             >
-              <User className="w-4 h-4" />
+              <User weight="light" className="w-4 h-4" />
             </button>
             <button
               onClick={handleLogout}
@@ -1437,7 +1437,7 @@ export default function AdminDashboardPage() {
               className="w-9 h-9 rounded-full flex items-center justify-center border text-rose-500 transition-transform active:scale-95 cursor-pointer"
               style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)' }}
             >
-              <LogOut className="w-4 h-4" />
+              <SignOut weight="light" className="w-4 h-4" />
             </button>
           </div>
         </header>
@@ -1452,7 +1452,7 @@ export default function AdminDashboardPage() {
               borderColor: feedback.type === 'success' ? 'var(--color-success-border)' : 'var(--color-error-border)',
             }}
           >
-            {feedback.type === 'success' ? <Check className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+            {feedback.type === 'success' ? <Check weight="light" className="w-4 h-4 shrink-0" /> : <WarningCircle weight="light" className="w-4 h-4 shrink-0" />}
             <span>{feedback.text}</span>
           </div>
         )}
@@ -1468,7 +1468,7 @@ export default function AdminDashboardPage() {
               color: 'var(--color-error-text)',
             }}
           >
-            <ShieldAlert className="w-4 h-4 shrink-0 mt-0.5" />
+            <ShieldWarning weight="light" className="w-4 h-4 shrink-0 mt-0.5" />
             <div className="flex-1">
               <span className="font-bold block">
                 {cashiers.some(c => c.isOverLimit)
@@ -1483,7 +1483,7 @@ export default function AdminDashboardPage() {
               </button>
             </div>
             <button onClick={() => setAuditAlertDismissed(true)} className="opacity-60 hover:opacity-100">
-              <X className="w-3.5 h-3.5" />
+              <X weight="light" className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
@@ -1500,7 +1500,7 @@ export default function AdminDashboardPage() {
             }`}
             style={activeTab === 'menu' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
-            <Coffee className="w-3.5 h-3.5 shrink-0" />
+            <Coffee weight="light" className="w-3.5 h-3.5 shrink-0" />
             <span>{t('admin.menuTab')}</span>
           </button>
 
@@ -1514,7 +1514,7 @@ export default function AdminDashboardPage() {
               }`}
               style={activeTab === 'offers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
-              <Sparkles className="w-3.5 h-3.5 shrink-0" />
+              <Sparkle weight="light" className="w-3.5 h-3.5 shrink-0" />
               <span>{t('admin.offersTab')}</span>
             </button>
           )}
@@ -1527,7 +1527,7 @@ export default function AdminDashboardPage() {
             }`}
             style={activeTab === 'customers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
-            <Users className="w-3.5 h-3.5 shrink-0" />
+            <Users weight="light" className="w-3.5 h-3.5 shrink-0" />
             <span>{t('admin.customersTab')}</span>
           </button>
 
@@ -1551,7 +1551,7 @@ export default function AdminDashboardPage() {
                 style={{ backgroundColor: 'var(--color-error-text)', borderColor: 'var(--color-card-bg)' }}
               />
             )}
-            <UserPlus className="w-3.5 h-3.5 shrink-0" />
+            <UserPlus weight="light" className="w-3.5 h-3.5 shrink-0" />
             <span>{t('admin.cashiersTab')}</span>
           </button>
 
@@ -1563,7 +1563,7 @@ export default function AdminDashboardPage() {
             }`}
             style={activeTab === 'settings' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
-            <Settings className="w-3.5 h-3.5 shrink-0" />
+            <Gear weight="light" className="w-3.5 h-3.5 shrink-0" />
             <span>{t('admin.settingsTab')}</span>
           </button>
 
@@ -1577,7 +1577,7 @@ export default function AdminDashboardPage() {
               }`}
               style={activeTab === 'partnerships' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
-              <Handshake className="w-3.5 h-3.5 shrink-0" />
+              <Handshake weight="light" className="w-3.5 h-3.5 shrink-0" />
               <span>{t('partnerships.tab')}</span>
             </button>
           )}
@@ -1602,7 +1602,7 @@ export default function AdminDashboardPage() {
                 style={{ backgroundColor: 'var(--color-error-text)', borderColor: 'var(--color-card-bg)' }}
               />
             )}
-            <ClipboardList className="w-3.5 h-3.5 shrink-0" />
+            <ClipboardText weight="light" className="w-3.5 h-3.5 shrink-0" />
             <span>{t('auditLog.tab')}</span>
           </button>
 
@@ -1622,7 +1622,7 @@ export default function AdminDashboardPage() {
               }`}
               style={activeTab === 'tiers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
-              <Award className="w-3.5 h-3.5 shrink-0" />
+              <Medal weight="light" className="w-3.5 h-3.5 shrink-0" />
               <span>{t('tiers.tab')}</span>
             </button>
           )}
@@ -1643,7 +1643,7 @@ export default function AdminDashboardPage() {
               }`}
               style={activeTab === 'referral' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
-              <Gift className="w-3.5 h-3.5 shrink-0" />
+              <Gift weight="light" className="w-3.5 h-3.5 shrink-0" />
               <span>{t('admin.referralTab')}</span>
             </button>
           )}
@@ -1664,7 +1664,7 @@ export default function AdminDashboardPage() {
               }`}
               style={activeTab === 'analytics' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
-              <BarChart3 className="w-3.5 h-3.5 shrink-0" />
+              <ChartBar weight="light" className="w-3.5 h-3.5 shrink-0" />
               <span>{t('analytics.tab')}</span>
             </button>
           )}
@@ -1689,7 +1689,7 @@ export default function AdminDashboardPage() {
                 style={{ backgroundColor: 'var(--color-error-text)', borderColor: 'var(--color-card-bg)' }}
               />
             )}
-            <Receipt className="w-3.5 h-3.5 shrink-0" />
+            <Receipt weight="light" className="w-3.5 h-3.5 shrink-0" />
             <span>{t('admin.dailyReviewTab')}</span>
           </button>
         </nav>
@@ -1751,7 +1751,7 @@ export default function AdminDashboardPage() {
                 className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
-                {isAddingItem ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+                {isAddingItem ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Plus weight="light" className="w-3.5 h-3.5" />}
                 <span>{t('admin.addItem')}</span>
               </button>
             </form>
@@ -1785,7 +1785,7 @@ export default function AdminDashboardPage() {
                           className="p-2 rounded-lg transition-colors hover:opacity-70"
                           style={{ color: 'var(--color-error-text)' }}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash weight="light" className="w-4 h-4" />
                         </button>
                       </div>
                     );
@@ -1887,7 +1887,7 @@ export default function AdminDashboardPage() {
                     className="cursor-pointer py-2 px-3 rounded-xl border text-xs flex items-center gap-1.5 transition-colors hover:opacity-80"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   >
-                    <ImageIcon className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                    <ImageIcon weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                     <span>{offerImage ? offerImage.name : t('admin.chooseImage')}</span>
                   </label>
                   <input
@@ -1905,7 +1905,7 @@ export default function AdminDashboardPage() {
                       className="p-2 rounded-xl border transition-colors hover:opacity-70"
                       style={{ borderColor: 'var(--color-border)', color: 'var(--color-error-text)' }}
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X weight="light" className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
@@ -1924,7 +1924,7 @@ export default function AdminDashboardPage() {
                 className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50 mt-1"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
-                {isAddingOffer ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                {isAddingOffer ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Sparkle weight="light" className="w-3.5 h-3.5" />}
                 <span>{t('admin.publishOffer')}</span>
               </button>
             </form>
@@ -1973,7 +1973,7 @@ export default function AdminDashboardPage() {
                           className="p-1.5 rounded-lg transition-colors hover:opacity-70"
                           style={{ color: 'var(--color-error-text)' }}
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash weight="light" className="w-3.5 h-3.5" />
                         </button>
                       </div>
                       <p className="text-[11px] opacity-70 leading-relaxed">{offer.description}</p>
@@ -2077,7 +2077,7 @@ export default function AdminDashboardPage() {
                 className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
-                {isAddingCustomer ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+                {isAddingCustomer ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Plus weight="light" className="w-3.5 h-3.5" />}
                 <span>{t('admin.generateCardBtn')}</span>
               </button>
             </form>
@@ -2132,7 +2132,7 @@ export default function AdminDashboardPage() {
                           className="p-2 rounded-lg border transition-transform active:scale-95 shadow-xs"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
                         >
-                          <QrCode className="w-4 h-4" />
+                          <QrCode weight="light" className="w-4 h-4" />
                         </Link>
                       </div>
                     </div>
@@ -2156,10 +2156,10 @@ export default function AdminDashboardPage() {
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-bold flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                  <ChartBar weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                   {isRtl ? 'ملخص النقاط' : 'Points Summary'}
                 </h2>
-                {pointsSummary.isLoading && <RefreshCw className="w-3.5 h-3.5 animate-spin opacity-50" />}
+                {pointsSummary.isLoading && <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin opacity-50" />}
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {/* Today */}
@@ -2322,7 +2322,7 @@ export default function AdminDashboardPage() {
               className="py-3 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-2 flex items-center justify-center gap-1.5 disabled:opacity-50"
               style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
             >
-              {isSavingSettings ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+              {isSavingSettings ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Check weight="light" className="w-3.5 h-3.5" />}
               <span>{t('admin.saveSettings')}</span>
             </button>
           </form>
@@ -2334,7 +2334,7 @@ export default function AdminDashboardPage() {
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <div className="flex items-center gap-2">
-              <Palette className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+              <Palette weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
               <div>
                 <h2 className="text-sm font-bold mb-0.5">{isRtl ? 'الهوية البصرية والمظهر (Branding)' : 'Brand & Visual Identity'}</h2>
                 <p className="text-xs opacity-70">
@@ -2429,7 +2429,7 @@ export default function AdminDashboardPage() {
                 if (pCheck.passesAA && aCheck.passesAA) {
                   return (
                     <div className="p-2.5 rounded-xl border text-xs flex items-center gap-2" style={{ backgroundColor: 'rgba(34, 197, 94, 0.08)', borderColor: 'rgba(34, 197, 94, 0.25)', color: '#16A34A' }}>
-                      <CheckCircle className="w-4 h-4 shrink-0" />
+                      <CheckCircle weight="light" className="w-4 h-4 shrink-0" />
                       <span>{isRtl ? 'الألوان المختارة تحقق معايير سهولة القراءة والتباين (WCAG AA Pass)' : 'Colors pass accessibility contrast standards (WCAG AA Pass)'}</span>
                     </div>
                   );
@@ -2438,7 +2438,7 @@ export default function AdminDashboardPage() {
                 return (
                   <div className="p-3 rounded-xl border text-xs flex flex-col gap-2" style={{ backgroundColor: 'rgba(234, 88, 12, 0.08)', borderColor: 'rgba(234, 88, 12, 0.3)', color: '#C2410C' }}>
                     <div className="flex items-center gap-1.5 font-bold">
-                      <AlertCircle className="w-4 h-4 shrink-0" />
+                      <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                       <span>{isRtl ? 'تنبيه سهولة القراءة والتباين (WCAG AA)' : 'Accessibility Contrast Warning (WCAG AA)'}</span>
                     </div>
                     {!pCheck.passesAA && (
@@ -2527,7 +2527,7 @@ export default function AdminDashboardPage() {
               className="py-3 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-2 flex items-center justify-center gap-1.5 disabled:opacity-50"
               style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
             >
-              {isSavingBranding ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+              {isSavingBranding ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Check weight="light" className="w-3.5 h-3.5" />}
               <span>{isRtl ? 'حفظ الهوية والتصميم' : 'Save Brand Settings'}</span>
             </button>
           </form>
@@ -2598,7 +2598,7 @@ export default function AdminDashboardPage() {
                 className="py-3 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
-                {isSavingNotif ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                {isSavingNotif ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Check weight="light" className="w-3.5 h-3.5" />}
                 <span>{isRtl ? 'حفظ إعدادات الإشعارات' : 'Save Notification Settings'}</span>
               </button>
             </form>
@@ -2619,7 +2619,7 @@ export default function AdminDashboardPage() {
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center gap-2">
-                <Handshake className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                <Handshake weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                 <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">
                   {t('partnerships.sendRequest')}
                 </h2>
@@ -2666,7 +2666,7 @@ export default function AdminDashboardPage() {
                 className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-1.5 self-start disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
-                {isSendingRequest ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                {isSendingRequest ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <PaperPlaneTilt weight="light" className="w-3.5 h-3.5" />}
                 <span>{t('partnerships.sendBtn')}</span>
               </button>
             </form>
@@ -2738,7 +2738,7 @@ export default function AdminDashboardPage() {
                               className="py-1.5 px-3 rounded-lg text-xs font-bold transition-transform active:scale-95 flex items-center gap-1 disabled:opacity-50"
                               style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                             >
-                              <Check className="w-3 h-3" />
+                              <Check weight="light" className="w-3 h-3" />
                               <span>{t('partnerships.acceptBtn')}</span>
                             </button>
                             <button
@@ -2748,7 +2748,7 @@ export default function AdminDashboardPage() {
                               className="py-1.5 px-3 rounded-lg text-xs font-bold border text-rose-500 transition-transform active:scale-95 flex items-center gap-1 disabled:opacity-50"
                               style={{ borderColor: 'var(--color-border)' }}
                             >
-                              <X className="w-3 h-3" />
+                              <X weight="light" className="w-3 h-3" />
                               <span>{t('partnerships.rejectBtn')}</span>
                             </button>
                           </div>
@@ -2768,7 +2768,7 @@ export default function AdminDashboardPage() {
                 style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
               >
                 <div className="flex items-center gap-2">
-                  <ArrowLeftRight className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                  <ArrowsLeftRight weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                   <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">
                     {t('partnerships.transferTitle')}
                   </h2>
@@ -2840,7 +2840,7 @@ export default function AdminDashboardPage() {
                   className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-1.5 self-start disabled:opacity-50"
                   style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                 >
-                  {isTransferring ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <ArrowLeftRight className="w-3.5 h-3.5" />}
+                  {isTransferring ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <ArrowsLeftRight weight="light" className="w-3.5 h-3.5" />}
                   <span>{t('partnerships.transferBtn')}</span>
                 </button>
               </form>
@@ -2861,7 +2861,7 @@ export default function AdminDashboardPage() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <ShieldAlert className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                  <ShieldWarning weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                   <div>
                     <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">{t('cashierLimits.title')}</h2>
                     <p className="text-[11px] opacity-60 mt-0.5">{t('cashierLimits.subtitle')}</p>
@@ -2873,7 +2873,7 @@ export default function AdminDashboardPage() {
                   className="py-1.5 px-3 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center gap-1.5 cursor-pointer"
                   style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                 >
-                  <UserPlus className="w-3.5 h-3.5" />
+                  <UserPlus weight="light" className="w-3.5 h-3.5" />
                   <span>{isRtl ? 'إضافة كاشير' : 'Add Cashier'}</span>
                 </button>
               </div>
@@ -2888,7 +2888,7 @@ export default function AdminDashboardPage() {
                       onClick={() => setShowAddCashierModal(false)}
                       className="opacity-60 hover:opacity-100 p-1 cursor-pointer"
                     >
-                      <X className="w-4 h-4" />
+                      <X weight="light" className="w-4 h-4" />
                     </button>
                   </div>
 
@@ -3031,7 +3031,7 @@ export default function AdminDashboardPage() {
                         className="py-1.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                         style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                       >
-                        {isCreatingCashier ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <UserPlus className="w-3.5 h-3.5" />}
+                        {isCreatingCashier ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <UserPlus weight="light" className="w-3.5 h-3.5" />}
                         <span>{isCreatingCashier ? t('common.loading') : (isRtl ? 'إنشاء الحساب' : 'Create Cashier')}</span>
                       </button>
                     </div>
@@ -3167,8 +3167,8 @@ export default function AdminDashboardPage() {
                             style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                           >
                             {savingLimitId === cashier.roleId
-                              ? <RefreshCw className="w-3 h-3 animate-spin" />
-                              : <Check className="w-3 h-3" />}
+                              ? <CircleNotch weight="light" className="w-3 h-3 animate-spin" />
+                              : <Check weight="light" className="w-3 h-3" />}
                             <span>{t('cashierLimits.saveLimit')}</span>
                           </button>
                         </div>
@@ -3186,7 +3186,7 @@ export default function AdminDashboardPage() {
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center gap-2">
-                <ClipboardList className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                <ClipboardText weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                 <div>
                   <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">{t('auditLog.title')}</h2>
                   <p className="text-[11px] opacity-60 mt-0.5">{t('auditLog.subtitle')}</p>
@@ -3265,7 +3265,7 @@ export default function AdminDashboardPage() {
               {/* Audit log entries */}
               {isLoadingAudit ? (
                 <div className="flex justify-center py-6">
-                  <RefreshCw className="w-5 h-5 animate-spin" style={{ color: 'var(--color-accent)' }} />
+                  <CircleNotch weight="light" className="w-5 h-5 animate-spin" style={{ color: 'var(--color-accent)' }} />
                 </div>
               ) : auditLogs.length === 0 ? (
                 <p className="text-xs opacity-60 text-center py-6">{t('auditLog.empty')}</p>
@@ -3290,7 +3290,7 @@ export default function AdminDashboardPage() {
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-center gap-1.5">
                             {isRejected
-                              ? <ShieldAlert className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-error-text)' }} />
+                              ? <ShieldWarning weight="light" className="w-3.5 h-3.5 shrink-0" style={{ color: 'var(--color-error-text)' }} />
                               : log.action === 'add_points'
                                 ? <span className="font-bold text-green-600">+{log.pointsChange}</span>
                                 : <span className="font-bold" style={{ color: 'var(--color-error-text)' }}>{log.pointsChange}</span>
@@ -3341,7 +3341,7 @@ export default function AdminDashboardPage() {
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-                <Plus className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                <Plus weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                 <span>{t('tiers.addTierTitle')}</span>
               </h2>
 
@@ -3396,7 +3396,7 @@ export default function AdminDashboardPage() {
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
-                {isAddingTier ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+                {isAddingTier ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Plus weight="light" className="w-3.5 h-3.5" />}
                 <span>{isAddingTier ? t('tiers.adding') : t('tiers.addTierBtn')}</span>
               </button>
             </form>
@@ -3408,7 +3408,7 @@ export default function AdminDashboardPage() {
             >
               <div className="flex items-center justify-between">
                 <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-                  <Award className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                  <Medal weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                   <span>{t('tiers.tiersListTitle', { count: tiers.length })}</span>
                 </h2>
               </div>
@@ -3461,7 +3461,7 @@ export default function AdminDashboardPage() {
                               className="py-1.5 px-3 rounded-lg text-xs font-bold transition-transform active:scale-95 flex items-center justify-center gap-1"
                               style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                             >
-                              {isUpdatingTier ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
+                              {isUpdatingTier ? <CircleNotch weight="light" className="w-3 h-3 animate-spin" /> : <Check weight="light" className="w-3 h-3" />}
                               <span>{t('common.save')}</span>
                             </button>
                             <button
@@ -3493,7 +3493,7 @@ export default function AdminDashboardPage() {
                                 color: 'var(--color-accent)',
                               }}
                             >
-                              <Award className="w-3 h-3" />
+                              <Medal weight="light" className="w-3 h-3" />
                               <span>{tier.name}</span>
                             </span>
                             <span className="text-[11px] opacity-60">
@@ -3518,7 +3518,7 @@ export default function AdminDashboardPage() {
                             style={{ borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
                             title={t('common.edit')}
                           >
-                            <Edit2 className="w-3.5 h-3.5" />
+                            <PencilSimple weight="light" className="w-3.5 h-3.5" />
                           </button>
 
                           <button
@@ -3530,9 +3530,9 @@ export default function AdminDashboardPage() {
                             title={t('common.delete')}
                           >
                             {deletingTierId === tier.id ? (
-                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                              <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
                             ) : (
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash weight="light" className="w-3.5 h-3.5" />
                             )}
                           </button>
                         </div>
@@ -3559,7 +3559,7 @@ export default function AdminDashboardPage() {
             >
               <div>
                 <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-                  <Gift className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                  <Gift weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                   <span>{t('admin.referralSettingsTitle')}</span>
                 </h2>
                 <p className="text-xs opacity-60 mt-1">
@@ -3609,9 +3609,9 @@ export default function AdminDashboardPage() {
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
                 {isSavingReferral ? (
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
                 ) : (
-                  <Save className="w-3.5 h-3.5" />
+                  <FloppyDisk weight="light" className="w-3.5 h-3.5" />
                 )}
                 <span>{isSavingReferral ? t('common.loading') : t('admin.saveReferralSettings')}</span>
               </button>
@@ -3664,7 +3664,7 @@ export default function AdminDashboardPage() {
             >
               <div>
                 <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-                  <BarChart3 className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                  <ChartBar weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                   <span>{t('analytics.title')}</span>
                 </h2>
                 <p className="text-xs opacity-60 mt-1">
@@ -3705,7 +3705,7 @@ export default function AdminDashboardPage() {
 
             {isLoadingAnalytics ? (
               <div className="py-12 flex flex-col items-center justify-center opacity-70">
-                <RefreshCw className="w-7 h-7 animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
+                <CircleNotch weight="light" className="w-7 h-7 animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
                 <span className="text-xs">{t('analytics.loadingAnalytics')}</span>
               </div>
             ) : (
@@ -3720,7 +3720,7 @@ export default function AdminDashboardPage() {
                   >
                     <div className="flex items-center justify-between opacity-60">
                       <span className="text-[11px] font-medium">{t('analytics.kpiActiveCust')}</span>
-                      <Users className="w-4 h-4" />
+                      <Users weight="light" className="w-4 h-4" />
                     </div>
                     <div>
                       <div className="flex items-baseline gap-1">
@@ -3745,7 +3745,7 @@ export default function AdminDashboardPage() {
                   >
                     <div className="flex items-center justify-between opacity-60">
                       <span className="text-[11px] font-medium">{t('analytics.kpiPointsIssued')}</span>
-                      <TrendingUp className="w-4 h-4 text-emerald-500" />
+                      <TrendUp weight="light" className="w-4 h-4 text-emerald-500" />
                     </div>
                     <div>
                       <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400 block">
@@ -3765,7 +3765,7 @@ export default function AdminDashboardPage() {
                   >
                     <div className="flex items-center justify-between opacity-60">
                       <span className="text-[11px] font-medium">{t('analytics.kpiPointsRedeemed')}</span>
-                      <Gift className="w-4 h-4 text-rose-500" />
+                      <Gift weight="light" className="w-4 h-4 text-rose-500" />
                     </div>
                     <div>
                       <span className="text-2xl font-black text-rose-600 dark:text-rose-400 block">
@@ -3785,7 +3785,7 @@ export default function AdminDashboardPage() {
                   >
                     <div className="flex items-center justify-between opacity-60">
                       <span className="text-[11px] font-medium">{t('analytics.kpiRedemptionRate')}</span>
-                      <PieChart className="w-4 h-4" />
+                      <ChartPie weight="light" className="w-4 h-4" />
                     </div>
                     <div>
                       <span className="text-2xl font-black" style={{ color: 'var(--color-accent)' }}>
@@ -3943,7 +3943,7 @@ export default function AdminDashboardPage() {
                   id="analytics-top-items-card"
                 >
                   <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-                    <Gift className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                    <Gift weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                     <span>{t('analytics.topItemsTitle')}</span>
                   </h2>
 
@@ -4024,7 +4024,7 @@ export default function AdminDashboardPage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <h2 className="text-sm font-bold flex items-center gap-2">
-                    <Receipt className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                    <Receipt weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                     <span>{t('admin.dailyReviewTitle')}</span>
                   </h2>
                   <p className="text-xs opacity-60 mt-0.5">{t('admin.dailyReviewDesc')}</p>
@@ -4038,7 +4038,7 @@ export default function AdminDashboardPage() {
                   className="self-start sm:self-auto px-3 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
                   style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
                 >
-                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingDailyReview ? 'animate-spin' : ''}`} />
+                  <CircleNotch weight="light" className={`w-3.5 h-3.5 ${isLoadingDailyReview ? 'animate-spin' : ''}`} />
                   <span>{t('common.refresh')}</span>
                 </button>
               </div>
@@ -4149,7 +4149,7 @@ export default function AdminDashboardPage() {
                       className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
                       style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#D97706' }}
                     >
-                      <ShieldAlert className="w-4 h-4" />
+                      <ShieldWarning weight="light" className="w-4 h-4" />
                     </div>
                     <div>
                       <h3 className="text-xs font-bold flex items-center gap-1.5">
@@ -4191,7 +4191,7 @@ export default function AdminDashboardPage() {
 
                           {anom.isAiGenerated ? (
                             <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-600 dark:text-purple-400">
-                              <Sparkles className="w-3 h-3" />
+                              <Sparkle weight="light" className="w-3 h-3" />
                               <span>{t('admin.anomalyAiBadge')}</span>
                             </span>
                           ) : (
@@ -4262,7 +4262,7 @@ export default function AdminDashboardPage() {
 
               {isLoadingDailyReview ? (
                 <div className="py-12 flex justify-center">
-                  <RefreshCw className="w-6 h-6 animate-spin" style={{ color: 'var(--color-accent)' }} />
+                  <CircleNotch weight="light" className="w-6 h-6 animate-spin" style={{ color: 'var(--color-accent)' }} />
                 </div>
               ) : !dailyReviewData?.transactions || dailyReviewData.transactions.length === 0 ? (
                 <p className="text-xs opacity-60 text-center py-8">
@@ -4341,7 +4341,7 @@ export default function AdminDashboardPage() {
                               color: tx.flaggedByOwner ? 'rgb(244 63 94)' : 'inherit',
                             }}
                           >
-                            <Flag className="w-3.5 h-3.5" fill={tx.flaggedByOwner ? 'currentColor' : 'none'} />
+                            <Flag weight="light" className="w-3.5 h-3.5" fill={tx.flaggedByOwner ? 'currentColor' : 'none'} />
                             <span className="hidden sm:inline">
                               {tx.flaggedByOwner ? t('admin.unflag') : t('admin.flagForReview')}
                             </span>
@@ -4369,7 +4369,7 @@ export default function AdminDashboardPage() {
                               className="p-2 rounded-xl border transition-transform active:scale-95 flex items-center gap-1 text-[11px] font-bold cursor-pointer"
                               style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)', color: 'var(--color-accent)' }}
                             >
-                              <RotateCcw className="w-3.5 h-3.5" />
+                              <ArrowCounterClockwise weight="light" className="w-3.5 h-3.5" />
                               <span className="hidden sm:inline">{isRtl ? 'استرجاع' : 'Reverse'}</span>
                             </button>
                           )}
@@ -4387,7 +4387,7 @@ export default function AdminDashboardPage() {
                           }}
                         >
                           <div className="flex items-center gap-1.5 min-w-0">
-                            <Flag className="w-3 h-3 shrink-0" fill="currentColor" />
+                            <Flag weight="light" className="w-3 h-3 shrink-0" fill="currentColor" />
                             <span className="font-medium truncate">
                               {tx.flagReason || t('admin.flagForReview')}
                             </span>
@@ -4422,7 +4422,7 @@ export default function AdminDashboardPage() {
                     className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-accent)' }}
                   >
-                    <Flag className="w-4 h-4 text-rose-500" />
+                    <Flag weight="light" className="w-4 h-4 text-rose-500" />
                   </div>
                   <h3 className="font-bold text-sm">{t('admin.flagForReview')}</h3>
                 </div>
@@ -4432,7 +4432,7 @@ export default function AdminDashboardPage() {
                   className="w-8 h-8 rounded-full flex items-center justify-center border opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
                   style={{ borderColor: 'var(--color-border)' }}
                 >
-                  <X className="w-4 h-4" />
+                  <X weight="light" className="w-4 h-4" />
                 </button>
               </div>
 
@@ -4489,9 +4489,9 @@ export default function AdminDashboardPage() {
                     style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                   >
                     {isSubmittingFlag ? (
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
                     ) : (
-                      <Flag className="w-3.5 h-3.5" />
+                      <Flag weight="light" className="w-3.5 h-3.5" />
                     )}
                     <span>{t('admin.flagForReview')}</span>
                   </button>
@@ -4511,7 +4511,7 @@ export default function AdminDashboardPage() {
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
-              <RotateCcw className="w-5 h-5" />
+              <ArrowCounterClockwise weight="light" className="w-5 h-5" />
               <span>{isRtl ? 'تأكيد استرجاع العملية' : 'Confirm Transaction Reversal'}</span>
             </div>
 
@@ -4551,7 +4551,7 @@ export default function AdminDashboardPage() {
                 className="flex-1 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
-                {isSubmittingAdminReversal ? <RefreshCw className="w-3.5 h-3.5 animate-spin mx-auto" /> : (isRtl ? 'تأكيد الاسترجاع' : 'Confirm Reversal')}
+                {isSubmittingAdminReversal ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin mx-auto" /> : (isRtl ? 'تأكيد الاسترجاع' : 'Confirm Reversal')}
               </button>
             </div>
           </form>
@@ -4602,7 +4602,7 @@ export default function AdminDashboardPage() {
           >
             {deleteAdminError && (
               <div className="p-2.5 mb-3 rounded-xl border text-xs text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
+                <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                 <span>{deleteAdminError}</span>
               </div>
             )}
@@ -4610,7 +4610,7 @@ export default function AdminDashboardPage() {
             {!showAdminDeleteConfirm ? (
               <>
                 <div className="flex items-center gap-2 mb-1.5 text-rose-500">
-                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <Warning weight="light" className="w-4 h-4 shrink-0" />
                   <span className="text-xs font-bold">{t('accountDeletion.dangerZone')}</span>
                 </div>
                 <p className="text-[11px] opacity-75 mb-3 leading-relaxed">
@@ -4623,7 +4623,7 @@ export default function AdminDashboardPage() {
                   className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
                   style={{ backgroundColor: '#EF4444' }}
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash weight="light" className="w-3.5 h-3.5" />
                   <span>{t('accountDeletion.deleteAdminAccount')}</span>
                 </button>
               </>
@@ -4633,7 +4633,7 @@ export default function AdminDashboardPage() {
                   className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
                   style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
                 >
-                  <AlertTriangle className="w-5 h-5" />
+                  <Warning weight="light" className="w-5 h-5" />
                 </div>
                 <h3 className="text-xs font-bold text-rose-500 mb-1">
                   {isRtl ? 'تأكيد حذف الحساب الإداري' : 'Confirm Manager Account Deletion'}
@@ -4661,12 +4661,12 @@ export default function AdminDashboardPage() {
                   >
                     {isDeletingAdmin ? (
                       <>
-                        <RefreshCw className="w-3 h-3 animate-spin" />
+                        <CircleNotch weight="light" className="w-3 h-3 animate-spin" />
                         <span>{t('accountDeletion.deleting')}</span>
                       </>
                     ) : (
                       <>
-                        <Trash2 className="w-3 h-3" />
+                        <Trash weight="light" className="w-3 h-3" />
                         <span>{t('accountDeletion.deleteButton')}</span>
                       </>
                     )}

@@ -4,15 +4,15 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
-  ArrowRight, User, Phone, Globe, Headphones, 
-  Save, RefreshCw, Check, AlertCircle, MessageCircle,
-  Bell, BellOff, History, Share2, Copy, Gift, MessageSquare,
-  Trash2, AlertTriangle, X
-} from 'lucide-react';
+  ArrowRight, ArrowLeft, User, Phone, Globe, Headphones, 
+  FloppyDisk, CircleNotch, Check, WarningCircle, ChatCircle,
+  Bell, BellSlash, ClockCounterClockwise, ShareNetwork, Copy, Gift, ChatText,
+  Trash, Warning, X
+} from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLocale } from '@/components/LocaleProvider';
-import { validateName, validateEgyptianPhone, formatEgyptianPhoneToInternational } from '@/lib/validation';
+import { validateName, validateEgyptianPhone } from '@/lib/validation';
 
 function AccountContent() {
   const router = useRouter();
@@ -264,20 +264,22 @@ function AccountContent() {
   return (
     <div className="w-full max-w-sm flex flex-col flex-1 py-2 relative z-10">
       {/* Header */}
-      <header className="flex items-center justify-between w-full pb-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
+      <header className="page-header flex items-center justify-between w-full pb-4">
         <Link
           href={backUrl}
           aria-label={t('common.back')}
-          className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition-transform active:scale-95"
+          className="w-10 h-10 rounded-full flex items-center justify-center glass-card transition-transform active:scale-95"
           style={{
-            backgroundColor: 'var(--color-card-bg)',
-            color: 'var(--color-accent)',
-            borderColor: 'var(--color-border)',
+            color: 'var(--color-text)',
           }}
         >
-          <ArrowRight className={`w-5 h-5 ${isRtl ? '' : 'rotate-180'}`} />
+          {isRtl ? (
+            <ArrowRight weight="light" className="w-5 h-5" />
+          ) : (
+            <ArrowLeft weight="light" className="w-5 h-5" />
+          )}
         </Link>
-        <span className="text-sm font-bold">{t('account.title')}</span>
+        <span className="text-sm font-bold tracking-tight">{t('account.title')}</span>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
@@ -294,14 +296,18 @@ function AccountContent() {
             borderColor: feedback.type === 'success' ? 'var(--color-success-border)' : 'var(--color-error-border)',
           }}
         >
-          {feedback.type === 'success' ? <Check className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}
+          {feedback.type === 'success' ? (
+            <Check weight="light" className="w-4 h-4 shrink-0" />
+          ) : (
+            <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
+          )}
           <span>{feedback.text}</span>
         </div>
       )}
 
       {isLoading ? (
-        <div className="my-auto py-12 flex flex-col items-center justify-center opacity-70">
-          <RefreshCw className="w-8 h-8 animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
+        <div className="my-auto py-16 flex flex-col items-center justify-center opacity-70">
+          <CircleNotch weight="light" className="w-8 h-8 animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
           <span className="text-xs">{t('account.loadingAccount')}</span>
         </div>
       ) : (
@@ -309,10 +315,7 @@ function AccountContent() {
           
           {/* User Points Card Summary */}
           {customer && (
-            <div 
-              className="p-4 rounded-3xl border shadow-sm flex items-center justify-between"
-              style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
-            >
+            <div className="glass-card p-5 rounded-3xl flex items-center justify-between">
               <div>
                 <span className="text-[11px] opacity-60 block">{t('account.enrolledBusiness')}</span>
                 <span className="text-xs font-bold">{customer.business_name || t('account.defaultBusiness')}</span>
@@ -331,38 +334,39 @@ function AccountContent() {
             <Link
               href={`/card/${token}`}
               id="account-view-history-link"
-              className="p-3.5 rounded-2xl border shadow-2xs flex items-center justify-between transition-transform active:scale-98"
+              className="glass-card p-4 rounded-2xl flex items-center justify-between transition-transform active:scale-98"
               style={{
-                backgroundColor: 'var(--color-card-bg)',
-                borderColor: 'var(--color-border)',
-                color: 'var(--color-accent)',
+                color: 'var(--color-text)',
               }}
             >
-              <div className="flex items-center gap-2">
-                <History className="w-4 h-4" />
-                <span className="text-xs font-bold">{t('customer.transactionHistory')}</span>
+              <div className="flex items-center gap-2.5">
+                <ClockCounterClockwise weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                <span className="text-xs font-semibold">{t('customer.transactionHistory')}</span>
               </div>
-              <ArrowRight className={`w-4 h-4 opacity-60 ${isRtl ? '' : 'rotate-180'}`} />
+              {isRtl ? (
+                <ArrowLeft weight="light" className="w-4 h-4 opacity-50" />
+              ) : (
+                <ArrowRight weight="light" className="w-4 h-4 opacity-50" />
+              )}
             </Link>
           )}
 
-          {/* 19.5 & 22.8: Referral Code & Sharing Card (hidden if feature is disabled) */}
+          {/* 19.5 & 22.8: Referral Code & Sharing Card */}
           {customer?.referral_code && customer?.features?.referral_program !== false && (
             <div 
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3.5"
-              style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+              className="glass-card p-5 rounded-3xl flex flex-col gap-3.5"
               id="referral-card"
             >
               <div className="flex items-center gap-2">
                 <div 
-                  className="w-7 h-7 rounded-lg flex items-center justify-center border"
+                  className="w-7 h-7 rounded-full flex items-center justify-center border-[0.5px]"
                   style={{
-                    backgroundColor: 'rgba(var(--color-accent-rgb, 198, 124, 78), 0.1)',
-                    borderColor: 'var(--color-border)',
+                    backgroundColor: 'rgba(0, 196, 140, 0.1)',
+                    borderColor: 'rgba(0, 196, 140, 0.2)',
                     color: 'var(--color-accent)',
                   }}
                 >
-                  <Gift className="w-4 h-4" />
+                  <Gift weight="light" className="w-4 h-4" />
                 </div>
                 <h2 className="text-xs font-bold uppercase tracking-wider">
                   {t('account.referralTitle')}
@@ -375,7 +379,7 @@ function AccountContent() {
 
               {/* Referral Code Display Box */}
               <div 
-                className="p-3.5 rounded-2xl border flex items-center justify-between gap-2"
+                className="p-3.5 rounded-2xl border-[0.5px] flex items-center justify-between gap-2"
                 style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
               >
                 <div className="flex flex-col min-w-0">
@@ -392,14 +396,14 @@ function AccountContent() {
                     id="copy-referral-btn"
                     onClick={handleCopyReferral}
                     aria-label={t('account.copyCode')}
-                    className="p-2.5 rounded-xl border flex items-center gap-1 text-xs font-semibold transition-transform active:scale-95"
+                    className="p-2.5 rounded-xl border-[0.5px] flex items-center gap-1 text-xs font-semibold transition-transform active:scale-95"
                     style={{
-                      backgroundColor: isCopied ? 'rgba(16, 185, 129, 0.1)' : 'var(--color-card-bg)',
-                      borderColor: isCopied ? '#10b981' : 'var(--color-border)',
-                      color: isCopied ? '#10b981' : 'var(--color-text)',
+                      backgroundColor: isCopied ? 'rgba(0, 196, 140, 0.1)' : 'var(--color-card-bg)',
+                      borderColor: isCopied ? '#00C48C' : 'var(--color-border)',
+                      color: isCopied ? '#00C48C' : 'var(--color-text)',
                     }}
                   >
-                    {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    {isCopied ? <Check weight="light" className="w-4 h-4" /> : <Copy weight="light" className="w-4 h-4" />}
                     <span className="hidden sm:inline">{isCopied ? t('account.codeCopied') : t('account.copyCode')}</span>
                   </button>
 
@@ -409,13 +413,9 @@ function AccountContent() {
                     id="share-referral-btn"
                     onClick={handleShareReferral}
                     aria-label={t('account.shareCode')}
-                    className="p-2.5 rounded-xl flex items-center gap-1 text-xs font-bold transition-transform active:scale-95 shadow-2xs"
-                    style={{
-                      backgroundColor: 'var(--color-accent)',
-                      color: 'var(--color-btn-text)',
-                    }}
+                    className="ios-btn-primary p-2.5 rounded-xl flex items-center gap-1 text-xs font-bold transition-transform active:scale-95"
                   >
-                    <Share2 className="w-4 h-4" />
+                    <ShareNetwork weight="light" className="w-4 h-4" />
                     <span>{t('account.shareCode')}</span>
                   </button>
                 </div>
@@ -426,11 +426,10 @@ function AccountContent() {
           {/* Edit Name & Phone Form */}
           <form 
             onSubmit={handleSaveProfile}
-            className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3.5"
-            style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+            className="glass-card p-5 rounded-3xl flex flex-col gap-3.5"
           >
             <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-              <User className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+              <User weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
               <span>{t('account.personalInfo')}</span>
             </h2>
 
@@ -447,17 +446,16 @@ function AccountContent() {
                   }}
                   placeholder={t('account.enterName')}
                   required
-                  className={`w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden ${isRtl ? 'pr-9' : 'pl-9'}`}
+                  className={`ios-input w-full ${isRtl ? 'pr-9' : 'pl-9'}`}
                   style={{
-                    backgroundColor: 'var(--color-bg)',
-                    borderColor: nameTouched && !nameValidation.isValid ? 'var(--color-error-border, #ef4444)' : 'var(--color-border)',
+                    borderColor: nameTouched && !nameValidation.isValid ? 'var(--color-error-border, #ef4444)' : undefined,
                   }}
                 />
-                <User className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
+                <User weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 pointer-events-none ${isRtl ? 'right-3' : 'left-3'}`} />
               </div>
               {nameTouched && !nameValidation.isValid && (
                 <p className="text-[11px] text-red-500 font-medium mt-1 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3 shrink-0" />
+                  <WarningCircle weight="light" className="w-3.5 h-3.5 shrink-0" />
                   <span>{t(`validation.${nameValidation.errorKey}`)}</span>
                 </p>
               )}
@@ -477,17 +475,16 @@ function AccountContent() {
                     setPhoneTouched(true);
                   }}
                   placeholder="01012345678"
-                  className={`w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden ${isRtl ? 'pr-9' : 'pl-9'}`}
+                  className={`ios-input w-full ${isRtl ? 'pr-9' : 'pl-9'}`}
                   style={{
-                    backgroundColor: 'var(--color-bg)',
-                    borderColor: phone.trim() !== '' && !phoneValidation.isValid ? 'var(--color-error-border, #ef4444)' : 'var(--color-border)',
+                    borderColor: phone.trim() !== '' && !phoneValidation.isValid ? 'var(--color-error-border, #ef4444)' : undefined,
                   }}
                 />
-                <Phone className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
+                <Phone weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 pointer-events-none ${isRtl ? 'right-3' : 'left-3'}`} />
               </div>
               {phone.trim() !== '' && !phoneValidation.isValid && (
                 <p className="text-[11px] text-red-500 font-medium mt-1 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3 shrink-0" />
+                  <WarningCircle weight="light" className="w-3.5 h-3.5 shrink-0" />
                   <span>{t(`validation.${phoneValidation.errorKey}`)}</span>
                 </p>
               )}
@@ -497,20 +494,17 @@ function AccountContent() {
               type="submit"
               id="save-profile-btn"
               disabled={isSaving || !nameValidation.isValid || (phone.trim() !== '' && !phoneValidation.isValid)}
-              className="w-full py-3 px-4 rounded-xl text-xs font-bold transition-all shadow-lg mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50 btn-gradient"
+              className="ios-btn-primary w-full py-3 px-4 rounded-xl text-xs font-bold transition-all mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
             >
-              {isSaving ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+              {isSaving ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk weight="light" className="w-3.5 h-3.5" />}
               <span>{isSaving ? t('account.saving') : t('account.saveChanges')}</span>
             </button>
           </form>
 
           {/* Language Selection (عربي / English) */}
-          <div 
-            className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
-            style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
-          >
+          <div className="glass-card p-5 rounded-3xl flex flex-col gap-3">
             <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-              <Globe className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+              <Globe weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
               <span>{t('account.appLanguage')}</span>
             </h2>
 
@@ -519,57 +513,55 @@ function AccountContent() {
                 type="button"
                 id="lang-ar-btn"
                 onClick={() => handleLanguageChange('ar')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-1.5 ${
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold border-[0.5px] transition-all flex items-center justify-center gap-1.5 ${
                   locale === 'ar' ? 'shadow-xs' : 'opacity-70 hover:opacity-100'
                 }`}
-                style={locale === 'ar' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)', borderColor: 'var(--color-accent)' } : { borderColor: 'var(--color-border)' }}
+                style={locale === 'ar' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)', borderColor: 'var(--color-accent)' } : { borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)' }}
               >
                 <span>العربية</span>
-                {locale === 'ar' && <Check className="w-3.5 h-3.5" />}
+                {locale === 'ar' && <Check weight="light" className="w-3.5 h-3.5" />}
               </button>
 
               <button
                 type="button"
                 id="lang-en-btn"
                 onClick={() => handleLanguageChange('en')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all flex items-center justify-center gap-1.5 ${
+                className={`py-2.5 px-3 rounded-xl text-xs font-bold border-[0.5px] transition-all flex items-center justify-center gap-1.5 ${
                   locale === 'en' ? 'shadow-xs' : 'opacity-70 hover:opacity-100'
                 }`}
-                style={locale === 'en' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)', borderColor: 'var(--color-accent)' } : { borderColor: 'var(--color-border)' }}
+                style={locale === 'en' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)', borderColor: 'var(--color-accent)' } : { borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)' }}
               >
                 <span>English</span>
-                {locale === 'en' && <Check className="w-3.5 h-3.5" />}
+                {locale === 'en' && <Check weight="light" className="w-3.5 h-3.5" />}
               </button>
             </div>
           </div>
 
           {/* WhatsApp Notifications Toggle (Phase 16.9) */}
           {customer?.business_notifications_active && (
-            <div 
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
-              style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
-            >
+            <div className="glass-card p-5 rounded-3xl flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
                   {notificationsEnabled ? (
-                    <Bell className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                    <Bell weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
                   ) : (
-                    <BellOff className="w-4 h-4 opacity-50" />
+                    <BellSlash weight="light" className="w-4 h-4 opacity-50" />
                   )}
                   <span>{t('accountNotifications.title')}</span>
                 </h2>
 
+                {/* iOS Native Pill Switch */}
                 <button
                   type="button"
                   id="toggle-notifications-btn"
                   onClick={handleToggleNotifications}
                   disabled={isUpdatingNotif}
                   className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden disabled:opacity-50 ${
-                    notificationsEnabled ? 'bg-[var(--color-accent)]' : 'bg-gray-300 dark:bg-gray-700'
+                    notificationsEnabled ? 'bg-[var(--color-accent)]' : 'bg-gray-300 dark:bg-neutral-700'
                   }`}
                 >
                   <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                       notificationsEnabled ? (isRtl ? '-translate-x-5' : 'translate-x-5') : 'translate-x-0'
                     }`}
                   />
@@ -581,7 +573,7 @@ function AccountContent() {
               </p>
 
               <div 
-                className="py-2 px-3 rounded-xl text-[11px] font-medium flex items-center gap-1.5 border"
+                className="py-2 px-3 rounded-xl text-[11px] font-medium flex items-center gap-1.5 border-[0.5px]"
                 style={{
                   backgroundColor: 'var(--color-bg)',
                   borderColor: 'var(--color-border)',
@@ -589,9 +581,9 @@ function AccountContent() {
                 }}
               >
                 {notificationsEnabled ? (
-                  <Check className="w-3.5 h-3.5" />
+                  <Check weight="light" className="w-3.5 h-3.5" />
                 ) : (
-                  <BellOff className="w-3.5 h-3.5 opacity-50" />
+                  <BellSlash weight="light" className="w-3.5 h-3.5 opacity-50" />
                 )}
                 <span>
                   {notificationsEnabled ? t('accountNotifications.statusActive') : t('accountNotifications.statusMuted')}
@@ -600,16 +592,16 @@ function AccountContent() {
 
               {/* Phase 30: Notification Channel Selection */}
               {notificationsEnabled && (
-                <div className="mt-2 pt-3 border-t flex flex-col gap-2" style={{ borderColor: 'var(--color-border)' }}>
+                <div className="mt-2 pt-3 border-t-[0.5px] flex flex-col gap-2" style={{ borderColor: 'var(--color-border)' }}>
                   <label className="text-[11px] font-semibold opacity-80 block">
                     {t('accountNotifications.channelLabel')}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {[
-                      { id: 'all', label: t('accountNotifications.channelAll'), icon: MessageCircle },
-                      { id: 'whatsapp', label: t('accountNotifications.channelWhatsapp'), icon: MessageCircle },
-                      { id: 'sms', label: t('accountNotifications.channelSms'), icon: MessageSquare },
-                      { id: 'none', label: t('accountNotifications.channelNone'), icon: BellOff },
+                      { id: 'all', label: t('accountNotifications.channelAll'), icon: ChatCircle },
+                      { id: 'whatsapp', label: t('accountNotifications.channelWhatsapp'), icon: ChatCircle },
+                      { id: 'sms', label: t('accountNotifications.channelSms'), icon: ChatText },
+                      { id: 'none', label: t('accountNotifications.channelNone'), icon: BellSlash },
                     ].map((ch) => {
                       const isSelected = notificationChannel === ch.id;
                       const Icon = ch.icon;
@@ -619,8 +611,8 @@ function AccountContent() {
                           type="button"
                           disabled={isUpdatingChannel}
                           onClick={() => handleChannelChange(ch.id as any)}
-                          className={`p-2.5 rounded-xl border text-xs font-semibold text-start flex items-center justify-between transition-all ${
-                            isSelected ? 'ring-2' : 'opacity-70 hover:opacity-100'
+                          className={`p-2.5 rounded-xl border-[0.5px] text-xs font-semibold text-start flex items-center justify-between transition-all ${
+                            isSelected ? 'ring-1' : 'opacity-70 hover:opacity-100'
                           }`}
                           style={{
                             backgroundColor: isSelected ? 'var(--color-bg)' : 'transparent',
@@ -629,10 +621,10 @@ function AccountContent() {
                           }}
                         >
                           <div className="flex items-center gap-2">
-                            <Icon className="w-4 h-4 shrink-0" />
+                            <Icon weight="light" className="w-4 h-4 shrink-0" />
                             <span>{ch.label}</span>
                           </div>
-                          {isSelected && <Check className="w-3.5 h-3.5 shrink-0" />}
+                          {isSelected && <Check weight="light" className="w-3.5 h-3.5 shrink-0" />}
                         </button>
                       );
                     })}
@@ -643,12 +635,9 @@ function AccountContent() {
           )}
 
           {/* Contact Support Button */}
-          <div 
-            className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
-            style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
-          >
+          <div className="glass-card p-5 rounded-3xl flex flex-col gap-3">
             <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-              <Headphones className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+              <Headphones weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
               <span>{t('account.helpSupport')}</span>
             </h2>
 
@@ -660,28 +649,28 @@ function AccountContent() {
               type="button"
               id="contact-support-btn"
               onClick={() => setShowSupportModal(true)}
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-2 active:scale-95"
+              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all border-[0.5px] flex items-center justify-center gap-2 active:scale-95"
               style={{
                 backgroundColor: 'var(--color-bg)',
                 borderColor: 'var(--color-border)',
                 color: 'var(--color-accent)',
               }}
             >
-              <MessageCircle className="w-4 h-4" />
+              <ChatCircle weight="light" className="w-4 h-4" />
               <span>{t('account.contactSupport')}</span>
             </button>
           </div>
 
           {/* Danger Zone: Delete Single Loyalty Card */}
           <div
-            className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+            className="p-5 rounded-3xl border-[0.5px] flex flex-col gap-3"
             style={{
               backgroundColor: 'rgba(239, 68, 68, 0.05)',
               borderColor: 'rgba(239, 68, 68, 0.25)',
             }}
           >
             <h2 className="text-xs font-bold uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <Warning weight="light" className="w-4 h-4 shrink-0" />
               <span>{t('accountDeletion.dangerZone')}</span>
             </h2>
 
@@ -702,7 +691,7 @@ function AccountContent() {
               className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white transition-all shadow-xs flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
               style={{ backgroundColor: '#EF4444' }}
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash weight="light" className="w-4 h-4" />
               <span>{t('accountDeletion.deleteCard')}</span>
             </button>
           </div>
@@ -713,15 +702,15 @@ function AccountContent() {
       {/* Delete Card Confirmation Modal */}
       {showCardDeleteModal && (
         <div
-          className="fixed inset-0 z-50 backdrop-blur-xs flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 backdrop-blur-md flex items-center justify-center p-4"
           style={{ backgroundColor: 'var(--color-overlay-bg)' }}
           onClick={() => {
             if (!isDeletingCard) setShowCardDeleteModal(false);
           }}
         >
           <div
-            className="w-full max-w-xs rounded-3xl p-6 border shadow-2xl animate-in zoom-in-95 duration-150 text-center"
-            style={{ backgroundColor: 'var(--color-card-bg)', borderColor: '#EF4444' }}
+            className="glass-card w-full max-w-xs rounded-3xl p-6 border-[0.5px] shadow-2xl animate-in zoom-in-95 duration-150 text-center"
+            style={{ borderColor: 'rgba(239, 68, 68, 0.4)' }}
             onClick={(e) => e.stopPropagation()}
             dir={isRtl ? 'rtl' : 'ltr'}
           >
@@ -729,7 +718,7 @@ function AccountContent() {
               className="w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center"
               style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
             >
-              <AlertTriangle className="w-6 h-6" />
+              <Warning weight="light" className="w-6 h-6" />
             </div>
             <h3 className="text-sm font-bold text-rose-500 mb-1">
               {t('accountDeletion.deleteCard')}
@@ -743,8 +732,8 @@ function AccountContent() {
                 type="button"
                 onClick={() => setShowCardDeleteModal(false)}
                 disabled={isDeletingCard}
-                className="flex-1 py-2 rounded-xl border text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
-                style={{ borderColor: 'var(--color-border)' }}
+                className="flex-1 py-2 rounded-xl border-[0.5px] text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
+                style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
               >
                 {t('accountDeletion.cancelButton')}
               </button>
@@ -758,12 +747,12 @@ function AccountContent() {
               >
                 {isDeletingCard ? (
                   <>
-                    <RefreshCw className="w-3 h-3 animate-spin" />
+                    <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
                     <span>{t('accountDeletion.deleting')}</span>
                   </>
                 ) : (
                   <>
-                    <Trash2 className="w-3 h-3" />
+                    <Trash weight="light" className="w-3.5 h-3.5" />
                     <span>{t('accountDeletion.deleteButton')}</span>
                   </>
                 )}
@@ -776,20 +765,19 @@ function AccountContent() {
       {/* Support Modal */}
       {showSupportModal && (
         <div 
-          className="fixed inset-0 z-50 backdrop-blur-xs flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 backdrop-blur-md flex items-center justify-center p-4"
           style={{ backgroundColor: 'var(--color-overlay-bg)' }}
           onClick={() => setShowSupportModal(false)}
         >
           <div 
-            className="w-full max-w-xs rounded-3xl p-6 border shadow-2xl animate-in zoom-in-95 duration-150 text-center"
-            style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+            className="glass-card w-full max-w-xs rounded-3xl p-6 border-[0.5px] shadow-2xl animate-in zoom-in-95 duration-150 text-center"
             onClick={(e) => e.stopPropagation()}
           >
             <div 
-              className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center shadow-xs"
-              style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-accent)' }}
+              className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center border-[0.5px]"
+              style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
             >
-              <Headphones className="w-6 h-6" />
+              <Headphones weight="light" className="w-6 h-6" />
             </div>
             <h3 className="text-sm font-bold mb-1">{t('account.supportModalTitle')}</h3>
             <p className="text-xs opacity-70 mb-4">
@@ -801,27 +789,26 @@ function AccountContent() {
                 href="https://wa.me/201012345678"
                 target="_blank"
                 rel="noreferrer"
-                className="py-2.5 px-3 rounded-xl border flex items-center justify-center gap-2 transition-transform active:scale-95"
+                className="py-2.5 px-3 rounded-xl border-[0.5px] flex items-center justify-center gap-2 transition-transform active:scale-95"
                 style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
               >
-                <MessageCircle className="w-4 h-4" />
+                <ChatCircle weight="light" className="w-4 h-4" />
                 <span>{t('account.whatsappDirect')}</span>
               </a>
 
               <a
                 href="tel:+201012345678"
-                className="py-2.5 px-3 rounded-xl border flex items-center justify-center gap-2 transition-transform active:scale-95"
+                className="py-2.5 px-3 rounded-xl border-[0.5px] flex items-center justify-center gap-2 transition-transform active:scale-95"
                 style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
               >
-                <Phone className="w-4 h-4" />
+                <Phone weight="light" className="w-4 h-4" />
                 <span>{t('account.callDirect')}</span>
               </a>
             </div>
 
             <button
               onClick={() => setShowSupportModal(false)}
-              className="w-full py-2 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-xs"
-              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
+              className="ios-btn-primary w-full py-2.5 rounded-xl text-xs font-bold transition-transform active:scale-95"
             >
               {t('common.close')}
             </button>
@@ -829,7 +816,7 @@ function AccountContent() {
         </div>
       )}
 
-      <footer className="text-center text-[10px] opacity-40 py-2">
+      <footer className="text-center text-[10px] opacity-40 py-3">
         {t('account.footerProtected')}
       </footer>
     </div>
@@ -839,36 +826,10 @@ function AccountContent() {
 export default function AccountPage() {
   const { t } = useLocale();
   return (
-    <main 
-      className="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 relative overflow-hidden"
-      style={{
-        background: 'var(--page-bg-gradient)',
-        color: 'var(--color-text)'
-      }}
-    >
-      {/* Ambient background glows */}
-      <div style={{
-        position: 'absolute',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(108,99,255,0.09) 0%, transparent 70%)',
-        top: '-200px',
-        right: '-200px',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute',
-        width: '450px',
-        height: '450px',
-        background: 'radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%)',
-        bottom: '-120px',
-        left: '-120px',
-        pointerEvents: 'none',
-      }} />
-
+    <main className="page-bg min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 relative overflow-hidden">
       <Suspense fallback={
         <div className="py-20 flex flex-col items-center justify-center opacity-70">
-          <RefreshCw className="w-8 h-8 animate-spin mb-2" style={{ color: '#6C63FF' }} />
+          <CircleNotch weight="light" className="w-8 h-8 animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
           <span className="text-xs">{t('common.loading')}</span>
         </div>
       }>

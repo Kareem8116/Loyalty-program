@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  User, Mail, Phone, ShieldCheck, Lock, Edit3, X, Check, 
-  AlertCircle, ArrowRight, ArrowLeft, RefreshCw, KeyRound, Sparkles,
-  Smartphone, Eye, EyeOff, Store, ShieldAlert
-} from 'lucide-react';
+import {
+  User, EnvelopeSimple, Phone, ShieldCheck, Lock, PencilSimple, X, Check,
+  WarningCircle, ArrowRight, ArrowLeft, CircleNotch, Key, Sparkle,
+  DeviceMobile, Eye, EyeSlash, Storefront, ShieldWarning
+} from '@phosphor-icons/react';
 import { useLocale } from '@/components/LocaleProvider';
 import { 
   validateEgyptianPhone, 
@@ -560,7 +560,7 @@ export default function ProfileModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xl animate-in fade-in duration-200"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.82)' }}
+      style={{ backgroundColor: 'var(--color-overlay-bg)' }}
       onClick={handleClose}
       dir={isRtl ? 'rtl' : 'ltr'}
     >
@@ -570,7 +570,7 @@ export default function ProfileModal({
         - Desktop/Tablet (sm:): max-w-xl centered rounded-3xl with generous padding.
       */}
       <div
-        className="w-full h-[100dvh] sm:h-auto sm:max-h-[92vh] sm:max-w-xl rounded-none sm:rounded-3xl border-0 sm:border shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col overflow-hidden relative"
+        className="w-full h-[100dvh] sm:h-auto sm:max-h-[92vh] sm:max-w-xl rounded-none sm:rounded-3xl border-0 sm:border-[0.5px] glass-card shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col overflow-hidden relative"
         style={{
           backgroundColor: 'var(--color-card-bg)',
           borderColor: 'var(--color-border)',
@@ -602,7 +602,7 @@ export default function ProfileModal({
                 style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
                 aria-label="Back"
               >
-                {isRtl ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
+                {isRtl ? <ArrowRight weight="light" className="w-5 h-5" /> : <ArrowLeft weight="light" className="w-5 h-5" />}
               </button>
             )}
 
@@ -633,7 +633,7 @@ export default function ProfileModal({
             className="w-11 h-11 rounded-2xl flex items-center justify-center border hover:bg-rose-500/10 hover:border-rose-500/30 hover:text-rose-400 opacity-70 hover:opacity-100 transition-all cursor-pointer active:scale-95"
             style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
           >
-            <X className="w-5 h-5" />
+            <X weight="light" className="w-5 h-5" />
           </button>
         </div>
 
@@ -642,10 +642,10 @@ export default function ProfileModal({
           {/* Global Feedback Alert */}
           {feedbackSuccess && (
             <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm flex items-center gap-3 animate-in fade-in duration-200">
-              <Check className="w-5 h-5 shrink-0 text-emerald-400" />
+              <Check weight="light" className="w-5 h-5 shrink-0 text-emerald-400" />
               <span className="flex-1 font-bold">{feedbackSuccess}</span>
               <button onClick={() => setFeedbackSuccess(null)} className="opacity-60 hover:opacity-100 p-1">
-                <X className="w-4 h-4" />
+                <X weight="light" className="w-4 h-4" />
               </button>
             </div>
           )}
@@ -671,7 +671,7 @@ export default function ProfileModal({
                 >
                   {avatarLetter}
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[var(--color-card-bg)] flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5 text-white stroke-[3]" />
+                    <Check weight="light" className="w-3.5 h-3.5 text-white stroke-[3]" />
                   </div>
                 </div>
 
@@ -688,7 +688,7 @@ export default function ProfileModal({
                     </span>
                     {businessName && (
                       <span className="text-xs px-3 py-1 rounded-xl font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
-                        <Store className="w-3.5 h-3.5" />
+                        <Storefront weight="light" className="w-3.5 h-3.5" />
                         {businessName}
                       </span>
                     )}
@@ -709,7 +709,7 @@ export default function ProfileModal({
                     borderColor: 'var(--color-accent)',
                   }}
                 >
-                  <Edit3 className="w-4 h-4" />
+                  <PencilSimple weight="light" className="w-4 h-4" />
                   <span>{t('profileEdit.editProfile') || 'تعديل البيانات'}</span>
                 </button>
 
@@ -724,7 +724,7 @@ export default function ProfileModal({
                     color: 'var(--color-text)',
                   }}
                 >
-                  <KeyRound className="w-4 h-4 text-cyan-400" />
+                  <Key weight="light" className="w-4 h-4 text-cyan-400" />
                   <span>{t('profileEdit.changePassword') || 'تغيير كلمة المرور'}</span>
                 </button>
               </div>
@@ -737,7 +737,7 @@ export default function ProfileModal({
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 shadow-xs">
-                    <User className="w-7 h-7" />
+                    <User weight="light" className="w-7 h-7" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
@@ -755,7 +755,7 @@ export default function ProfileModal({
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 shadow-xs">
-                    <Mail className="w-7 h-7" />
+                    <EnvelopeSimple weight="light" className="w-7 h-7" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
@@ -773,7 +773,7 @@ export default function ProfileModal({
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 shadow-xs">
-                    <Phone className="w-7 h-7" />
+                    <Phone weight="light" className="w-7 h-7" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
@@ -791,7 +791,7 @@ export default function ProfileModal({
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 shadow-xs">
-                    <ShieldCheck className="w-7 h-7" />
+                    <ShieldCheck weight="light" className="w-7 h-7" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
@@ -832,7 +832,7 @@ export default function ProfileModal({
             <div className="space-y-5">
               {formError && (
                 <div className="p-4 rounded-2xl border text-sm text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 shrink-0" />
+                  <WarningCircle weight="light" className="w-5 h-5 shrink-0" />
                   <span className="font-semibold">{formError}</span>
                 </div>
               )}
@@ -840,7 +840,7 @@ export default function ProfileModal({
               {/* Name Input */}
               <div className="space-y-2">
                 <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                  <User className="w-4 h-4 text-amber-400" />
+                  <User weight="light" className="w-4 h-4 text-amber-400" />
                   <span>{t('profileEdit.fullName') || 'الاسم الكامل'}</span>
                 </label>
                 <input
@@ -861,7 +861,7 @@ export default function ProfileModal({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-indigo-400" />
+                    <EnvelopeSimple weight="light" className="w-4 h-4 text-indigo-400" />
                     <span>{t('profileEdit.email') || 'البريد الإلكتروني'}</span>
                   </label>
                   {isEmailChanged && (
@@ -889,7 +889,7 @@ export default function ProfileModal({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-emerald-400" />
+                    <Phone weight="light" className="w-4 h-4 text-emerald-400" />
                     <span>{t('profileEdit.phoneNumber') || 'رقم الموبايل'}</span>
                   </label>
                   {isPhoneChanged && (
@@ -916,7 +916,7 @@ export default function ProfileModal({
               {/* OTP Notice Info Box */}
               {(isEmailChanged || isPhoneChanged) && (
                 <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300 flex items-start gap-3 leading-relaxed">
-                  <KeyRound className="w-5 h-5 shrink-0 text-indigo-400 mt-0.5" />
+                  <Key weight="light" className="w-5 h-5 shrink-0 text-indigo-400 mt-0.5" />
                   <div>
                     <p className="font-bold">
                       {isEmailChanged && isPhoneChanged
@@ -947,12 +947,12 @@ export default function ProfileModal({
                 >
                   {isSaving ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <CircleNotch weight="light" className="w-4 h-4 animate-spin" />
                       <span>{t('profileEdit.saving') || 'جاري الحفظ...'}</span>
                     </>
                   ) : (
                     <>
-                      <Check className="w-4 h-4" />
+                      <Check weight="light" className="w-4 h-4" />
                       <span>{t('profileEdit.saveChanges') || 'حفظ التعديلات'}</span>
                     </>
                   )}
@@ -979,13 +979,13 @@ export default function ProfileModal({
             <form onSubmit={handleRequestPasswordOtp} className="space-y-5">
               {pwdError && (
                 <div className="p-4 rounded-2xl border text-sm text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 shrink-0" />
+                  <WarningCircle weight="light" className="w-5 h-5 shrink-0" />
                   <span className="font-semibold">{pwdError}</span>
                 </div>
               )}
 
               <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-300 flex items-start gap-3">
-                <ShieldCheck className="w-5 h-5 shrink-0 text-cyan-400 mt-0.5" />
+                <ShieldCheck weight="light" className="w-5 h-5 shrink-0 text-cyan-400 mt-0.5" />
                 <div>
                   <h3 className="font-bold text-sm">
                     {t('profileEdit.securityTitle') || 'تأمين كلمة المرور برمز OTP'}
@@ -1001,7 +1001,7 @@ export default function ProfileModal({
               {/* New Password Input */}
               <div className="space-y-2">
                 <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-cyan-400" />
+                  <Lock weight="light" className="w-4 h-4 text-cyan-400" />
                   <span>{t('profileEdit.newPassword') || 'كلمة المرور الجديدة'}</span>
                 </label>
                 <div className="relative">
@@ -1022,7 +1022,7 @@ export default function ProfileModal({
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 end-0 px-4 flex items-center text-gray-400 hover:text-white"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? <EyeSlash weight="light" className="w-4 h-4" /> : <Eye weight="light" className="w-4 h-4" />}
                   </button>
                 </div>
               </div>
@@ -1030,7 +1030,7 @@ export default function ProfileModal({
               {/* Confirm Password Input */}
               <div className="space-y-2">
                 <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                  <ShieldCheck weight="light" className="w-4 h-4 text-cyan-400" />
                   <span>{t('profileEdit.confirmPassword') || 'تأكيد كلمة المرور'}</span>
                 </label>
                 <input
@@ -1065,7 +1065,7 @@ export default function ProfileModal({
                     }`}
                   >
                     <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                      <Smartphone className="w-5 h-5" />
+                      <DeviceMobile weight="light" className="w-5 h-5" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <span className="text-xs font-bold block">
@@ -1088,7 +1088,7 @@ export default function ProfileModal({
                     }`}
                   >
                     <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
-                      <Mail className="w-5 h-5" />
+                      <EnvelopeSimple weight="light" className="w-5 h-5" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <span className="text-xs font-bold block">
@@ -1104,7 +1104,7 @@ export default function ProfileModal({
 
               {/* Rate limit note */}
               <p className="text-xs opacity-60 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                <Sparkle weight="light" className="w-3.5 h-3.5 text-cyan-400" />
                 <span>{t('profileEdit.rateLimitNotice') || 'مسموح بـ 5 رموز تحقق كحد أقصى كل 15 دقيقة.'}</span>
               </p>
 
@@ -1122,12 +1122,12 @@ export default function ProfileModal({
                 >
                   {isRequestingPwdOtp ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <CircleNotch weight="light" className="w-4 h-4 animate-spin" />
                       <span>{t('profileEdit.saving') || 'جاري إرسال الرمز...'}</span>
                     </>
                   ) : (
                     <>
-                      <KeyRound className="w-4 h-4" />
+                      <Key weight="light" className="w-4 h-4" />
                       <span>{t('profileEdit.sendPasswordOtpBtn') || 'إرسال رمز التحقق لتغيير كلمة المرور'}</span>
                     </>
                   )}
@@ -1162,7 +1162,7 @@ export default function ProfileModal({
                     borderColor: 'rgba(99, 102, 241, 0.3)'
                   }}
                 >
-                  <KeyRound className="w-8 h-8" />
+                  <Key weight="light" className="w-8 h-8" />
                 </div>
 
                 <h3 className="text-lg sm:text-xl font-black">
@@ -1183,7 +1183,7 @@ export default function ProfileModal({
               {/* Error message */}
               {otpError && (
                 <div className="p-4 rounded-2xl border text-sm text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 shrink-0" />
+                  <WarningCircle weight="light" className="w-5 h-5 shrink-0" />
                   <span className="font-semibold">{otpError}</span>
                 </div>
               )}
@@ -1193,7 +1193,7 @@ export default function ProfileModal({
                 <div className="p-4 rounded-3xl bg-indigo-500/10 border border-indigo-500/30 animate-in fade-in duration-300 space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-indigo-400 font-bold text-xs">
-                      <Smartphone className="w-4 h-4" />
+                      <DeviceMobile weight="light" className="w-4 h-4" />
                       <span>{t('profileEdit.simulatedSmsTitle') || 'رسالة SMS تجريبية (بيئة الاختبار):'}</span>
                     </div>
                     <span className="text-xs px-2 py-0.5 rounded-lg font-mono bg-indigo-500/20 text-indigo-300">
@@ -1212,7 +1212,7 @@ export default function ProfileModal({
                       }}
                       className="text-xs py-1.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-transform active:scale-95 cursor-pointer flex items-center gap-1.5 shadow-sm"
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkle weight="light" className="w-3.5 h-3.5" />
                       <span>{t('profileEdit.fillOtp') || 'إدراج الرمز تلقائياً'}</span>
                     </button>
                   </div>
@@ -1254,12 +1254,12 @@ export default function ProfileModal({
                 >
                   {isVerifyingOtp ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <CircleNotch weight="light" className="w-4 h-4 animate-spin" />
                       <span>{t('profileEdit.saving') || 'جاري التحقق...'}</span>
                     </>
                   ) : (
                     <>
-                      <Check className="w-4 h-4" />
+                      <Check weight="light" className="w-4 h-4" />
                       <span>{t('profileEdit.confirmBtn') || 'تأكيد الرمز والحفظ'}</span>
                     </>
                   )}
@@ -1278,7 +1278,7 @@ export default function ProfileModal({
                       color: resendCooldown > 0 ? 'var(--color-text)' : '#6366F1',
                     }}
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 ${isResending ? 'animate-spin' : ''}`} />
+                    <CircleNotch weight="light" className={`w-3.5 h-3.5 ${isResending ? 'animate-spin' : ''}`} />
                     <span>
                       {resendCooldown > 0
                         ? (t('profileEdit.resendIn') || 'إعادة الإرسال بعد {seconds} ثانية').replace('{seconds}', String(resendCooldown))

@@ -5,8 +5,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
   ArrowRight, User, Phone, Gift, Check, 
-  AlertCircle, RefreshCw, ShieldAlert, Sparkles, ExternalLink 
-} from 'lucide-react';
+  WarningCircle, CircleNotch, ShieldWarning, Sparkle, ArrowSquareOut 
+} from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLocale } from '@/components/LocaleProvider';
@@ -145,18 +145,18 @@ function SignupContent() {
   return (
     <div className="w-full max-w-sm flex flex-col flex-1 py-2 relative z-10">
       {/* Header */}
-      <header className="flex items-center justify-between w-full pb-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
+      <header className="flex items-center justify-between w-full pb-4">
         <Link
           href="/"
           aria-label={t('common.back')}
-          className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition-transform active:scale-95"
+          className="w-10 h-10 rounded-full flex items-center justify-center border transition-transform active:scale-95"
           style={{
-            backgroundColor: 'var(--color-card-bg)',
-            color: 'var(--color-accent)',
+            backgroundColor: 'var(--color-input-bg)',
+            color: 'var(--color-text)',
             borderColor: 'var(--color-border)',
           }}
         >
-          <ArrowRight className={`w-5 h-5 ${isRtl ? '' : 'rotate-180'}`} />
+          <ArrowRight size={18} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
         </Link>
         <span className="text-sm font-bold">{t('signup.title')}</span>
         <div className="flex items-center gap-2">
@@ -167,7 +167,7 @@ function SignupContent() {
 
       {isLoadingTenant ? (
         <div className="my-auto py-16 flex flex-col items-center justify-center opacity-70">
-          <RefreshCw className="w-8 h-8 animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
+          <CircleNotch size={32} weight="light" className="animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
           <span className="text-xs">{t('common.loading')}</span>
         </div>
       ) : isSelfSignupEnabled === false ? (
@@ -181,7 +181,7 @@ function SignupContent() {
               color: 'var(--color-accent)'
             }}
           >
-            <ShieldAlert className="w-7 h-7" />
+            <ShieldWarning size={28} weight="light" />
           </div>
 
           <div className="flex flex-col gap-1.5 px-4">
@@ -193,8 +193,7 @@ function SignupContent() {
 
           <Link
             href="/"
-            className="mt-2 py-2.5 px-6 rounded-2xl text-xs font-bold transition-transform active:scale-95 shadow-sm"
-            style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
+            className="ios-btn-primary mt-2"
           >
             {t('signup.backHome')}
           </Link>
@@ -203,19 +202,16 @@ function SignupContent() {
         /* Active Self-Signup Form */
         <div className="flex flex-col gap-4 my-auto py-4">
           {/* Business Welcome Badge */}
-          <div 
-            className="p-4 rounded-3xl border shadow-sm flex items-center gap-3"
-            style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
-          >
+          <div className="glass-card p-4 flex items-center gap-3">
             <div 
-              className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border font-bold"
+              className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border"
               style={{
-                backgroundColor: 'rgba(var(--color-accent-rgb, 198, 124, 78), 0.1)',
+                backgroundColor: 'rgba(125, 125, 125, 0.08)',
                 borderColor: 'var(--color-border)',
                 color: 'var(--color-accent)',
               }}
             >
-              <Sparkles className="w-5 h-5" />
+              <Sparkle size={20} weight="light" />
             </div>
             <div>
               <span className="text-[11px] opacity-60 block">{business?.name || t('customer.defaultBusiness')}</span>
@@ -234,7 +230,7 @@ function SignupContent() {
               }}
             >
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
+                <WarningCircle size={18} weight="light" className="shrink-0" />
                 <span>{errorMessage}</span>
               </div>
               {existingQrToken && (
@@ -245,7 +241,7 @@ function SignupContent() {
                   style={{ borderColor: 'var(--color-error-border)', backgroundColor: 'var(--color-card-bg)' }}
                 >
                   <span>{t('signup.viewExistingCard')}</span>
-                  <ExternalLink className="w-3 h-3" />
+                  <ArrowSquareOut size={14} weight="light" />
                 </Link>
               )}
             </div>
@@ -260,7 +256,7 @@ function SignupContent() {
                 borderColor: 'var(--color-success-border)',
               }}
             >
-              <Check className="w-4 h-4 shrink-0" />
+              <Check size={18} weight="light" className="shrink-0" />
               <span>{t('signup.successRedirect')}</span>
             </div>
           )}
@@ -268,12 +264,11 @@ function SignupContent() {
           {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className="p-6 rounded-3xl border shadow-2xl flex flex-col gap-4 backdrop-blur-xl relative z-10"
-            style={{ backgroundColor: 'rgba(16, 14, 28, 0.75)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
+            className="glass-card p-6 flex flex-col gap-4 relative z-10"
           >
             {/* Full Name */}
             <div>
-              <label className="block text-xs opacity-75 font-medium mb-1">
+              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-name-input">
                 {t('signup.nameLabel')}
               </label>
               <div className="relative flex items-center">
@@ -284,13 +279,12 @@ function SignupContent() {
                   placeholder={t('signup.namePlaceholder')}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-none transition-all"
-                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', color: '#fff' }}
+                  className="ios-input"
                 />
-                <User className={`w-4 h-4 absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                <User size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
               </div>
               {name && !validateName(name).isValid && (
-                <p className="text-[11px] text-red-400 mt-1 font-medium">
+                <p className="text-[11px] text-red-500 mt-1 font-medium">
                   {t(`validation.${validateName(name).errorKey}`)}
                 </p>
               )}
@@ -298,7 +292,7 @@ function SignupContent() {
 
             {/* Phone Number */}
             <div>
-              <label className="block text-xs opacity-75 font-medium mb-1">
+              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-phone-input">
                 {t('signup.phoneLabel')}
               </label>
               <div className="relative flex items-center">
@@ -311,13 +305,12 @@ function SignupContent() {
                   placeholder={t('signup.phonePlaceholder')}
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-none font-mono transition-all"
-                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', color: '#fff' }}
+                  className="ios-input font-mono"
                 />
-                <Phone className={`w-4 h-4 absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                <Phone size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
               </div>
               {phoneNumber && !validateEgyptianPhone(phoneNumber).isValid && (
-                <p className="text-[11px] text-red-400 mt-1 font-medium">
+                <p className="text-[11px] text-red-500 mt-1 font-medium">
                   {t(`validation.${validateEgyptianPhone(phoneNumber).errorKey}`)}
                 </p>
               )}
@@ -325,7 +318,7 @@ function SignupContent() {
 
             {/* Referral Code (Optional) */}
             <div>
-              <label className="block text-xs opacity-75 font-medium mb-1">
+              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-referral-input">
                 {t('signup.referralCodeLabel')}
               </label>
               <div className="relative flex items-center">
@@ -335,17 +328,16 @@ function SignupContent() {
                   placeholder={t('signup.referralCodePlaceholder')}
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-none uppercase font-mono transition-all"
-                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', color: '#fff' }}
+                  className="ios-input uppercase font-mono"
                 />
-                <Gift className={`w-4 h-4 absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                <Gift size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
               </div>
             </div>
 
-            {/* 13.3 & 21.1: Mandatory Consent Checkbox */}
+            {/* Mandatory Consent Checkbox */}
             <div 
               className="p-3 rounded-2xl border flex items-start gap-2.5"
-              style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
+              style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)' }}
             >
               <input
                 type="checkbox"
@@ -353,7 +345,7 @@ function SignupContent() {
                 checked={consentGiven}
                 onChange={(e) => setConsentGiven(e.target.checked)}
                 className="mt-1 w-4 h-4 rounded cursor-pointer shrink-0"
-                style={{ accentColor: '#6C63FF' }}
+                style={{ accentColor: 'var(--color-accent)' }}
               />
               <label 
                 htmlFor="signup-consent-checkbox" 
@@ -368,11 +360,11 @@ function SignupContent() {
               type="submit"
               id="signup-submit-btn"
               disabled={isSubmitting || !name.trim() || !phoneNumber.trim() || !consentGiven}
-              className="w-full py-3 px-4 rounded-xl text-xs font-bold transition-all shadow-lg mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50 btn-gradient"
+              className="ios-btn-primary w-full mt-1"
             >
               {isSubmitting ? (
                 <>
-                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <CircleNotch size={18} weight="light" className="animate-spin" />
                   <span>{t('signup.submitting')}</span>
                 </>
               ) : (
@@ -388,34 +380,10 @@ function SignupContent() {
 
 export default function SignupPage() {
   return (
-    <main 
-      className="min-h-screen p-4 flex flex-col items-center justify-center relative overflow-hidden"
-      style={{
-        background: 'var(--page-bg-gradient)',
-        color: 'var(--color-text)'
-      }}
-    >
-      <div style={{
-        position: 'absolute',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(108,99,255,0.09) 0%, transparent 70%)',
-        top: '-200px',
-        right: '-200px',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute',
-        width: '450px',
-        height: '450px',
-        background: 'radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%)',
-        bottom: '-120px',
-        left: '-120px',
-        pointerEvents: 'none',
-      }} />
+    <main className="page-bg min-h-screen p-4 flex flex-col items-center justify-center relative overflow-hidden">
       <Suspense fallback={
         <div className="flex flex-col items-center justify-center py-16 opacity-70">
-          <RefreshCw className="w-8 h-8 animate-spin mb-2" style={{ color: '#6C63FF' }} />
+          <CircleNotch size={32} weight="light" className="animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
           <span className="text-xs">Loading...</span>
         </div>
       }>

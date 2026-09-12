@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Download, X, Share, PlusSquare, Sparkles, Check } from 'lucide-react';
+import { DownloadSimple, X, ShareNetwork, PlusSquare, Sparkle, Check } from '@phosphor-icons/react';
 import { useLocale } from '@/components/LocaleProvider';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -141,7 +141,7 @@ export default function PwaRegister() {
           aria-label="Dismiss"
           className="absolute top-3 end-3 w-8 h-8 rounded-full flex items-center justify-center opacity-60 hover:opacity-100 hover:bg-white/10 transition-colors cursor-pointer"
         >
-          <X className="w-4 h-4" />
+          <X weight="light" className="w-4 h-4" />
         </button>
 
         {/* Main Content */}
@@ -153,7 +153,7 @@ export default function PwaRegister() {
               borderColor: 'rgba(255, 255, 255, 0.2)' 
             }}
           >
-            <Download className="w-6 h-6 text-white" />
+            <DownloadSimple weight="light" className="w-6 h-6 text-white" />
           </div>
 
           <div className="min-w-0">
@@ -179,13 +179,13 @@ export default function PwaRegister() {
             </p>
             <div className="space-y-1.5 opacity-90">
               <div className="flex items-center gap-2">
-                <Share className="w-4 h-4 text-indigo-400 shrink-0" />
+                <ShareNetwork weight="light" className="w-4 h-4 text-indigo-400 shrink-0" />
                 <span>
                   {isRtl ? '1. اضغط على زر المشاركة (Share) في أسفل المتصفح' : '1. Tap the Share button at the bottom'}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <PlusSquare className="w-4 h-4 text-indigo-400 shrink-0" />
+                <PlusSquare weight="light" className="w-4 h-4 text-indigo-400 shrink-0" />
                 <span>
                   {isRtl ? '2. مرر للأسفل واختر "إضافة إلى الصفحة الرئيسية"' : '2. Scroll down and tap "Add to Home Screen"'}
                 </span>
@@ -205,7 +205,7 @@ export default function PwaRegister() {
               color: '#FFFFFF',
             }}
           >
-            <Download className="w-4 h-4" />
+            <DownloadSimple weight="light" className="w-4 h-4" />
             <span>
               {isIos 
                 ? (isRtl ? 'عرض خطوات التثبيت' : 'View Install Guide')
