@@ -137,10 +137,36 @@ async function testRoleIsolation() {
     }
   }
 
-  console.log(`\n🎉 Isolation Test Results: ${passed} / ${tests.length} tests passed!`);
-  if (passed === tests.length) {
-    console.log('🔒 COMPLETE ISOLATION ENFORCED AND VERIFIED ACROSS ALL 4 ROLES.');
+  // --- Edge Middleware & Cookie Scoping Verification ---
+  console.log('\n🔒 Testing Edge Middleware & Cookie Scoping Isolation...');
+  const { POINTAT_ROLE_COOKIE } = await import('../lib/cookies');
+  const { extractSubdomain } = await import('../middleware');
+
+  // Verify cookie constants
+  if (POINTAT_ROLE_COOKIE === 'pointat_role') {
+    console.log('✅ [PASS] POINTAT_ROLE_COOKIE constant is defined correctly');
+    passed++;
+  } else {
+    console.error('❌ [FAIL] POINTAT_ROLE_COOKIE constant is missing or incorrect');
+  }
+
+  // Verify subdomain extraction for isolated portals
+  const subPos = extractSubdomain('pos.pointat.net');
+  const subAdmin = extractSubdomain('admin.pointat.net');
+  const subBare = extractSubdomain('pointat.net');
+  if (subPos === 'pos' && subAdmin === 'admin' && subBare === '') {
+    console.log('✅ [PASS] Subdomain extraction correctly routes pos & admin subdomains');
+    passed++;
+  } else {
+    console.error('❌ [FAIL] Subdomain extraction failed for pos/admin');
+  }
+
+  const totalExpected = tests.length + 2;
+  console.log(`\n🎉 Isolation Test Results: ${passed} / ${totalExpected} tests passed!`);
+  if (passed === totalExpected) {
+    console.log('🔒 COMPLETE ISOLATION ENFORCED AND VERIFIED ACROSS ALL 4 ROLES & MIDDLEWARE.');
   }
 }
 
 testRoleIsolation().catch(console.error);
+

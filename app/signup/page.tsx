@@ -11,6 +11,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLocale } from '@/components/LocaleProvider';
 import { validateEgyptianPhone, validateName } from '@/lib/validation';
+import { setClientRoleCookie } from '@/lib/cookies';
 
 function SignupContent() {
   const router = useRouter();
@@ -119,6 +120,7 @@ function SignupContent() {
       }
 
       setIsSuccess(true);
+      setClientRoleCookie('customer');
       if (data.requiresVerification && data.email) {
         const phoneParam = phoneVal.cleanPhone ? `&phone=${encodeURIComponent(phoneVal.cleanPhone)}` : '';
         const otpParam = data.simulatedOtp ? `&simulatedOtp=${encodeURIComponent(data.simulatedOtp)}` : '';

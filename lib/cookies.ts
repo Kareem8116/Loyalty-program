@@ -31,3 +31,41 @@ export function applyTenantCookieScoping(cookie: ResponseCookie): ResponseCookie
     path: '/',
   };
 }
+
+/**
+ * Cookie Name for Role Isolation & Edge Guarding
+ */
+export const POINTAT_ROLE_COOKIE = 'pointat_role';
+
+export type PortalRole = 'customer' | 'cashier' | 'owner' | 'branch_admin' | 'super_admin';
+
+/**
+ * Client-side helper to set the active portal role cookie.
+ * This cookie is read by Next.js Edge Middleware to guard /admin, /cashier, and /super-admin.
+ */
+export function setClientRoleCookie(role: PortalRole | string, maxAgeDays = 30): void {
+  if (typeof document === 'undefined') return;
+  const maxAge = maxAgeDays * 24 * 60 * 60;
+  const isSecure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  document.cookie = `${POINTAT_ROLE_COOKIE}=${encodeURIComponent(role)}; path=/; max-age=${maxAge}; SameSite=Lax${isSecure ? '; Secure' : ''}`;
+}
+
+/**
+ * Client-side helper to get the active portal role cookie.
+ */
+export function getClientRoleCookie(): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith(`${POINTAT_ROLE_COOKIE}=`));
+  return match ? decodeURIComponent(match.split('=')[1]) : null;
+}
+
+/**
+ * Client-side helper to clear the active portal role cookie upon sign-out.
+ */
+export function clearClientRoleCookie(): void {
+  if (typeof document === 'undefined') return;
+  document.cookie = `${POINTAT_ROLE_COOKIE}=; path=/; max-age=0; SameSite=Lax`;
+}
+

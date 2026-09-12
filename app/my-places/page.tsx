@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 import { User, Trash, Warning, X, CaretRight, LockKey, LockKeyOpen, ShieldCheck, ArrowsClockwise, Plus, SignOut } from '@phosphor-icons/react';
 import { validateEgyptianPhone, validatePin } from '@/lib/validation';
+import { setClientRoleCookie, clearClientRoleCookie } from '@/lib/cookies';
 import ProfileModal from '@/components/ProfileModal';
 
 const supabase = createClient(
@@ -341,6 +342,7 @@ export default function MyPlacesPage() {
         throw new Error(data.error || 'فشل حذف الحساب');
       }
       await supabase.auth.signOut();
+      clearClientRoleCookie();
       router.push('/');
     } catch (err: any) {
       setDeleteError(err.message || 'حدث خطأ أثناء محاولة حذف الحساب');
@@ -357,6 +359,7 @@ export default function MyPlacesPage() {
         return;
       }
 
+      setClientRoleCookie('customer');
       setUserEmail(session.user.email || '');
       setJwtToken(session.access_token);
       loadPlaces(session.access_token);
@@ -401,6 +404,7 @@ export default function MyPlacesPage() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    clearClientRoleCookie();
     router.push('/login');
   };
 

@@ -15,6 +15,7 @@ import OfflineSyncBanner from '@/components/OfflineSyncBanner';
 import ProfileModal from '@/components/ProfileModal';
 import { useLocale } from '@/components/LocaleProvider';
 import { supabase } from '@/lib/supabase';
+import { setClientRoleCookie, clearClientRoleCookie } from '@/lib/cookies';
 
 export default function CashierPage() {
   const router = useRouter();
@@ -54,11 +55,12 @@ export default function CashierPage() {
 
         // COMPLETE ISOLATION: Cashier screen is STRICTLY for Cashiers
         if (!userRole || userRole.role !== 'cashier') {
-          await supabase.auth.signOut();
+          // Non-destructive: Preserve existing user session and redirect safely
           router.replace('/cashier/login');
           return;
         }
 
+        setClientRoleCookie('cashier');
         setJwtToken(session.access_token);
         setCashierEmail(session.user.email || '');
       } catch (err) {
@@ -95,6 +97,7 @@ export default function CashierPage() {
       localStorage.removeItem('cashier_role');
       localStorage.removeItem('admin_business_id');
       localStorage.removeItem('admin_role');
+      clearClientRoleCookie();
       router.replace('/cashier/login');
     } catch (err: any) {
       setDeleteCashierError(err.message || t('accountDeletion.deleteError'));
@@ -111,6 +114,7 @@ export default function CashierPage() {
       localStorage.removeItem('cashier_role');
       localStorage.removeItem('admin_business_id');
       localStorage.removeItem('admin_role');
+      clearClientRoleCookie();
     } finally {
       router.push('/cashier/login');
     }

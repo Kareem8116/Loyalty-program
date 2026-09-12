@@ -7,6 +7,7 @@ import { Lock, EnvelopeSimple, ArrowRight, QrCode, WarningCircle, CircleNotch, S
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
+import { setClientRoleCookie } from '@/lib/cookies';
 import { useLocale } from '@/components/LocaleProvider';
 
 export default function CashierLoginPage() {
@@ -50,6 +51,7 @@ export default function CashierLoginPage() {
       if (userRole.business_id) localStorage.setItem('cashier_business_id', userRole.business_id);
       if (userRole.branch_id) localStorage.setItem('cashier_branch_id', userRole.branch_id);
       localStorage.setItem('cashier_role', userRole.role);
+      setClientRoleCookie('cashier');
 
       router.push('/cashier');
     } catch (err: any) {

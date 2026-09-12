@@ -11,6 +11,7 @@ import {
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
+import { setClientRoleCookie, clearClientRoleCookie } from '@/lib/cookies';
 import { useLocale } from '@/components/LocaleProvider';
 import { checkColorContrast } from '@/lib/branding';
 import { 
@@ -376,11 +377,12 @@ export default function SuperAdminDashboard() {
         .maybeSingle();
 
       if (!userRole || userRole.role !== 'super_admin') {
-        await supabase.auth.signOut();
+        // Non-destructive: Preserve existing user session and redirect safely
         router.replace('/super-admin/login');
         return;
       }
 
+      setClientRoleCookie('super_admin');
       setJwtToken(session.access_token);
       setSuperAdminEmail(session.user.email || '');
       setIsAuthed(true);
@@ -557,6 +559,7 @@ export default function SuperAdminDashboard() {
   // Logout
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    clearClientRoleCookie();
     router.replace('/super-admin/login');
   };
 
@@ -596,6 +599,7 @@ export default function SuperAdminDashboard() {
       }
 
       await supabase.auth.signOut();
+      clearClientRoleCookie();
       router.replace('/super-admin/login');
     } catch (err: any) {
       setDeleteSuperAdminError(err.message || (isRtl ? 'حدث خطأ أثناء حذف الحساب' : 'An error occurred'));

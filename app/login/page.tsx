@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { Star, CaretRight, CircleNotch, ArrowRight } from '@phosphor-icons/react';
+import { setClientRoleCookie } from '@/lib/cookies';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -68,6 +69,7 @@ export default function CustomerLoginPage() {
         return;
       }
 
+      setClientRoleCookie('customer');
       router.push('/my-places');
     } catch {
       setError('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.');

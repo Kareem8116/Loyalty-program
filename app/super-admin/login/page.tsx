@@ -7,6 +7,7 @@ import { Lock, EnvelopeSimple, ArrowRight, ArrowLeft, ShieldWarning, CircleNotch
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
+import { setClientRoleCookie } from '@/lib/cookies';
 import { useLocale } from '@/components/LocaleProvider';
 
 export default function SuperAdminLoginPage() {
@@ -67,6 +68,7 @@ export default function SuperAdminLoginPage() {
         }
       }
 
+      setClientRoleCookie('super_admin');
       router.push('/super-admin');
     } catch (err: any) {
       setErrorMsg(err.message || t('common.error'));

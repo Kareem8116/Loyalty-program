@@ -12,6 +12,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLocale } from '@/components/LocaleProvider';
 import { supabase } from '@/lib/supabase';
+import { setClientRoleCookie } from '@/lib/cookies';
 import { extractCustomerToken } from '@/lib/tokens';
 import { 
   validateEgyptianPhone, 
@@ -113,6 +114,7 @@ export default function HomeContent({
         return;
       }
 
+      setClientRoleCookie('customer');
       router.push('/my-places');
     } catch {
       setLoginError(t('common.error'));
@@ -193,6 +195,7 @@ export default function HomeContent({
       }
 
       setSignupSuccess(true);
+      setClientRoleCookie('customer');
 
       if (data.requiresVerification && signupEmail.trim()) {
         const phoneParam = cleanPhone ? `&phone=${encodeURIComponent(cleanPhone)}` : '';

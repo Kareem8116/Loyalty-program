@@ -13,6 +13,7 @@ import {
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
+import { setClientRoleCookie, clearClientRoleCookie } from '@/lib/cookies';
 import { useLocale } from '@/components/LocaleProvider';
 import { checkColorContrast } from '@/lib/branding';
 import { 
@@ -226,7 +227,7 @@ export default function AdminDashboardPage() {
         const allowedAdminRoles = ['owner', 'branch_admin'];
         if (!userRoles || !allowedAdminRoles.includes(userRoles.role)) {
           // Cashier, customer, or unauthorized role attempted to access /admin
-          await supabase.auth.signOut();
+          // Non-destructive: Preserve existing user session and redirect safely
           router.replace('/admin/login');
           return;
         }
@@ -238,13 +239,13 @@ export default function AdminDashboardPage() {
         }
 
         if (!activeBizId) {
-          await supabase.auth.signOut();
           router.replace('/admin/login');
           return;
         }
 
         setBusinessId(activeBizId);
         setUserRole(role);
+        setClientRoleCookie(role);
         setJwtToken(session.access_token);
         setAdminEmail(session.user.email || '');
 
@@ -1313,6 +1314,7 @@ export default function AdminDashboardPage() {
     await supabase.auth.signOut();
     localStorage.removeItem('admin_business_id');
     localStorage.removeItem('admin_role');
+    clearClientRoleCookie();
     router.push('/admin/login');
   };
 
@@ -1338,6 +1340,7 @@ export default function AdminDashboardPage() {
       await supabase.auth.signOut();
       localStorage.removeItem('admin_business_id');
       localStorage.removeItem('admin_role');
+      clearClientRoleCookie();
       router.push('/admin/login');
     } catch (err: any) {
       setDeleteAdminError(err.message || t('accountDeletion.deleteError'));

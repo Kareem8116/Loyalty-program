@@ -7,6 +7,7 @@ import { Lock, EnvelopeSimple, ArrowRight, Buildings, ChartBar, CircleNotch, War
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { supabase } from '@/lib/supabase';
+import { setClientRoleCookie } from '@/lib/cookies';
 import { useLocale } from '@/components/LocaleProvider';
 
 export default function AdminLoginPage() {
@@ -81,6 +82,7 @@ export default function AdminLoginPage() {
         localStorage.setItem('admin_business_id', userRole.business_id);
       }
       localStorage.setItem('admin_role', userRole.role);
+      setClientRoleCookie(userRole.role);
 
       router.push('/admin');
     } catch (err: any) {

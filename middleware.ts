@@ -91,6 +91,9 @@ export function extractSubdomain(host: string): string {
   return '';
 }
 
+import { POINTAT_ROLE_COOKIE } from './lib/cookies';
+
+// export function middleware
 export async function middleware(request: NextRequest) {
   // Support both direct host and proxy/forwarded headers (Cloudflare, Vercel, local test suites)
   const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
@@ -101,16 +104,73 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-subdomain', subdomain);
 
-  // Phase 9.3: Block access to disabled businesses
-  // Only check if there is an actual subdomain (skip bare domain, super-admin, api routes)
   const pathname = request.nextUrl.pathname;
+
+  // ---------------------------------------------------------------------------
+  // 1. Subdomain Portal Routing (POS / Admin Subdomain Aliases)
+  // ---------------------------------------------------------------------------
+  if (subdomain === 'pos' || subdomain === 'cashier') {
+    if (pathname === '/' || pathname === '/login') {
+      const posUrl = new URL('/cashier', request.url);
+      return NextResponse.redirect(posUrl);
+    }
+  } else if (subdomain === 'admin' || subdomain === 'dashboard') {
+    if (pathname === '/' || pathname === '/login') {
+      const adminUrl = new URL('/admin', request.url);
+      return NextResponse.redirect(adminUrl);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 2. Edge Route Guarding — Role Isolation for Admin / Cashier / Super Admin
+  // (Prevents unauthenticated or mismatched users from downloading portal bundles)
+  // Skip API routes, _next internals, and static assets
+  // ---------------------------------------------------------------------------
+  const isApiRoute = pathname.startsWith('/api/');
+  const isStatic = pathname.startsWith('/_next') || pathname.includes('.');
+
+  if (!isApiRoute && !isStatic) {
+    const roleCookie = request.cookies.get(POINTAT_ROLE_COOKIE)?.value;
+
+    // A) Super Admin Portal Guard
+    if (pathname.startsWith('/super-admin')) {
+      const isSuperAdminLogin = pathname === '/super-admin/login';
+      if (!isSuperAdminLogin && roleCookie !== 'super_admin') {
+        const loginUrl = new URL('/super-admin/login', request.url);
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+
+    // B) Store Admin Portal Guard
+    else if (pathname.startsWith('/admin')) {
+      const isAdminLogin = pathname === '/admin/login';
+      const allowedAdminRoles = ['owner', 'branch_admin'];
+      if (!isAdminLogin && (!roleCookie || !allowedAdminRoles.includes(roleCookie))) {
+        const loginUrl = new URL('/admin/login', request.url);
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+
+    // C) Cashier Portal Guard
+    else if (pathname.startsWith('/cashier')) {
+      const isCashierLogin = pathname === '/cashier/login';
+      if (!isCashierLogin && roleCookie !== 'cashier') {
+        const loginUrl = new URL('/cashier/login', request.url);
+        return NextResponse.redirect(loginUrl);
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 3. Phase 9.3: Block access to disabled businesses
+  // ---------------------------------------------------------------------------
   const isSystemRoute = pathname.startsWith('/super-admin') ||
     pathname.startsWith('/api/super-admin') ||
     pathname.startsWith('/business-disabled') ||
     pathname.startsWith('/monitoring-tunnel') ||
     pathname.startsWith('/_next');
 
-  if (subdomain && !isSystemRoute) {
+  if (subdomain && !isSystemRoute && subdomain !== 'pos' && subdomain !== 'cashier' && subdomain !== 'admin' && subdomain !== 'dashboard') {
     try {
       const active = await isBusinessActive(subdomain);
       if (active === false) {
@@ -134,9 +194,9 @@ export async function middleware(request: NextRequest) {
   // Echo the subdomain in response header for downstream verification and caching
   response.headers.set('x-subdomain', subdomain);
 
-  // Phase 8.6: Cookie Scoping
-  // Inspect request cookies for auth session cookies (e.g. Supabase tokens sb-*, auth tokens)
-  // Re-scope them to ensure they never leak to parent domain or sibling tenants.
+  // ---------------------------------------------------------------------------
+  // 4. Phase 8.6: Cookie Scoping
+  // ---------------------------------------------------------------------------
   const isProd = process.env.NODE_ENV === 'production';
   const cookies = request.cookies.getAll();
 
@@ -162,6 +222,7 @@ export async function middleware(request: NextRequest) {
 
   return response;
 }
+
 
 /**
  * Matcher: run middleware on all routes EXCEPT static assets, _next internals,
