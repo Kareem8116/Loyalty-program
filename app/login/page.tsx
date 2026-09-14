@@ -232,10 +232,10 @@ export default function UnifiedLoginPage() {
   if (!mounted) return null;
 
   const inputLabel = locale === 'ar'
-    ? (isPhone ? 'رقم الموبايل' : 'البريد الإلكتروني أو رقم الموبايل')
-    : (isPhone ? 'Phone Number' : 'Email or Phone Number');
+    ? 'رقم الموبايل'
+    : 'Phone Number';
 
-  const inputPlaceholder = locale === 'ar' ? '01xxxxxxxxx أو example@email.com' : '01xxxxxxxxx or name@example.com';
+  const inputPlaceholder = '01xxxxxxxxx';
 
   return (
     <main className="page-bg min-h-screen flex items-center justify-center p-4">
@@ -280,8 +280,8 @@ export default function UnifiedLoginPage() {
           </h1>
           <p className="text-xs text-muted mt-1">
             {locale === 'ar'
-              ? 'سجل دخولك برقم موبايلك أو بريدك الإلكتروني'
-              : 'Sign in with your phone number or email'}
+              ? 'سجل دخولك برقم موبايلك وكلمة المرور'
+              : 'Sign in with your phone number and password'}
           </p>
         </div>
 
@@ -302,7 +302,7 @@ export default function UnifiedLoginPage() {
 
         {/* Unified Login Form */}
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          {/* Identifier: phone or email */}
+          {/* Phone Number */}
           <div>
             <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="cl-identifier">
               {inputLabel}
@@ -312,7 +312,7 @@ export default function UnifiedLoginPage() {
                 id="cl-identifier"
                 className="ios-input pe-10"
                 type="text"
-                inputMode={isPhone ? 'tel' : 'email'}
+                inputMode="tel"
                 placeholder={inputPlaceholder}
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
@@ -320,19 +320,11 @@ export default function UnifiedLoginPage() {
                 autoComplete="username"
                 dir="ltr"
               />
-              {isPhone ? (
-                <Phone
-                  size={18}
-                  weight="light"
-                  className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`}
-                />
-              ) : (
-                <EnvelopeSimple
-                  size={18}
-                  weight="light"
-                  className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`}
-                />
-              )}
+              <Phone
+                size={18}
+                weight="light"
+                className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`}
+              />
             </div>
           </div>
 

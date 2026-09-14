@@ -683,9 +683,11 @@
   },
   "customerLogin": {
     "title": "Customer Login",
-    "subtitle": "Sign in to access your loyalty points across all your places",
-    "emailLabel": "Email Address",
-    "emailPlaceholder": "your@email.com",
+    "subtitle": "Sign in with your phone number to access your points across all your places",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "01xxxxxxxxx",
+    "emailLabel": "Phone Number",
+    "emailPlaceholder": "01xxxxxxxxx",
     "passwordLabel": "Password",
     "passwordPlaceholder": "Your password",
     "signIn": "Sign In",
@@ -693,7 +695,7 @@
     "forgotPassword": "Forgot password?",
     "noAccount": "New customer?",
     "signUp": "Create account",
-    "loginFailed": "Sign in failed. Please verify your email and password.",
+    "loginFailed": "Sign in failed. Please verify your phone number and password.",
     "footer": "Customer Portal - Pointat"
   },
   "myPlaces": {

@@ -683,9 +683,11 @@
   },
   "customerLogin": {
     "title": "دخول العملاء",
-    "subtitle": "سجل دخولك للوصول الى نقاطك في كل الاماكن",
-    "emailLabel": "البريد الالكتروني",
-    "emailPlaceholder": "your@email.com",
+    "subtitle": "سجل دخولك برقم الموبايل للوصول إلى نقاطك",
+    "phoneLabel": "رقم الموبايل",
+    "phonePlaceholder": "01xxxxxxxxx",
+    "emailLabel": "رقم الموبايل",
+    "emailPlaceholder": "01xxxxxxxxx",
     "passwordLabel": "كلمة المرور",
     "passwordPlaceholder": "كلمة المرور",
     "signIn": "تسجيل الدخول",
@@ -693,7 +695,7 @@
     "forgotPassword": "نسيت كلمة السر؟",
     "noAccount": "عميل جديد؟",
     "signUp": "انشاء حساب",
-    "loginFailed": "فشل تسجيل الدخول. يرجى التحقق من البريد وكلمة المرور.",
+    "loginFailed": "فشل تسجيل الدخول. يرجى التحقق من رقم الموبايل وكلمة المرور.",
     "footer": "بوابة العملاء - Pointat"
   },
   "myPlaces": {

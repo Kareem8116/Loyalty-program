@@ -104,7 +104,8 @@ export default function ProfileModal({
         if (!isMounted) return;
         if (data.success && data.profile) {
           setCurrentName(data.profile.name || '');
-          setCurrentEmail(data.profile.email || '');
+          const rawEmail = data.profile.email || '';
+          setCurrentEmail(rawEmail.endsWith('@pointat.internal') ? '' : rawEmail);
           setCurrentPhone(data.profile.phone || '');
           if (data.profile.role) setUserRole(data.profile.role);
           if (data.profile.businessName) setBusinessName(data.profile.businessName);
@@ -749,23 +750,25 @@ export default function ProfileModal({
                   </div>
                 </div>
 
-                {/* 2. Email Address Card */}
-                <div 
-                  className="p-4 sm:p-5 rounded-2xl border flex items-center gap-4 transition-all hover:border-indigo-500/30"
-                  style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 shadow-xs">
-                    <EnvelopeSimple weight="light" className="w-7 h-7" />
+                {/* 2. Email Address Card (only shown if real non-phantom email exists) */}
+                {currentEmail && !currentEmail.endsWith('@pointat.internal') && (
+                  <div 
+                    className="p-4 sm:p-5 rounded-2xl border flex items-center gap-4 transition-all hover:border-indigo-500/30"
+                    style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 shadow-xs">
+                      <EnvelopeSimple weight="light" className="w-7 h-7" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
+                        {t('profileEdit.email') || 'البريد الإلكتروني'}
+                      </span>
+                      <strong className="text-base sm:text-lg font-bold font-mono block truncate select-all mt-0.5 text-indigo-400" dir="ltr">
+                        {currentEmail}
+                      </strong>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
-                      {t('profileEdit.email') || 'البريد الإلكتروني'}
-                    </span>
-                    <strong className="text-base sm:text-lg font-bold font-mono block truncate select-all mt-0.5 text-indigo-400" dir="ltr">
-                      {currentEmail || (isRtl ? 'غير متوفر' : 'Not available')}
-                    </strong>
-                  </div>
-                </div>
+                )}
 
                 {/* 3. Mobile Number Card */}
                 <div 
@@ -857,33 +860,35 @@ export default function ProfileModal({
                 />
               </div>
 
-              {/* Email Input */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                    <EnvelopeSimple weight="light" className="w-4 h-4 text-indigo-400" />
-                    <span>{t('profileEdit.email') || 'البريد الإلكتروني'}</span>
-                  </label>
-                  {isEmailChanged && (
-                    <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
-                      {t('profileEdit.otpNoticeEmail') || 'تأكيد OTP مطلوب'}
-                    </span>
-                  )}
+              {/* Email Input (only for staff / non-customer accounts with real email) */}
+              {userRole !== 'customer' && currentEmail && !currentEmail.endsWith('@pointat.internal') && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-bold opacity-80 flex items-center gap-2">
+                      <EnvelopeSimple weight="light" className="w-4 h-4 text-indigo-400" />
+                      <span>{t('profileEdit.email') || 'البريد الإلكتروني'}</span>
+                    </label>
+                    {isEmailChanged && (
+                      <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+                        {t('profileEdit.otpNoticeEmail') || 'تأكيد OTP مطلوب'}
+                      </span>
+                    )}
+                  </div>
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    placeholder={t('profileEdit.emailPlaceholder') || 'example@domain.com'}
+                    dir="ltr"
+                    className="w-full h-13 px-4 rounded-2xl border text-sm font-mono transition-colors focus:outline-hidden focus:border-indigo-500"
+                    style={{
+                      backgroundColor: 'var(--color-bg)',
+                      borderColor: isEmailChanged ? 'rgba(99, 102, 241, 0.6)' : 'var(--color-border)',
+                      color: 'var(--color-text)',
+                    }}
+                  />
                 </div>
-                <input
-                  type="email"
-                  value={editEmail}
-                  onChange={(e) => setEditEmail(e.target.value)}
-                  placeholder={t('profileEdit.emailPlaceholder') || 'example@domain.com'}
-                  dir="ltr"
-                  className="w-full h-13 px-4 rounded-2xl border text-sm font-mono transition-colors focus:outline-hidden focus:border-indigo-500"
-                  style={{
-                    backgroundColor: 'var(--color-bg)',
-                    borderColor: isEmailChanged ? 'rgba(99, 102, 241, 0.6)' : 'var(--color-border)',
-                    color: 'var(--color-text)',
-                  }}
-                />
-              </div>
+              )}
 
               {/* Phone Input */}
               <div className="space-y-2">

@@ -99,22 +99,22 @@ export async function POST(req: NextRequest) {
       const emailSubject = 'Reset your loyalty PIN';
       const emailBody = `Your PIN reset code is: ${otpCode}\n\nThis code expires in ${OTP_EXPIRY_MINUTES} minutes.\n\nIf you did not request this, please ignore this email.`;
 
-      // Use Supabase Auth admin to send email (or fallback to console in dev)
-      try {
-        const { error: emailErr } = await adminClient.auth.admin.generateLink({
-          type: 'magiclink',
-          email: user.email!,
-          options: {
-            data: { otp_code: otpCode },
-          },
-        });
-        // Note: In production, replace with actual email sending (Resend, SendGrid, etc.)
-        // For now, we store the OTP and log it for development
-        if (emailErr) {
-          console.warn('Email send warning (non-blocking):', emailErr.message);
+      // If user has a real email (not phantom), send email OTP
+      if (user.email && !user.email.endsWith('@pointat.internal')) {
+        try {
+          const { error: emailErr } = await adminClient.auth.admin.generateLink({
+            type: 'magiclink',
+            email: user.email,
+            options: {
+              data: { otp_code: otpCode },
+            },
+          });
+          if (emailErr) {
+            console.warn('Email send warning (non-blocking):', emailErr.message);
+          }
+        } catch (emailEx) {
+          console.warn('Email send exception (non-blocking):', emailEx);
         }
-      } catch (emailEx) {
-        console.warn('Email send exception (non-blocking):', emailEx);
       }
 
       // In development: log OTP for testing
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
         console.log(`[DEV] OTP for link ${linkId}: ${otpCode}`);
       }
 
-      return NextResponse.json({ success: true, message: 'OTP sent to your email.' });
+      return NextResponse.json({ success: true, message: 'تم إرسال كود التحقق بنجاح.' });
 
     } else if (action === 'verify_and_reset') {
       if (!otp || !newPin) {

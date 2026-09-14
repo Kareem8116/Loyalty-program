@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { 
-  Star, EnvelopeSimple, Lock, User, Phone, Gift, 
+  Star, User, Phone, Gift, 
   Check, WarningCircle, CircleNotch, Eye, EyeSlash,
   MagnifyingGlass, ArrowRight, CaretDown, CaretUp 
 } from '@phosphor-icons/react';
@@ -16,7 +16,6 @@ import { setClientRoleCookie } from '@/lib/cookies';
 import { extractCustomerToken } from '@/lib/tokens';
 import { 
   validateEgyptianPhone, 
-  validateEmail, 
   validatePassword, 
   validateName 
 } from '@/lib/validation';
@@ -32,39 +31,42 @@ interface HomeContentProps {
   isSelfSignupEnabled?: boolean;
 }
 
+const PHANTOM_DOMAIN = 'pointat.internal';
+
 export default function HomeContent({ 
   tenantBusiness = null, 
   isSelfSignupEnabled = true 
 }: HomeContentProps) {
   const router = useRouter();
-  const { t, isRtl } = useLocale();
+  const { t, locale, isRtl } = useLocale();
 
   // Mode: 'login' | 'signup'
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
 
-  // Login Form States
-  const [loginEmail, setLoginEmail] = useState('');
+  // Login Form States (Phone + Password only)
+  const [loginPhone, setLoginPhone] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
-  // Signup Form States
+  // Signup Form States (Name + Phone + Mandatory Password)
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
   const [signupPassword, setSignupPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [referralCode, setReferralCode] = useState('');
   const [consentGiven, setConsentGiven] = useState(false);
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [signupError, setSignupError] = useState<string | null>(null);
+  const [existingQrToken, setExistingQrToken] = useState<string | null>(null);
   const [signupSuccess, setSignupSuccess] = useState(false);
 
   // Quick Card Lookup State
   const [showLookup, setShowLookup] = useState(false);
   const [lookupCode, setLookupCode] = useState('');
-
-  // Password visibility
-  const [showPassword, setShowPassword] = useState(false);
 
   // Check if session already exists for customer -> redirect to my-places
   useEffect(() => {
@@ -75,14 +77,14 @@ export default function HomeContent({
     });
   }, [router]);
 
-  // 1. Handle Login
+  // 1. Handle Phone-based Customer Login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loginEmail.trim() || !loginPassword) return;
+    if (!loginPhone.trim() || !loginPassword) return;
 
-    const emailVal = validateEmail(loginEmail);
-    if (!emailVal.isValid) {
-      setLoginError(t(`validation.${emailVal.errorKey}`) || emailVal.errorMessage || 'برجاء إدخال بريد إلكتروني صحيح');
+    const phoneVal = validateEgyptianPhone(loginPhone);
+    if (!phoneVal.isValid) {
+      setLoginError(t(`validation.${phoneVal.errorKey}`) || phoneVal.errorMessage || 'رقم التليفون غير صحيح');
       return;
     }
 
@@ -90,45 +92,39 @@ export default function HomeContent({
     setLoginError(null);
 
     try {
+      const cleanPhone = phoneVal.cleanPhone;
+      const phantomEmail = `${cleanPhone}@${PHANTOM_DOMAIN}`;
+
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: loginEmail.trim().toLowerCase(),
+        email: phantomEmail,
         password: loginPassword,
       });
 
       if (authError || !authData.user) {
-        setLoginError(t('customerLogin.loginFailed') || 'فشل تسجيل الدخول. يرجى التحقق من البريد وكلمة المرور.');
+        setLoginError(
+          locale === 'ar'
+            ? 'رقم الموبايل أو كلمة المرور غير صحيحة'
+            : 'Invalid phone number or password'
+        );
         setIsLoggingIn(false);
-        return;
-      }
-
-      // Mandatory OTP Email Verification Guard
-      const isEmailVerified = authData.user.user_metadata?.email_verified === true || (Boolean(authData.user.email_confirmed_at) && authData.user.user_metadata?.email_verified !== false);
-      if (!isEmailVerified) {
-        await supabase.auth.signOut();
-        fetch('/api/auth/send-verification-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: loginEmail.trim().toLowerCase() }),
-        }).catch(() => {});
-        router.push(`/verify-email?email=${encodeURIComponent(loginEmail.trim().toLowerCase())}&role=customer&pending=1`);
         return;
       }
 
       setClientRoleCookie('customer');
       router.push('/my-places');
     } catch {
-      setLoginError(t('common.error'));
+      setLoginError(t('common.error') || 'حدث خطأ غير متوقع');
       setIsLoggingIn(false);
     }
   };
 
-  // 2. Handle Self-Signup
+  // 2. Handle Phone-based Customer Signup (No Email required)
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !phoneNumber.trim()) return;
+    if (!name.trim() || !phoneNumber.trim() || !signupPassword) return;
 
     if (!consentGiven) {
-      setSignupError(t('signup.consentRequired'));
+      setSignupError(t('signup.consentRequired') || 'الموافقة على الشروط إلزامية');
       return;
     }
 
@@ -144,24 +140,20 @@ export default function HomeContent({
       return;
     }
 
-    if (signupEmail.trim()) {
-      const emailVal = validateEmail(signupEmail);
-      if (!emailVal.isValid) {
-        setSignupError(t(`validation.${emailVal.errorKey}`) || emailVal.errorMessage || 'بريد إلكتروني غير صالح');
-        return;
-      }
+    const passVal = validatePassword(signupPassword);
+    if (!passVal.isValid) {
+      setSignupError(t(`validation.${passVal.errorKey}`) || passVal.errorMessage || 'يجب ألا تقل كلمة المرور عن 8 خانات وتحتوي على حرف ورقم');
+      return;
     }
 
-    if (signupPassword) {
-      const passVal = validatePassword(signupPassword);
-      if (!passVal.isValid) {
-        setSignupError(t(`validation.${passVal.errorKey}`) || passVal.errorMessage || 'كلمة المرور يجب أن تكون 6 خانات على الأقل');
-        return;
-      }
+    if (signupPassword !== confirmPassword) {
+      setSignupError(t('validation.passwords_not_matching') || 'كلمتا المرور غير متطابقتين');
+      return;
     }
 
     setIsSigningUp(true);
     setSignupError(null);
+    setExistingQrToken(null);
 
     try {
       const cleanPhone = phoneVal.cleanPhone;
@@ -173,8 +165,7 @@ export default function HomeContent({
           subdomain: tenantBusiness?.subdomain,
           name: nameVal.value,
           phoneNumber: cleanPhone,
-          email: signupEmail.trim() ? signupEmail.trim().toLowerCase() : undefined,
-          password: signupPassword || undefined,
+          password: signupPassword,
           consentGiven: true,
           referralCode: referralCode.trim() || undefined,
         }),
@@ -185,10 +176,10 @@ export default function HomeContent({
       if (!res.ok || !data.success) {
         if (data.code === 'PHONE_ALREADY_EXISTS') {
           setSignupError(t('signup.phoneExistsError') || 'رقم الهاتف مسجل بالفعل');
-          return;
-        }
-        if (data.code === 'EMAIL_ALREADY_EXISTS') {
-          setSignupError('البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول.');
+          if (data.qrToken) {
+            setExistingQrToken(data.qrToken);
+          }
+          setIsSigningUp(false);
           return;
         }
         throw new Error(data.error || t('common.error'));
@@ -197,15 +188,6 @@ export default function HomeContent({
       setSignupSuccess(true);
       setClientRoleCookie('customer');
 
-      if (data.requiresVerification && signupEmail.trim()) {
-        const phoneParam = cleanPhone ? `&phone=${encodeURIComponent(cleanPhone)}` : '';
-        const otpParam = data.simulatedOtp ? `&simulatedOtp=${encodeURIComponent(data.simulatedOtp)}` : '';
-        setTimeout(() => {
-          router.push(`/verify-email?email=${encodeURIComponent(signupEmail.trim().toLowerCase())}&role=customer${phoneParam}${otpParam}`);
-        }, 1200);
-        return;
-      }
-
       const token = data.customer?.qrToken;
       setTimeout(() => {
         if (token) {
@@ -213,7 +195,7 @@ export default function HomeContent({
         } else {
           router.push('/my-places');
         }
-      }, 1500);
+      }, 1200);
     } catch (err: any) {
       setSignupError(err.message || t('common.error'));
     } finally {
@@ -221,31 +203,22 @@ export default function HomeContent({
     }
   };
 
-  // 3. Quick Lookup
+  // 3. Quick Card Lookup
   const handleLookupSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const clean = extractCustomerToken(lookupCode);
-    if (clean) {
-      router.push(`/card/${clean}`);
-    }
+    if (!lookupCode.trim()) return;
+    const cleanToken = extractCustomerToken(lookupCode.trim());
+    router.push(`/card/${cleanToken}`);
   };
 
   return (
-    <main className="page-bg min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 text-center transition-colors relative overflow-hidden">
-      {/* Top Header */}
-      <header className="w-full max-w-md flex items-center justify-between py-2 border-b pb-4 relative z-10" style={{ borderColor: 'var(--color-separator)' }}>
+    <main className="page-bg min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors">
+      {/* Top Bar Navigation */}
+      <header className="flex items-center justify-between w-full max-w-md pt-2 pb-4 relative z-10">
         <div className="flex items-center gap-2">
-          <div 
-            className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shadow-xs"
-            style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
-          >
-            <Star size={16} weight="fill" />
-          </div>
-          <span 
-            className="text-sm font-bold tracking-wider uppercase"
-            style={{ color: 'var(--color-text)' }}
-          >
-            {t('home.brandName')}
+          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
+          <span className="text-sm font-black tracking-wider uppercase opacity-80" style={{ color: 'var(--color-text)' }}>
+            Pointat
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -273,8 +246,8 @@ export default function HomeContent({
           </h1>
           <p className="text-xs mb-5 opacity-60">
             {activeTab === 'login'
-              ? t('home.loginSubtitle')
-              : t('home.signupSubtitle')}
+              ? (locale === 'ar' ? 'سجل دخولك برقم الموبايل للوصول إلى نقاطك وبطاقاتك' : 'Sign in with your phone number to access your points')
+              : (locale === 'ar' ? 'أنشئ حسابك الجديد برقم الموبايل وابدأ بجمع المكافآت' : 'Create your account with your mobile number to earn rewards')}
           </p>
 
           {/* Segmented Mode Switcher (iOS style segmented tab) */}
@@ -312,7 +285,7 @@ export default function HomeContent({
             </button>
           </div>
 
-          {/* TAB 1: تسجيل الدخول (Sign In) */}
+          {/* TAB 1: تسجيل الدخول (Sign In - Phone + Password) */}
           {activeTab === 'login' && (
             <form onSubmit={handleLogin} className={`flex flex-col gap-3.5 ${isRtl ? 'text-right' : 'text-left'}`}>
               {loginError && (
@@ -329,36 +302,37 @@ export default function HomeContent({
                 </div>
               )}
 
-              {/* Email */}
+              {/* Mobile Number */}
               <div>
-                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="login-email-input">
-                  {t('customerLogin.emailLabel')}
+                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="login-phone-input">
+                  {locale === 'ar' ? 'رقم الموبايل' : 'Phone Number'}
                 </label>
                 <div className="relative flex items-center">
                   <input
-                    type="email"
-                    id="login-email-input"
+                    type="tel"
+                    id="login-phone-input"
                     required
-                    placeholder={t('customerLogin.emailPlaceholder')}
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
+                    maxLength={11}
+                    placeholder="01xxxxxxxxx"
+                    value={loginPhone}
+                    onChange={(e) => setLoginPhone(e.target.value)}
                     dir="ltr"
-                    className="ios-input"
+                    className="ios-input font-mono pe-10"
                   />
-                  <EnvelopeSimple size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                  <Phone size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
                 </div>
-                {loginEmail && !validateEmail(loginEmail).isValid && (
+                {loginPhone && !validateEgyptianPhone(loginPhone).isValid && (
                   <p className="text-[11px] text-red-500 mt-1 font-medium">
-                    {t(`validation.${validateEmail(loginEmail).errorKey}`)}
+                    {t(`validation.${validateEgyptianPhone(loginPhone).errorKey}`) || 'رقم التليفون لازم يبدأ بـ 01 ويتكون من 11 رقماً'}
                   </p>
                 )}
               </div>
 
-              {/* Password */}
+              {/* Password with Eye Toggle */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs opacity-75 font-semibold" htmlFor="login-password-input">
-                    {t('customerLogin.passwordLabel')}
+                    {locale === 'ar' ? 'كلمة المرور' : 'Password'}
                   </label>
                   <Link 
                     href="/forgot-password"
@@ -370,20 +344,22 @@ export default function HomeContent({
                 </div>
                 <div className="relative flex items-center">
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showLoginPassword ? 'text' : 'password'}
                     id="login-password-input"
                     required
-                    placeholder={t('customerLogin.passwordPlaceholder')}
+                    placeholder="••••••••"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="ios-input"
+                    className="ios-input pe-10"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
                     className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity cursor-pointer`}
+                    aria-label="Toggle password visibility"
                   >
-                    {showPassword ? <EyeSlash size={18} weight="light" /> : <Eye size={18} weight="light" />}
+                    {showLoginPassword ? <EyeSlash size={18} weight="light" /> : <Eye size={18} weight="light" />}
                   </button>
                 </div>
               </div>
@@ -392,7 +368,7 @@ export default function HomeContent({
               <button
                 type="submit"
                 id="login-submit-btn"
-                disabled={isLoggingIn || !loginEmail.trim() || !loginPassword}
+                disabled={isLoggingIn || !loginPhone.trim() || !loginPassword}
                 className="ios-btn-primary w-full mt-2"
               >
                 {isLoggingIn ? (
@@ -422,20 +398,30 @@ export default function HomeContent({
             </form>
           )}
 
-          {/* TAB 2: حساب جديد (Sign Up) */}
+          {/* TAB 2: حساب جديد (Sign Up - Phone + Mandatory Password) */}
           {activeTab === 'signup' && (
             <form onSubmit={handleSignup} className={`flex flex-col gap-3.5 ${isRtl ? 'text-right' : 'text-left'}`}>
               {signupError && (
                 <div 
-                  className="p-3 rounded-xl text-xs font-medium flex items-center gap-2 border"
+                  className="p-3 rounded-xl text-xs font-medium flex flex-col gap-2 border"
                   style={{
                     backgroundColor: 'var(--color-error-bg)',
                     borderColor: 'var(--color-error-border)',
                     color: 'var(--color-error-text)'
                   }}
                 >
-                  <WarningCircle size={18} weight="light" className="shrink-0" />
-                  <span>{signupError}</span>
+                  <div className="flex items-center gap-2">
+                    <WarningCircle size={18} weight="light" className="shrink-0" />
+                    <span>{signupError}</span>
+                  </div>
+                  {existingQrToken && (
+                    <Link
+                      href={`/card/${existingQrToken}`}
+                      className="text-xs font-bold underline mt-1"
+                    >
+                      {locale === 'ar' ? 'عرض بطاقتي المسجلة مسبقاً ←' : 'View my registered card →'}
+                    </Link>
+                  )}
                 </div>
               )}
 
@@ -466,7 +452,7 @@ export default function HomeContent({
                     placeholder={t('signup.namePlaceholder')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="ios-input"
+                    className="ios-input pe-10"
                   />
                   <User size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
                 </div>
@@ -492,7 +478,7 @@ export default function HomeContent({
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     dir="ltr"
-                    className="ios-input font-mono"
+                    className="ios-input font-mono pe-10"
                   />
                   <Phone size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
                 </div>
@@ -503,58 +489,68 @@ export default function HomeContent({
                 )}
               </div>
 
-              {/* Email */}
-              <div>
-                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-email-input">
-                  {t('customerLogin.emailLabel')}
-                </label>
-                <div className="relative flex items-center">
-                  <input
-                    type="email"
-                    id="signup-email-input"
-                    required
-                    placeholder={t('customerLogin.emailPlaceholder')}
-                    value={signupEmail}
-                    onChange={(e) => setSignupEmail(e.target.value)}
-                    dir="ltr"
-                    className="ios-input"
-                  />
-                  <EnvelopeSimple size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
-                </div>
-                {signupEmail && !validateEmail(signupEmail).isValid && (
-                  <p className="text-[11px] text-red-500 mt-1 font-medium">
-                    {t(`validation.${validateEmail(signupEmail).errorKey}`)}
-                  </p>
-                )}
-              </div>
-
-              {/* Password */}
+              {/* Password (MANDATORY) with Eye Toggle */}
               <div>
                 <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-password-input">
-                  {t('home.passwordMinHint')}
+                  {locale === 'ar' ? 'كلمة المرور (8 خانات على الأقل - حرف ورقم)' : 'Password (min 8 characters - letter & number)'}
                 </label>
                 <div className="relative flex items-center">
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showSignupPassword ? 'text' : 'password'}
                     id="signup-password-input"
                     required
-                    minLength={6}
-                    placeholder={t('customerLogin.passwordPlaceholder')}
+                    minLength={8}
+                    placeholder="••••••••"
                     value={signupPassword}
                     onChange={(e) => setSignupPassword(e.target.value)}
-                    className="ios-input"
+                    className="ios-input pe-10"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    tabIndex={-1}
+                    onClick={() => setShowSignupPassword(!showSignupPassword)}
                     className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity cursor-pointer`}
+                    aria-label="Toggle password visibility"
                   >
-                    {showPassword ? <EyeSlash size={18} weight="light" /> : <Eye size={18} weight="light" />}
+                    {showSignupPassword ? <EyeSlash size={18} weight="light" /> : <Eye size={18} weight="light" />}
                   </button>
                 </div>
                 {signupPassword && !validatePassword(signupPassword).isValid && (
                   <p className="text-[11px] text-red-500 mt-1 font-medium">
-                    {t(`validation.${validatePassword(signupPassword).errorKey}`)}
+                    {t(`validation.${validatePassword(signupPassword).errorKey}`) || 'يجب ألا تقل كلمة المرور عن 8 خانات وتحتوي على حرف ورقم'}
+                  </p>
+                )}
+              </div>
+
+              {/* Confirm Password with Eye Toggle */}
+              <div>
+                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-confirm-password-input">
+                  {locale === 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password'}
+                </label>
+                <div className="relative flex items-center">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    id="signup-confirm-password-input"
+                    required
+                    minLength={8}
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="ios-input pe-10"
+                  />
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity cursor-pointer`}
+                    aria-label="Toggle confirm password visibility"
+                  >
+                    {showConfirmPassword ? <EyeSlash size={18} weight="light" /> : <Eye size={18} weight="light" />}
+                  </button>
+                </div>
+                {confirmPassword && signupPassword !== confirmPassword && (
+                  <p className="text-[11px] text-red-500 mt-1 font-medium">
+                    {t('validation.passwords_not_matching') || 'كلمتا المرور غير متطابقتين'}
                   </p>
                 )}
               </div>
@@ -571,7 +567,7 @@ export default function HomeContent({
                     placeholder={t('signup.referralCodePlaceholder')}
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                    className="ios-input uppercase font-mono"
+                    className="ios-input uppercase font-mono pe-10"
                   />
                   <Gift size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
                 </div>
@@ -602,7 +598,7 @@ export default function HomeContent({
               <button
                 type="submit"
                 id="signup-submit-btn"
-                disabled={isSigningUp || !name.trim() || !phoneNumber.trim() || !signupEmail.trim() || !signupPassword || !consentGiven}
+                disabled={isSigningUp || !name.trim() || !phoneNumber.trim() || !signupPassword || !confirmPassword || !consentGiven}
                 className="ios-btn-primary w-full mt-1"
               >
                 {isSigningUp ? (
