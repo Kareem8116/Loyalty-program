@@ -32,7 +32,8 @@ async function testRoleIsolation() {
     const { data: cu } = await supabase.auth.admin.createUser({ email: cashierEmail, password: testPassword, email_confirm: true });
     cashierUser = cu.user!;
   }
-  await supabase.from('user_roles').upsert({ user_id: cashierUser.id, role: 'cashier', business_id: bizId });
+  await supabase.from('user_roles').delete().eq('user_id', cashierUser.id);
+  await supabase.from('user_roles').insert({ user_id: cashierUser.id, role: 'cashier', business_id: bizId });
 
   // 2. Ensure Store Owner / Admin test user exists
   const ownerEmail = 'owner.test@pointat.net';
@@ -41,7 +42,8 @@ async function testRoleIsolation() {
     const { data: ou } = await supabase.auth.admin.createUser({ email: ownerEmail, password: testPassword, email_confirm: true });
     ownerUser = ou.user!;
   }
-  await supabase.from('user_roles').upsert({ user_id: ownerUser.id, role: 'owner', business_id: bizId });
+  await supabase.from('user_roles').delete().eq('user_id', ownerUser.id);
+  await supabase.from('user_roles').insert({ user_id: ownerUser.id, role: 'owner', business_id: bizId });
 
   // 3. Ensure Super Admin test user exists
   const superAdminEmail = 'superadmin@loyalty.system';
@@ -50,7 +52,8 @@ async function testRoleIsolation() {
     const { data: su } = await supabase.auth.admin.createUser({ email: superAdminEmail, password: 'SuperAdmin2026!', email_confirm: true });
     superAdminUser = su.user!;
   }
-  await supabase.from('user_roles').upsert({ user_id: superAdminUser.id, role: 'super_admin', business_id: null });
+  await supabase.from('user_roles').delete().eq('user_id', superAdminUser.id);
+  await supabase.from('user_roles').insert({ user_id: superAdminUser.id, role: 'super_admin', business_id: null });
 
   // 4. Ensure Customer test user exists (NO user_roles entry)
   const customerEmail = 'customer@pointat.net';
@@ -79,7 +82,7 @@ async function testRoleIsolation() {
       return { allowed: false, reason: 'Invalid credentials' };
     }
 
-    const { data: roleRow } = await client.from('user_roles').select('role').eq('user_id', auth.user.id).maybeSingle();
+    const { data: roleRow } = await client.from('user_roles').select('role').eq('user_id', auth.user.id).limit(1).maybeSingle();
     const role = roleRow?.role || 'customer';
 
     if (portal === 'cashier') {
