@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServiceSupabase } from '@/lib/supabase';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { generatePasswordChangeOtp } from '@/lib/otp';
+import { sendSms } from '@/lib/sms';
+import { validateEgyptianPhone } from '@/lib/validation';
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const GENERIC_RESPONSE_MESSAGE = 'لو الإيميل ده مسجل عندنا، هيوصلك رمز إعادة التعيين';
+const PHANTOM_DOMAIN = 'pointat.internal';
 
 /**
- * Phase 23.3, 23.5 & 23.6: Request OTP / Password Reset Email
+ * Phase 23.3 — Reworked for Phone-Only Customer Auth:
  * 
- * Security Features:
- * 1. Rate Limiting: Max 5 requests/min per IP and max 3 requests/min per email to stop spam.
- * 2. Anti-Account Enumeration: Always returns the exact same generic message regardless
- *    of whether the email exists in Supabase Auth or not.
+ * Accepts a phone number, generates a password-change OTP in Redis,
+ * and sends it via SMS. Falls back to a generic response to prevent
+ * user enumeration attacks.
+ * 
+ * Staff (email-based) are NOT handled here; they use standard flows.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -34,46 +37,92 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json().catch(() => ({}));
-    const { email } = body;
+    const { phone } = body;
 
-    if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
+    if (!phone || typeof phone !== 'string') {
       return NextResponse.json(
-        { success: false, error: 'صيغة البريد الإلكتروني غير صالحة' },
+        { success: false, error: 'يرجى إدخال رقم الموبايل' },
         { status: 400 }
       );
     }
 
-    const cleanEmail = email.trim().toLowerCase();
+    const phoneVal = validateEgyptianPhone(phone.trim());
+    if (!phoneVal.isValid) {
+      return NextResponse.json(
+        { success: false, error: phoneVal.errorMessage || 'رقم الموبايل غير صحيح' },
+        { status: 400 }
+      );
+    }
 
-    // 2. Email Rate Limiting (3 requests per minute per email)
-    const emailLimit = await checkRateLimit(`pwd-reset-email:${cleanEmail}`, 3, 60 * 1000);
-    if (!emailLimit.allowed) {
+    const cleanPhone = phoneVal.cleanPhone;
+
+    // 2. Phone Rate Limiting (3 requests per minute per phone)
+    const phoneLimit = await checkRateLimit(`pwd-reset-phone:${cleanPhone}`, 3, 60 * 1000);
+    if (!phoneLimit.allowed) {
       return NextResponse.json(
         {
           success: false,
-          error: 'تم إرسال طلبات متعددة لهذا البريد مؤخرًا، يرجى الانتظار قليلاً.',
-          retryAfterSeconds: emailLimit.retryAfterSeconds,
+          error: 'تم إرسال طلبات متعددة لهذا الرقم مؤخرًا، يرجى الانتظار قليلاً.',
+          retryAfterSeconds: phoneLimit.retryAfterSeconds,
         },
         {
           status: 429,
-          headers: { 'Retry-After': String(emailLimit.retryAfterSeconds) },
+          headers: { 'Retry-After': String(phoneLimit.retryAfterSeconds) },
         }
       );
     }
 
-    // 3. Trigger Supabase resetPasswordForEmail
+    // 3. Check if a user exists with this phantom email (anti-enumeration: ignore silently)
+    const phantomEmail = `${cleanPhone}@${PHANTOM_DOMAIN}`;
     const adminClient = getServiceSupabase();
+
+    let userExists = false;
+    let businessId: string | null = null;
+
     try {
-      await adminClient.auth.resetPasswordForEmail(cleanEmail);
-    } catch (resetErr) {
-      // Intentionally log internally and continue (PLAN 23.5: Fail-silent without leaking account existence)
-      console.warn(`resetPasswordForEmail internal notice for ${cleanEmail}:`, resetErr);
+      // Find the user via phantom email
+      const { data: listData } = await adminClient.auth.admin.listUsers({ perPage: 1000 });
+      const matchedUser = listData?.users?.find(
+        (u) => u.email?.toLowerCase() === phantomEmail.toLowerCase()
+      );
+      userExists = Boolean(matchedUser);
+
+      // Get businessId for SMS sending (any active business)
+      if (userExists) {
+        const { data: bizData } = await adminClient
+          .from('businesses')
+          .select('id')
+          .eq('is_active', true)
+          .order('created_at', { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        businessId = bizData?.id || null;
+      }
+    } catch (lookupErr) {
+      console.warn('[reset-password] User lookup warning (non-fatal):', lookupErr);
     }
 
-    // 4. Return generic success message (Phase 23.5)
+    // 4. Generate OTP and send SMS (only if user exists, but return same message either way)
+    if (userExists && businessId) {
+      try {
+        const otpResult = await generatePasswordChangeOtp(cleanPhone, 'phone');
+        if (otpResult.success && otpResult.otp) {
+          await sendSms({
+            businessId,
+            to: cleanPhone,
+            text: `Pointat: كود إعادة تعيين كلمة المرور: ${otpResult.otp} — صالح لمدة 10 دقائق.`,
+          });
+        }
+      } catch (otpErr) {
+        // Fail-silent: do not expose internal error
+        console.warn('[reset-password] OTP send warning (fail-silent):', otpErr);
+      }
+    }
+
+    // 5. Always return the same generic response (anti-enumeration)
     return NextResponse.json({
       success: true,
-      message: GENERIC_RESPONSE_MESSAGE,
+      message: 'لو الرقم ده مسجل عندنا، هيوصلك كود التحقق على موبايلك',
     });
   } catch (err: any) {
     console.error('POST /api/auth/reset-password error:', err);

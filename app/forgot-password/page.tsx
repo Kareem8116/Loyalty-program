@@ -2,27 +2,33 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { 
-  Key, 
-  EnvelopeSimple, 
-  Lock, 
-  ArrowRight, 
-  CircleNotch, 
-  WarningCircle, 
-  CheckCircle, 
+import {
+  Key,
+  Phone,
+  Lock,
+  Eye,
+  EyeSlash,
+  ArrowRight,
+  CircleNotch,
+  WarningCircle,
+  CheckCircle,
   ShieldWarning,
-  ArrowCounterClockwise
+  ArrowCounterClockwise,
 } from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLocale } from '@/components/LocaleProvider';
-import { validateEmail, validatePassword, validatePasswordConfirmation } from '@/lib/validation';
+import {
+  validateEgyptianPhone,
+  validatePassword,
+  validatePasswordConfirmation,
+} from '@/lib/validation';
 
 export default function ForgotPasswordPage() {
   const { t, isRtl } = useLocale();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [token, setToken] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -30,13 +36,17 @@ export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successNotice, setSuccessNotice] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Step 1: Request OTP / Reset code
+  const phoneVal = validateEgyptianPhone(phone);
+
+  // Step 1: Request OTP via phone
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const emailVal = validateEmail(email);
-    if (!emailVal.isValid) {
-      setErrorMsg(t(`validation.${emailVal.errorKey}`));
+
+    if (!phoneVal.isValid) {
+      setErrorMsg(phoneVal.errorMessage || 'رقم الموبايل غير صحيح');
       return;
     }
 
@@ -48,23 +58,20 @@ export default function ForgotPasswordPage() {
       const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ phone: phone.trim() }),
       });
 
       const data = await res.json();
 
       if (!res.ok && res.status === 429) {
-        throw new Error(data.error || t('forgotPassword.rateLimitError'));
+        throw new Error(data.error || t('forgotPassword.rateLimitError') || 'تم تجاوز الحد المسموح. يرجى الانتظار.');
       }
 
-      if (!res.ok && res.status !== 200) {
-        throw new Error(data.error || t('common.error'));
-      }
-
+      // Always move to step 2 (anti-enumeration: same UX whether phone exists or not)
       setSuccessNotice(true);
       setStep(2);
     } catch (err: any) {
-      setErrorMsg(err.message || t('common.error'));
+      setErrorMsg(err.message || t('common.error') || 'حدث خطأ. يرجى المحاولة مرة أخرى.');
     } finally {
       setIsLoading(false);
     }
@@ -77,13 +84,13 @@ export default function ForgotPasswordPage() {
 
     const passVal = validatePassword(newPassword);
     if (!passVal.isValid) {
-      setErrorMsg(t(`validation.${passVal.errorKey}`));
+      setErrorMsg(passVal.errorMessage || 'كلمة المرور غير صالحة');
       return;
     }
 
     const confirmVal = validatePasswordConfirmation(newPassword, confirmPassword);
     if (!confirmVal.isValid) {
-      setErrorMsg(t(`validation.${confirmVal.errorKey}`));
+      setErrorMsg(confirmVal.errorMessage || 'كلمتا المرور غير متطابقتين');
       return;
     }
 
@@ -94,7 +101,7 @@ export default function ForgotPasswordPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: email.trim(),
+          phone: phone.trim(),
           token: token.trim(),
           newPassword,
         }),
@@ -103,12 +110,12 @@ export default function ForgotPasswordPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || t('common.error'));
+        throw new Error(data.error || t('common.error') || 'حدث خطأ. يرجى المحاولة مرة أخرى.');
       }
 
       setStep(3);
     } catch (err: any) {
-      setErrorMsg(err.message || t('common.error'));
+      setErrorMsg(err.message || t('common.error') || 'حدث خطأ. يرجى المحاولة مرة أخرى.');
     } finally {
       setIsLoading(false);
     }
@@ -120,7 +127,7 @@ export default function ForgotPasswordPage() {
         {/* Header */}
         <header className="flex items-center justify-between w-full pb-4">
           <Link
-            href="/admin/login"
+            href="/login"
             aria-label={t('common.back')}
             className="w-10 h-10 rounded-full flex items-center justify-center border transition-transform active:scale-95"
             style={{
@@ -155,14 +162,14 @@ export default function ForgotPasswordPage() {
             </div>
 
             <h1 className="text-xl font-bold mb-1 tracking-tight" style={{ color: 'var(--color-text)' }}>
-              {step === 1 && t('forgotPassword.title')}
-              {step === 2 && t('forgotPassword.step2Title')}
-              {step === 3 && t('forgotPassword.step3Title')}
+              {step === 1 && (t('forgotPassword.title') || 'نسيت كلمة المرور؟')}
+              {step === 2 && (t('forgotPassword.step2Title') || 'أدخل كود التحقق')}
+              {step === 3 && (t('forgotPassword.step3Title') || 'تم إعادة التعيين')}
             </h1>
             <p className="text-xs max-w-xs leading-relaxed opacity-60">
-              {step === 1 && t('forgotPassword.subtitle')}
-              {step === 2 && t('forgotPassword.step2Subtitle', { email })}
-              {step === 3 && t('forgotPassword.step3Subtitle')}
+              {step === 1 && (t('forgotPassword.subtitle') || 'أدخل رقم موبايلك وسنرسل لك كود لإعادة تعيين كلمة المرور')}
+              {step === 2 && (t('forgotPassword.step2SubtitlePhone', { phone }) || `تم إرسال كود التحقق على ${phone}`)}
+              {step === 3 && (t('forgotPassword.step3Subtitle') || 'تم تغيير كلمة المرور بنجاح')}
             </p>
           </div>
 
@@ -192,33 +199,33 @@ export default function ForgotPasswordPage() {
               }}
             >
               <CheckCircle size={18} weight="light" className="shrink-0 mt-0.5" />
-              <span>{t('forgotPassword.genericNotice')}</span>
+              <span>{t('forgotPassword.genericNotice') || 'لو الرقم ده مسجل عندنا، هيوصلك كود التحقق على موبايلك'}</span>
             </div>
           )}
 
-          {/* STEP 1: Request OTP */}
+          {/* STEP 1: Request OTP via phone */}
           {step === 1 && (
             <form onSubmit={handleRequestOtp} className="flex flex-col gap-3.5">
               <div>
-                <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="reset-email-input">
-                  {t('forgotPassword.emailLabel')}
+                <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="reset-phone-input">
+                  {t('forgotPassword.phoneLabel') || 'رقم الموبايل'}
                 </label>
                 <div className="relative flex items-center">
                   <input
-                    type="email"
-                    id="reset-email-input"
+                    type="tel"
+                    id="reset-phone-input"
                     dir="ltr"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t('forgotPassword.emailPlaceholder')}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder={t('forgotPassword.phonePlaceholder') || '01xxxxxxxxx'}
                     className="ios-input"
                   />
-                  <EnvelopeSimple size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
+                  <Phone size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
                 </div>
-                {email.trim() !== '' && !validateEmail(email).isValid && (
+                {phone.trim() !== '' && !phoneVal.isValid && (
                   <p className="text-[11px] text-red-500 font-medium mt-1">
-                    {t(`validation.${validateEmail(email).errorKey}`)}
+                    {phoneVal.errorMessage || 'رقم الموبايل غير صحيح'}
                   </p>
                 )}
               </div>
@@ -226,29 +233,29 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 id="send-reset-code-btn"
-                disabled={isLoading || !validateEmail(email).isValid}
+                disabled={isLoading || !phoneVal.isValid}
                 className="ios-btn-primary w-full mt-2"
               >
                 {isLoading ? (
                   <>
                     <CircleNotch size={18} weight="light" className="animate-spin" />
-                    <span>{t('forgotPassword.sending')}</span>
+                    <span>{t('forgotPassword.sending') || 'جاري الإرسال...'}</span>
                   </>
                 ) : (
                   <>
                     <Key size={18} weight="light" />
-                    <span>{t('forgotPassword.sendOtpBtn')}</span>
+                    <span>{t('forgotPassword.sendOtpBtn') || 'إرسال كود التحقق'}</span>
                   </>
                 )}
               </button>
 
               <div className="text-center mt-2">
                 <Link
-                  href="/admin/login"
+                  href="/login"
                   className="text-xs opacity-70 hover:opacity-100 transition-opacity"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {t('forgotPassword.backToLogin')}
+                  {t('forgotPassword.backToLogin') || 'العودة لتسجيل الدخول'}
                 </Link>
               </div>
             </form>
@@ -259,7 +266,7 @@ export default function ForgotPasswordPage() {
             <form onSubmit={handleVerifyAndReset} className="flex flex-col gap-3.5">
               <div>
                 <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="reset-otp-input">
-                  {t('forgotPassword.otpLabel')}
+                  {t('forgotPassword.otpLabel') || 'كود التحقق'}
                 </label>
                 <div className="relative flex items-center">
                   <input
@@ -267,10 +274,12 @@ export default function ForgotPasswordPage() {
                     id="reset-otp-input"
                     dir="ltr"
                     required
+                    inputMode="numeric"
+                    maxLength={6}
                     value={token}
-                    onChange={(e) => setToken(e.target.value)}
-                    placeholder={t('forgotPassword.otpPlaceholder')}
-                    className="ios-input font-mono"
+                    onChange={(e) => setToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    placeholder={t('forgotPassword.otpPlaceholder') || '000000'}
+                    className="ios-input font-mono tracking-[0.35em]"
                   />
                   <Key size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
                 </div>
@@ -278,50 +287,70 @@ export default function ForgotPasswordPage() {
 
               <div>
                 <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="new-password-input">
-                  {t('forgotPassword.newPasswordLabel')}
+                  {t('forgotPassword.newPasswordLabel') || 'كلمة المرور الجديدة'}
                 </label>
                 <div className="relative flex items-center">
                   <input
-                    type="password"
+                    type={showNewPassword ? 'text' : 'password'}
                     id="new-password-input"
                     dir="ltr"
                     required
                     minLength={8}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder={t('forgotPassword.passwordPlaceholder')}
-                    className="ios-input"
+                    placeholder={t('forgotPassword.passwordPlaceholder') || '••••••••'}
+                    className="ios-input pe-10"
                   />
-                  <Lock size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => setShowNewPassword((v) => !v)}
+                    className={`absolute opacity-50 hover:opacity-100 transition-opacity focus:outline-none ${isRtl ? 'left-3' : 'right-3'}`}
+                    aria-label={showNewPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+                  >
+                    {showNewPassword
+                      ? <EyeSlash size={18} weight="light" />
+                      : <Eye size={18} weight="light" />}
+                  </button>
                 </div>
                 {newPassword !== '' && !validatePassword(newPassword).isValid && (
                   <p className="text-[11px] text-red-500 font-medium mt-1">
-                    {t(`validation.${validatePassword(newPassword).errorKey}`)}
+                    {validatePassword(newPassword).errorMessage || 'كلمة المرور ضعيفة'}
                   </p>
                 )}
               </div>
 
               <div>
                 <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="confirm-new-password-input">
-                  {t('forgotPassword.confirmPasswordLabel')}
+                  {t('forgotPassword.confirmPasswordLabel') || 'تأكيد كلمة المرور'}
                 </label>
                 <div className="relative flex items-center">
                   <input
-                    type="password"
+                    type={showConfirmPassword ? 'text' : 'password'}
                     id="confirm-new-password-input"
                     dir="ltr"
                     required
                     minLength={8}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder={t('forgotPassword.passwordPlaceholder')}
-                    className="ios-input"
+                    placeholder={t('forgotPassword.passwordPlaceholder') || '••••••••'}
+                    className="ios-input pe-10"
                   />
-                  <Lock size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => setShowConfirmPassword((v) => !v)}
+                    className={`absolute opacity-50 hover:opacity-100 transition-opacity focus:outline-none ${isRtl ? 'left-3' : 'right-3'}`}
+                    aria-label={showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+                  >
+                    {showConfirmPassword
+                      ? <EyeSlash size={18} weight="light" />
+                      : <Eye size={18} weight="light" />}
+                  </button>
                 </div>
                 {confirmPassword !== '' && !validatePasswordConfirmation(newPassword, confirmPassword).isValid && (
                   <p className="text-[11px] text-red-500 font-medium mt-1">
-                    {t(`validation.${validatePasswordConfirmation(newPassword, confirmPassword).errorKey}`)}
+                    {validatePasswordConfirmation(newPassword, confirmPassword).errorMessage || 'كلمتا المرور غير متطابقتين'}
                   </p>
                 )}
               </div>
@@ -329,18 +358,18 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 id="confirm-reset-btn"
-                disabled={isLoading || !token.trim() || !newPassword || !confirmPassword}
+                disabled={isLoading || token.trim().length < 6 || !newPassword || !confirmPassword}
                 className="ios-btn-primary w-full mt-2"
               >
                 {isLoading ? (
                   <>
                     <CircleNotch size={18} weight="light" className="animate-spin" />
-                    <span>{t('forgotPassword.confirming')}</span>
+                    <span>{t('forgotPassword.confirming') || 'جاري التحقق...'}</span>
                   </>
                 ) : (
                   <>
                     <ShieldWarning size={18} weight="light" />
-                    <span>{t('forgotPassword.confirmBtn')}</span>
+                    <span>{t('forgotPassword.confirmBtn') || 'تعيين كلمة المرور الجديدة'}</span>
                   </>
                 )}
               </button>
@@ -348,14 +377,14 @@ export default function ForgotPasswordPage() {
               <div className="flex items-center justify-between text-xs opacity-70 mt-2">
                 <button
                   type="button"
-                  onClick={() => setStep(1)}
+                  onClick={() => { setStep(1); setToken(''); setErrorMsg(null); }}
                   className="hover:opacity-100 flex items-center gap-1 transition-opacity"
                 >
                   <ArrowCounterClockwise size={14} weight="light" />
-                  <span>{t('forgotPassword.resendCode')}</span>
+                  <span>{t('forgotPassword.resendCode') || 'إرسال كود جديد'}</span>
                 </button>
-                <Link href="/admin/login" className="hover:opacity-100 transition-opacity">
-                  {t('forgotPassword.backToLogin')}
+                <Link href="/login" className="hover:opacity-100 transition-opacity">
+                  {t('forgotPassword.backToLogin') || 'العودة لتسجيل الدخول'}
                 </Link>
               </div>
             </form>
@@ -365,12 +394,12 @@ export default function ForgotPasswordPage() {
           {step === 3 && (
             <div className="flex flex-col gap-3">
               <Link
-                href="/admin/login"
+                href="/login"
                 id="login-after-reset-btn"
                 className="ios-btn-primary w-full"
               >
                 <CheckCircle size={18} weight="light" />
-                <span>{t('forgotPassword.loginNow')}</span>
+                <span>{t('forgotPassword.loginNow') || 'تسجيل الدخول الآن'}</span>
               </Link>
             </div>
           )}

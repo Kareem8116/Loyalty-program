@@ -4,13 +4,14 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
-  ArrowRight, User, Phone, Gift, Check, 
+  ArrowRight, User, Phone, Gift, Check, Lock,
+  Eye, EyeSlash,
   WarningCircle, CircleNotch, ShieldWarning, Sparkle, ArrowSquareOut 
 } from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLocale } from '@/components/LocaleProvider';
-import { validateEgyptianPhone, validateName } from '@/lib/validation';
+import { validateEgyptianPhone, validateName, validatePassword } from '@/lib/validation';
 import { setClientRoleCookie } from '@/lib/cookies';
 
 function SignupContent() {
@@ -27,6 +28,10 @@ function SignupContent() {
 
   const [name, setName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [referralCode, setReferralCode] = useState(queryRef || '');
   const [consentGiven, setConsentGiven] = useState(false);
 
@@ -65,7 +70,7 @@ function SignupContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !phoneNumber.trim()) return;
+    if (!name.trim() || !phoneNumber.trim() || !password) return;
 
     if (!consentGiven) {
       setErrorMessage(t('signup.consentRequired'));
@@ -84,6 +89,17 @@ function SignupContent() {
       return;
     }
 
+    const passVal = validatePassword(password);
+    if (!passVal.isValid) {
+      setErrorMessage(passVal.errorMessage || 'كلمة المرور غير صالحة');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorMessage(t('validation.passwords_not_matching') || 'كلمتا المرور غير متطابقتين');
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage(null);
     setExistingQrToken(null);
@@ -97,6 +113,7 @@ function SignupContent() {
           subdomain: business?.subdomain,
           name: nameVal.value,
           phoneNumber: phoneVal.cleanPhone,
+          password,
           consentGiven: true,
           referralCode: referralCode.trim() || undefined,
         }),
@@ -121,14 +138,7 @@ function SignupContent() {
 
       setIsSuccess(true);
       setClientRoleCookie('customer');
-      if (data.requiresVerification && data.email) {
-        const phoneParam = phoneVal.cleanPhone ? `&phone=${encodeURIComponent(phoneVal.cleanPhone)}` : '';
-        const otpParam = data.simulatedOtp ? `&simulatedOtp=${encodeURIComponent(data.simulatedOtp)}` : '';
-        setTimeout(() => {
-          router.push(`/verify-email?email=${encodeURIComponent(data.email)}&role=customer${phoneParam}${otpParam}`);
-        }, 1500);
-        return;
-      }
+      // No email verification required — phone-only auth
       const token = data.customer?.qrToken;
       setTimeout(() => {
         if (token) {
@@ -318,6 +328,78 @@ function SignupContent() {
               )}
             </div>
 
+            {/* Password */}
+            <div>
+              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-password-input">
+                {t('signup.passwordLabel') || 'كلمة المرور'}
+              </label>
+              <div className="relative flex items-center">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="signup-password-input"
+                  required
+                  minLength={8}
+                  placeholder={t('signup.passwordPlaceholder') || '••••••••'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="ios-input pe-10"
+                  dir="ltr"
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => setShowPassword((v) => !v)}
+                  className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity focus:outline-none`}
+                  aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+                >
+                  {showPassword
+                    ? <EyeSlash size={18} weight="light" />
+                    : <Eye size={18} weight="light" />}
+                </button>
+              </div>
+              {password && !validatePassword(password).isValid && (
+                <p className="text-[11px] text-red-500 mt-1 font-medium">
+                  {validatePassword(password).errorMessage || 'كلمة المرور ضعيفة'}
+                </p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-confirm-password-input">
+                {t('signup.confirmPasswordLabel') || 'تأكيد كلمة المرور'}
+              </label>
+              <div className="relative flex items-center">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  id="signup-confirm-password-input"
+                  required
+                  minLength={8}
+                  placeholder={t('signup.passwordPlaceholder') || '••••••••'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="ios-input pe-10"
+                  dir="ltr"
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                  className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity focus:outline-none`}
+                  aria-label={showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+                >
+                  {showConfirmPassword
+                    ? <EyeSlash size={18} weight="light" />
+                    : <Eye size={18} weight="light" />}
+                </button>
+              </div>
+              {confirmPassword && confirmPassword !== password && (
+                <p className="text-[11px] text-red-500 mt-1 font-medium">
+                  {t('validation.passwords_not_matching') || 'كلمتا المرور غير متطابقتين'}
+                </p>
+              )}
+            </div>
+
             {/* Referral Code (Optional) */}
             <div>
               <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-referral-input">
@@ -361,7 +443,7 @@ function SignupContent() {
             <button
               type="submit"
               id="signup-submit-btn"
-              disabled={isSubmitting || !name.trim() || !phoneNumber.trim() || !consentGiven}
+              disabled={isSubmitting || !name.trim() || !phoneNumber.trim() || !password || !confirmPassword || !consentGiven}
               className="ios-btn-primary w-full mt-1"
             >
               {isSubmitting ? (

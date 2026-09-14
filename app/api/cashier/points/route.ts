@@ -5,6 +5,7 @@ import { redis } from '@/lib/redis';
 import { getServiceSupabase } from '@/lib/supabase';
 import { isFeatureEnabled } from '@/lib/features';
 import { sendSms } from '@/lib/sms';
+import { verifyPhoneOtp } from '@/lib/otp';
 
 // Fallback in-memory map for idempotency keys if Redis is unreachable
 const memoryIdempotency = new Map<string, { data: any; timestamp: number }>();
@@ -23,6 +24,7 @@ export async function POST(request: NextRequest) {
       customerPin,
       managerPin,
       idempotencyKey: bodyIdempotencyKey,
+      redemptionOtp,
     } = body;
 
     const headerIdempotencyKey = request.headers.get('Idempotency-Key') || request.headers.get('x-idempotency-key');
@@ -53,6 +55,71 @@ export async function POST(request: NextRequest) {
         },
         { status: 400 }
       );
+    }
+
+    // Phase 35: Redemption OTP Guard — all redemptions (pointsChange < 0) require a valid phone OTP
+    if (pointsNum < 0) {
+      if (!redemptionOtp || typeof redemptionOtp !== 'string' || !redemptionOtp.trim()) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'يجب إدخال كود التحقق الذي وصل على موبايل العميل قبل تنفيذ الاستبدال',
+            errorCode: 'REDEMPTION_OTP_REQUIRED',
+          },
+          { status: 403 }
+        );
+      }
+
+      // Fetch the customer's phone number to verify OTP against
+      const adminClientForOtp = getServiceSupabase();
+      const { data: customerForOtp, error: otpCustErr } = await adminClientForOtp
+        .from('customers')
+        .select('phone_number')
+        .eq('id', customerId)
+        .eq('business_id', businessId)
+        .maybeSingle();
+
+      if (otpCustErr || !customerForOtp?.phone_number) {
+        return NextResponse.json(
+          { success: false, error: 'تعذر التحقق من بيانات العميل', errorCode: 'CUSTOMER_NOT_FOUND' },
+          { status: 404 }
+        );
+      }
+
+      const cleanPhone = customerForOtp.phone_number.replace(/\D/g, '');
+      const otpVerification = await verifyPhoneOtp(cleanPhone, redemptionOtp.trim());
+
+      if (!otpVerification.valid) {
+        if (otpVerification.error === 'EXPIRED_OR_NOT_FOUND') {
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'انتهت صلاحية كود التحقق أو لم يُرسَل بعد. يرجى إرسال كود جديد.',
+              errorCode: 'INVALID_REDEMPTION_OTP',
+            },
+            { status: 403 }
+          );
+        }
+        if (otpVerification.error === 'MAX_ATTEMPTS_EXCEEDED') {
+          return NextResponse.json(
+            {
+              success: false,
+              error: 'تجاوزت الحد الأقصى لمحاولات التحقق. يرجى إرسال كود جديد.',
+              errorCode: 'REDEMPTION_OTP_MAX_ATTEMPTS',
+            },
+            { status: 429 }
+          );
+        }
+        return NextResponse.json(
+          {
+            success: false,
+            error: `كود التحقق غير صحيح.${otpVerification.attemptsLeft !== undefined ? ` متبقي ${otpVerification.attemptsLeft} محاولة.` : ''}`,
+            errorCode: 'INVALID_REDEMPTION_OTP',
+            attemptsLeft: otpVerification.attemptsLeft,
+          },
+          { status: 403 }
+        );
+      }
     }
 
     // 15.11: Check Idempotency Key (network retry / double-tap prevention)
@@ -216,6 +283,18 @@ export async function POST(request: NextRequest) {
           pointsAddedToday: error.pointsAddedToday,
           dailyLimit: error.dailyLimit,
         },
+        { status: 403 }
+      );
+    }
+
+    // Phase 35: Redemption OTP errors
+    if (
+      error.code === 'REDEMPTION_OTP_REQUIRED' ||
+      error.code === 'INVALID_REDEMPTION_OTP' ||
+      error.code === 'REDEMPTION_OTP_MAX_ATTEMPTS'
+    ) {
+      return NextResponse.json(
+        { success: false, error: error.message, errorCode: error.code },
         { status: 403 }
       );
     }

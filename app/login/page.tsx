@@ -8,7 +8,10 @@ import {
   ArrowRight,
   CircleNotch,
   EnvelopeSimple,
+  Phone,
   Lock,
+  Eye,
+  EyeSlash,
   WarningCircle,
 } from '@phosphor-icons/react';
 import { supabase } from '@/lib/supabase';
@@ -17,15 +20,43 @@ import { useLocale } from '@/components/LocaleProvider';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
+const PHANTOM_DOMAIN = 'pointat.internal';
+
+/**
+ * Detects if input looks like a phone number (Egyptian 11-digit or international).
+ * Returns true for anything that starts with 0, +, or is ≥10 pure digits.
+ */
+function looksLikePhone(input: string): boolean {
+  const stripped = input.replace(/[\s\-().+]/g, '');
+  // Pure digits only after stripping separators, and at least 10 chars
+  return /^\d{10,15}$/.test(stripped) || /^01\d{9}$/.test(stripped);
+}
+
+/**
+ * Normalise an Egyptian/international phone to the clean digits we use for
+ * phantom emails (e.g. "01012345678" or "201012345678").
+ */
+function normalisePhone(phone: string): string {
+  const digits = phone.replace(/\D/g, '');
+  // Egyptian: 01x → keep as-is; international 2010x → strip leading 2
+  if (digits.startsWith('2') && digits.length === 12) {
+    return digits.slice(1); // 201012345678 → 01012345678
+  }
+  return digits;
+}
+
 export default function UnifiedLoginPage() {
   const router = useRouter();
   const { t, locale, isRtl } = useLocale();
 
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState(''); // email OR phone
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [mounted, setMounted] = useState(false);
+
+  const isPhone = looksLikePhone(identifier.trim());
 
   // Smart Redirection if already authenticated
   useEffect(() => {
@@ -76,53 +107,76 @@ export default function UnifiedLoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password) return;
+    if (!identifier.trim() || !password) return;
     setLoading(true);
     setError('');
 
-    const normalizedEmail = email.trim().toLowerCase();
+    const raw = identifier.trim();
+
+    // For phone inputs: resolve to phantom email. For email inputs: use as-is.
+    let authEmail: string;
+    if (looksLikePhone(raw)) {
+      const cleanPhone = normalisePhone(raw);
+      authEmail = `${cleanPhone}@${PHANTOM_DOMAIN}`;
+    } else {
+      authEmail = raw.toLowerCase();
+    }
 
     try {
       // 1. Authenticate with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email: normalizedEmail,
+        email: authEmail,
         password,
       });
 
       if (authError || !authData.user) {
-        if (authError?.message?.toLowerCase().includes('email not confirmed')) {
+        // For phone users: never show phantom-email details in the error
+        const isPhoneLogin = looksLikePhone(raw);
+        if (
+          authError?.message?.toLowerCase().includes('email not confirmed') &&
+          !isPhoneLogin
+        ) {
+          // Email-based staff: nudge them to verify their email
           fetch('/api/auth/send-verification-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: normalizedEmail }),
+            body: JSON.stringify({ email: authEmail }),
           }).catch(() => {});
-          router.push(`/verify-email?email=${encodeURIComponent(normalizedEmail)}&pending=1`);
+          router.push(`/verify-email?email=${encodeURIComponent(authEmail)}&pending=1`);
           return;
         }
+
         setError(
           locale === 'ar'
-            ? 'فشل تسجيل الدخول. يرجى التحقق من البريد وكلمة المرور.'
-            : 'Sign in failed. Please verify your email and password.'
+            ? isPhoneLogin
+              ? 'رقم الموبايل أو كلمة المرور غير صحيحة.'
+              : 'فشل تسجيل الدخول. يرجى التحقق من البريد وكلمة المرور.'
+            : isPhoneLogin
+              ? 'Invalid phone number or password.'
+              : 'Sign in failed. Please verify your email and password.'
         );
         setLoading(false);
         return;
       }
 
-      // 2. Mandatory OTP Email Verification Guard
-      const isEmailVerified =
-        authData.user.user_metadata?.email_verified === true ||
-        (Boolean(authData.user.email_confirmed_at) &&
-          authData.user.user_metadata?.email_verified !== false);
+      // 2. Email-verification guard — only for real (non-phantom) staff emails
+      const isPhantomUser = authData.user.email?.endsWith(`@${PHANTOM_DOMAIN}`);
+      if (!isPhantomUser) {
+        const isEmailVerified =
+          authData.user.user_metadata?.email_verified === true ||
+          (Boolean(authData.user.email_confirmed_at) &&
+            authData.user.user_metadata?.email_verified !== false);
 
-      if (!isEmailVerified) {
-        await supabase.auth.signOut();
-        fetch('/api/auth/send-verification-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: normalizedEmail }),
-        }).catch(() => {});
-        router.push(`/verify-email?email=${encodeURIComponent(normalizedEmail)}&pending=1`);
-        return;
+        if (!isEmailVerified) {
+          await supabase.auth.signOut();
+          fetch('/api/auth/send-verification-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: authEmail }),
+          }).catch(() => {});
+          router.push(`/verify-email?email=${encodeURIComponent(authEmail)}&pending=1`);
+          return;
+        }
       }
 
       // 3. Dynamic Smart Role Routing from user_roles
@@ -157,7 +211,7 @@ export default function UnifiedLoginPage() {
         if (userRole?.branch_id) localStorage.setItem('cashier_branch_id', userRole.branch_id);
         localStorage.setItem('cashier_role', role);
       } else {
-        // Customer or standard member
+        // Customer — or phantom user with no explicit role
         destination = '/my-places';
         roleToCookie = 'customer';
       }
@@ -176,6 +230,12 @@ export default function UnifiedLoginPage() {
   };
 
   if (!mounted) return null;
+
+  const inputLabel = locale === 'ar'
+    ? (isPhone ? 'رقم الموبايل' : 'البريد الإلكتروني أو رقم الموبايل')
+    : (isPhone ? 'Phone Number' : 'Email or Phone Number');
+
+  const inputPlaceholder = locale === 'ar' ? '01xxxxxxxxx أو example@email.com' : '01xxxxxxxxx or name@example.com';
 
   return (
     <main className="page-bg min-h-screen flex items-center justify-center p-4">
@@ -220,8 +280,8 @@ export default function UnifiedLoginPage() {
           </h1>
           <p className="text-xs text-muted mt-1">
             {locale === 'ar'
-              ? 'سجل دخولك للوصول إلى حسابك'
-              : 'Sign in to access your portal and account'}
+              ? 'سجل دخولك برقم موبايلك أو بريدك الإلكتروني'
+              : 'Sign in with your phone number or email'}
           </p>
         </div>
 
@@ -242,30 +302,41 @@ export default function UnifiedLoginPage() {
 
         {/* Unified Login Form */}
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          {/* Identifier: phone or email */}
           <div>
-            <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="cl-email">
-              {locale === 'ar' ? 'البريد الإلكتروني' : 'Email Address'}
+            <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="cl-identifier">
+              {inputLabel}
             </label>
             <div className="relative flex items-center">
               <input
-                id="cl-email"
+                id="cl-identifier"
                 className="ios-input pe-10"
-                type="email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                inputMode={isPhone ? 'tel' : 'email'}
+                placeholder={inputPlaceholder}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
-                autoComplete="email"
+                autoComplete="username"
                 dir="ltr"
               />
-              <EnvelopeSimple
-                size={18}
-                weight="light"
-                className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`}
-              />
+              {isPhone ? (
+                <Phone
+                  size={18}
+                  weight="light"
+                  className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`}
+                />
+              ) : (
+                <EnvelopeSimple
+                  size={18}
+                  weight="light"
+                  className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`}
+                />
+              )}
             </div>
           </div>
 
+          {/* Password */}
           <div>
             <div className="flex justify-between items-center mb-1.5">
               <label className="text-xs font-semibold opacity-80" htmlFor="cl-password">
@@ -283,18 +354,24 @@ export default function UnifiedLoginPage() {
               <input
                 id="cl-password"
                 className="ios-input pe-10"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 autoComplete="current-password"
               />
-              <Lock
-                size={18}
-                weight="light"
-                className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`}
-              />
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={() => setShowPassword((v) => !v)}
+                className={`absolute opacity-50 hover:opacity-100 transition-opacity focus:outline-none ${isRtl ? 'left-3' : 'right-3'}`}
+                aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
+              >
+                {showPassword
+                  ? <EyeSlash size={18} weight="light" />
+                  : <Eye size={18} weight="light" />}
+              </button>
             </div>
           </div>
 
@@ -302,7 +379,7 @@ export default function UnifiedLoginPage() {
             id="cl-signin-btn"
             type="submit"
             className="ios-btn-primary w-full mt-2"
-            disabled={loading || !email.trim() || !password}
+            disabled={loading || !identifier.trim() || !password}
           >
             {loading ? (
               <>

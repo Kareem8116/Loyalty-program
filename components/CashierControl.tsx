@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   PlusCircle, MinusCircle, CircleNotch, Coffee, Receipt, Check,
-  WarningCircle, ArrowLeft, ArrowRight, ShieldWarning, ArrowCounterClockwise, ClockCounterClockwise
+  WarningCircle, ArrowLeft, ArrowRight, ShieldWarning, ArrowCounterClockwise, ClockCounterClockwise,
+  DeviceMobile, ArrowsClockwise
 } from '@phosphor-icons/react';
 import { useLocale } from './LocaleProvider';
 import { supabase } from '@/lib/supabase';
@@ -79,6 +80,15 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
   const [reversalReason, setReversalReason] = useState('');
   const [isSubmittingReversal, setIsSubmittingReversal] = useState(false);
   const [reversalError, setReversalError] = useState<string | null>(null);
+
+  // Phase 35: Redemption OTP State
+  const [showRedemptionOtpModal, setShowRedemptionOtpModal] = useState(false);
+  const [redemptionOtp, setRedemptionOtp] = useState('');
+  const [isSendingRedemptionOtp, setIsSendingRedemptionOtp] = useState(false);
+  const [redemptionOtpSent, setRedemptionOtpSent] = useState(false);
+  const [redemptionOtpError, setRedemptionOtpError] = useState<string | null>(null);
+  const [redemptionOtpCooldown, setRedemptionOtpCooldown] = useState(0);
+  const cooldownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // UX: Success flash animation on balance card
   const [successFlash, setSuccessFlash] = useState(false);
@@ -294,12 +304,76 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
     }
   };
 
-  // Handle Redeem Points (4.4 & 4.5 & 15.6)
-  const handleRedeemPoints = async (e?: React.FormEvent, overrideCustomerPin?: string) => {
+  // Phase 35: Start cooldown countdown timer
+  const startCooldownTimer = useCallback((seconds: number) => {
+    if (cooldownTimerRef.current) clearInterval(cooldownTimerRef.current);
+    setRedemptionOtpCooldown(seconds);
+    cooldownTimerRef.current = setInterval(() => {
+      setRedemptionOtpCooldown((prev) => {
+        if (prev <= 1) {
+          if (cooldownTimerRef.current) clearInterval(cooldownTimerRef.current);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  // Phase 35: Send redemption OTP to customer's phone
+  const sendRedemptionOtp = useCallback(async () => {
+    setIsSendingRedemptionOtp(true);
+    setRedemptionOtpError(null);
+    try {
+      const headers = await getAuthHeaders();
+      const res = await fetch('/api/cashier/redemption-otp', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          businessId: customer.business_id,
+          customerId: customer.id,
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        if (res.status === 429 && data.cooldownRemaining) {
+          startCooldownTimer(data.cooldownRemaining);
+          setRedemptionOtpSent(true); // OTP already exists, just show entry modal
+          setRedemptionOtpError(data.error || 'تم إرسال كود مسبقاً');
+        } else {
+          setRedemptionOtpError(data.error || 'فشل إرسال الكود');
+        }
+        return;
+      }
+
+      setRedemptionOtpSent(true);
+      startCooldownTimer(60); // 60-second cooldown
+    } catch (err: any) {
+      setRedemptionOtpError('فشل الاتصال بالخادم');
+    } finally {
+      setIsSendingRedemptionOtp(false);
+    }
+  }, [customer.business_id, customer.id, startCooldownTimer]);
+
+  // Phase 35: Open OTP modal and auto-send OTP
+  const initiateRedemption = useCallback(async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (calculatedPointsToDeduct <= 0 || !hasEnoughPoints) return;
 
-    // 15.6: Check if high-value threshold applies and customerPin is not entered yet
+    setShowRedemptionOtpModal(true);
+    setRedemptionOtp('');
+    setRedemptionOtpError(null);
+
+    if (!redemptionOtpSent || redemptionOtpCooldown === 0) {
+      await sendRedemptionOtp();
+    }
+  }, [calculatedPointsToDeduct, hasEnoughPoints, redemptionOtpSent, redemptionOtpCooldown, sendRedemptionOtp]);
+
+  // Handle Redeem Points (4.4 & 4.5 & 15.6 & Phase 35)
+  const handleRedeemPoints = async (overrideCustomerPin?: string) => {
+    if (calculatedPointsToDeduct <= 0 || !hasEnoughPoints) return;
+
+    // 15.6: Check if high-value threshold applies
     const pinToUse = overrideCustomerPin || customerPin.trim();
     if (highValueThreshold && calculatedPointsToDeduct >= highValueThreshold && !pinToUse) {
       setShowCustomerPinModal(true);
@@ -345,6 +419,9 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       setManualDeductPoints('');
       setCustomerPin('');
       setShowCustomerPinModal(false);
+      setShowRedemptionOtpModal(false);
+      setRedemptionOtp('');
+      setRedemptionOtpSent(false);
       return;
     }
 
@@ -362,6 +439,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           pointsChange: -calculatedPointsToDeduct,
           reason,
           customerPin: pinToUse || undefined,
+          redemptionOtp: redemptionOtp.trim(),
         }),
       });
 
@@ -370,6 +448,24 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       if (!data.success && data.errorCode === 'CUSTOMER_PIN_REQUIRED') {
         setShowCustomerPinModal(true);
         setStatusMessage({ type: 'error', text: t('cashierControl.customerPinPrompt') });
+        return;
+      }
+
+      if (!data.success && (
+        data.errorCode === 'INVALID_REDEMPTION_OTP' ||
+        data.errorCode === 'REDEMPTION_OTP_REQUIRED' ||
+        data.errorCode === 'REDEMPTION_OTP_MAX_ATTEMPTS'
+      )) {
+        setRedemptionOtpError(
+          data.attemptsLeft !== undefined
+            ? `${data.error} (متبقي ${data.attemptsLeft} محاولة)`
+            : data.error
+        );
+        if (data.errorCode === 'REDEMPTION_OTP_MAX_ATTEMPTS') {
+          // Reset so they can request a new OTP
+          setRedemptionOtpSent(false);
+          setRedemptionOtp('');
+        }
         return;
       }
 
@@ -386,10 +482,15 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           points: calculatedPointsToDeduct 
         }) 
       });
+      // Reset all redemption state
       setSelectedMenuItem(null);
       setManualDeductPoints('');
       setCustomerPin('');
       setShowCustomerPinModal(false);
+      setShowRedemptionOtpModal(false);
+      setRedemptionOtp('');
+      setRedemptionOtpSent(false);
+      setRedemptionOtpError(null);
     } catch (err: any) {
       if (
         (typeof navigator !== 'undefined' && !navigator.onLine) ||
@@ -420,6 +521,9 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           setManualDeductPoints('');
           setCustomerPin('');
           setShowCustomerPinModal(false);
+          setShowRedemptionOtpModal(false);
+          setRedemptionOtp('');
+          setRedemptionOtpSent(false);
           return;
         }
       }
@@ -765,7 +869,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
          ========================================================================= */}
       {activeTab === 'redeem' && (
         <form 
-          onSubmit={handleRedeemPoints}
+          onSubmit={initiateRedemption}
           className="glass-card rounded-3xl p-5 flex flex-col gap-4"
           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
         >
@@ -896,6 +1000,127 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
         </form>
       )}
 
+      {/* =========================================================================
+          Phase 35: Redemption OTP Modal
+         ========================================================================= */}
+      {showRedemptionOtpModal && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+          <div
+            className="w-full max-w-xs rounded-3xl p-6 border shadow-2xl flex flex-col gap-4 backdrop-blur-xl"
+            style={{ backgroundColor: 'rgba(10, 8, 20, 0.97)', borderColor: 'rgba(255,255,255,0.08)' }}
+          >
+            {/* Header */}
+            <div className="flex items-center gap-2">
+              <DeviceMobile weight="light" className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
+              <h3 className="text-sm font-bold text-white">
+                {isRtl ? 'تأكيد استبدال النقاط' : 'Confirm Point Redemption'}
+              </h3>
+            </div>
+
+            <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+              {isRtl
+                ? 'تم إرسال كود تحقق على موبايل العميل. يرجى إدخاله لإتمام عملية الاستبدال.'
+                : 'A verification code has been sent to the customer\'s phone. Enter it to complete the redemption.'}
+            </p>
+
+            {/* OTP Input */}
+            <div>
+              <label className="block text-xs font-semibold mb-2 opacity-70 text-white">
+                {isRtl ? 'كود التحقق' : 'Verification Code'}
+              </label>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={6}
+                id="redemption-otp-input"
+                value={redemptionOtp}
+                onChange={(e) => setRedemptionOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                placeholder="000000"
+                className="w-full py-3 px-4 rounded-2xl text-center text-xl tracking-[0.4em] font-mono border focus:outline-none focus:ring-2"
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.07)',
+                  borderColor: redemptionOtpError ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.12)',
+                  color: '#ffffff',
+                  '--tw-ring-color': 'var(--color-accent)',
+                } as React.CSSProperties}
+                autoFocus
+                dir="ltr"
+              />
+            </div>
+
+            {/* Status: Sending / Sent / Error */}
+            {isSendingRedemptionOtp && (
+              <div className="flex items-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
+                <span>{isRtl ? 'جاري إرسال الكود...' : 'Sending code...'}</span>
+              </div>
+            )}
+
+            {redemptionOtpSent && !isSendingRedemptionOtp && !redemptionOtpError && (
+              <div className="flex items-center gap-2 text-xs text-emerald-400">
+                <Check weight="light" className="w-3.5 h-3.5" />
+                <span>{isRtl ? 'تم إرسال الكود على موبايل العميل' : 'Code sent to customer\'s phone'}</span>
+              </div>
+            )}
+
+            {redemptionOtpError && (
+              <div className="flex items-start gap-2 text-xs text-rose-400">
+                <WarningCircle weight="light" className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                <span>{redemptionOtpError}</span>
+              </div>
+            )}
+
+            {/* Resend button */}
+            <button
+              type="button"
+              id="resend-redemption-otp-btn"
+              onClick={sendRedemptionOtp}
+              disabled={isSendingRedemptionOtp || redemptionOtpCooldown > 0}
+              className="flex items-center justify-center gap-1.5 text-xs py-1.5 rounded-xl border transition-all disabled:opacity-40"
+              style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}
+            >
+              <ArrowsClockwise weight="light" className="w-3.5 h-3.5" />
+              <span>
+                {redemptionOtpCooldown > 0
+                  ? (isRtl ? `إعادة الإرسال بعد ${redemptionOtpCooldown} ثانية` : `Resend in ${redemptionOtpCooldown}s`)
+                  : (isRtl ? 'إعادة إرسال الكود' : 'Resend code')}
+              </span>
+            </button>
+
+            {/* Action buttons */}
+            <div className="flex gap-2 pt-1">
+              <button
+                type="button"
+                id="cancel-redemption-otp-btn"
+                onClick={() => {
+                  setShowRedemptionOtpModal(false);
+                  setRedemptionOtp('');
+                  setRedemptionOtpError(null);
+                  if (cooldownTimerRef.current) clearInterval(cooldownTimerRef.current);
+                }}
+                className="flex-1 py-2.5 rounded-xl text-xs font-semibold border transition-all"
+                style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}
+              >
+                {isRtl ? 'إلغاء' : 'Cancel'}
+              </button>
+              <button
+                type="button"
+                id="confirm-redemption-otp-btn"
+                disabled={redemptionOtp.length < 6 || isSubmitting || isSendingRedemptionOtp}
+                onClick={() => handleRedeemPoints()}
+                className="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all disabled:opacity-50 btn-gradient flex items-center justify-center gap-1.5"
+              >
+                {isSubmitting
+                  ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
+                  : <Check weight="light" className="w-3.5 h-3.5" />}
+                <span>{isSubmitting ? (isRtl ? 'جاري التنفيذ...' : 'Processing...') : (isRtl ? 'تأكيد الاستبدال' : 'Confirm')}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 15.6: Customer PIN Confirmation Modal */}
       {showCustomerPinModal && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
@@ -936,7 +1161,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 type="button"
                 id="confirm-customer-pin-btn"
                 disabled={customerPin.trim().length < 4 || isSubmitting}
-                onClick={() => handleRedeemPoints(undefined, customerPin)}
+                onClick={() => handleRedeemPoints(customerPin)}
                 className="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all disabled:opacity-50 btn-gradient"
               >
                 {t('cashierControl.confirmRedeem')}
