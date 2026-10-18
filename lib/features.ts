@@ -39,6 +39,7 @@ export function getDefaultFeatureStatus(featureKey: string): boolean {
   if (
     featureKey === 'notifications' ||
     featureKey === 'sms_notifications' ||
+    featureKey === 'customer_self_signup' ||
     featureKey === 'ai_recommendations' ||
     featureKey === 'ai_anomaly_detection' ||
     featureKey === 'notify_owner_sync_failure'

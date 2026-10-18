@@ -116,11 +116,11 @@ export default function OfflineSyncBanner({
   }
 
   return (
-    <div className="w-full flex flex-col gap-2 mb-3 animate-in fade-in duration-200">
+    <div className="w-full flex flex-col gap-2 mb-3">
       {/* 1. Offline or Pending Sync Banner */}
       {(!isOnline || pendingCount > 0) && (
         <div
-          className="p-3.5 rounded-2xl border-[0.5px] shadow-sm flex items-center justify-between gap-3 text-xs transition-colors backdrop-blur-md"
+          className="p-3 rounded-[8px] border flex items-center justify-between gap-3 text-xs transition-colors"
           style={{
             backgroundColor: !isOnline ? 'var(--color-error-bg)' : 'var(--color-card-bg)',
             borderColor: !isOnline ? 'var(--color-error-border)' : 'var(--color-border)',
@@ -129,8 +129,10 @@ export default function OfflineSyncBanner({
         >
           <div className="flex items-center gap-2.5 min-w-0">
             <span
-              className={`p-1.5 rounded-xl shrink-0 flex items-center justify-center ${
-                !isOnline ? 'bg-rose-500/15 text-rose-500' : 'bg-emerald-500/15 text-emerald-500'
+              className={`p-1.5 rounded-[4px] border shrink-0 flex items-center justify-center ${
+                !isOnline 
+                  ? 'border-rose-500/30 bg-rose-500/10 text-rose-500' 
+                  : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
               }`}
             >
               {!isOnline ? (
@@ -141,12 +143,12 @@ export default function OfflineSyncBanner({
             </span>
 
             <div className="flex flex-col min-w-0">
-              <span className="font-bold truncate">
+              <span className="font-medium truncate font-mono text-[11px] uppercase tracking-wider">
                 {!isOnline
                   ? t('cashierControl.offlineStatus') || 'غير متصل بالإنترنت'
                   : t('cashierControl.onlineStatus') || 'متصل بالإنترنت'}
               </span>
-              <span className="text-[11px] opacity-75 truncate">
+              <span className="text-[11px] font-mono opacity-70 truncate">
                 {t('cashierControl.offlineQueue', { count: pendingCount, limit: maxLimit }) ||
                   `عمليات معلقة محلياً: ${pendingCount} من ${maxLimit}`}
               </span>
@@ -158,7 +160,7 @@ export default function OfflineSyncBanner({
             id="sync-offline-queue-btn"
             onClick={handleSync}
             disabled={!isOnline || isSyncing || pendingCount === 0}
-            className="ios-btn-primary py-1.5 px-3 rounded-xl font-bold shrink-0 transition-transform active:scale-95 flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed text-xs"
+            className="py-1.5 px-3 rounded-[8px] font-mono uppercase tracking-wider font-medium shrink-0 transition-all active:scale-[0.99] flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed text-xs bg-[var(--color-accent)] text-white hover:brightness-110 cursor-pointer"
           >
             {isSyncing ? (
               <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
@@ -175,7 +177,7 @@ export default function OfflineSyncBanner({
       {/* 2. Success feedback message after sync */}
       {syncFeedback && (
         <div
-          className="p-3 rounded-2xl border-[0.5px] text-xs flex items-center justify-between gap-2 backdrop-blur-md"
+          className="p-3 rounded-[8px] border text-xs font-mono flex items-center justify-between gap-2"
           style={{
             backgroundColor: 'var(--color-success-bg)',
             borderColor: 'var(--color-success-border)',
@@ -199,7 +201,7 @@ export default function OfflineSyncBanner({
       {/* 3. Failed transactions alert (Phase 32.5 & 32.6) */}
       {failedItems.length > 0 && (
         <div
-          className="p-3.5 rounded-2xl border-[0.5px] flex flex-col gap-2 text-xs backdrop-blur-md"
+          className="p-3 rounded-[8px] border flex flex-col gap-2 text-xs"
           style={{
             backgroundColor: 'var(--color-error-bg)',
             borderColor: 'var(--color-error-border)',
@@ -207,7 +209,7 @@ export default function OfflineSyncBanner({
           }}
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 font-bold">
+            <div className="flex items-center gap-1.5 font-medium font-mono">
               <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
               <span>
                 {t('cashierControl.syncFailedAlert', { count: failedItems.length }) ||
@@ -218,7 +220,7 @@ export default function OfflineSyncBanner({
               type="button"
               id="dismiss-offline-failed-btn"
               onClick={handleDismissFailed}
-              className="text-[11px] font-semibold underline opacity-80 hover:opacity-100"
+              className="text-[11px] font-mono uppercase underline opacity-80 hover:opacity-100 cursor-pointer"
             >
               {t('cashierControl.dismissFailed') || 'تجاهل'}
             </button>
@@ -228,12 +230,12 @@ export default function OfflineSyncBanner({
             {failedItems.map((item) => (
               <div
                 key={item.id}
-                className="p-2 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-between gap-2 text-[11px]"
+                className="p-2 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] flex items-center justify-between gap-2 text-[11px] font-mono"
               >
                 <div className="min-w-0">
-                  <span className="font-semibold block truncate">
+                  <span className="font-medium block truncate">
                     {item.customerName || item.customerId} (
-                    {item.pointsChange > 0 ? `+${item.pointsChange}` : item.pointsChange} نقطة)
+                    {item.pointsChange > 0 ? `+${item.pointsChange}` : item.pointsChange} pts)
                   </span>
                   <span className="opacity-75 block truncate">
                     {item.failureReason || 'فشل التحقق من العملية على السيرفر'}

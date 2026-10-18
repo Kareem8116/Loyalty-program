@@ -50,9 +50,10 @@ export async function getCachedOrFetch<T>(
   ttl: number = 3600
 ): Promise<T> {
   try {
-    const cached = await redis.get<T>(key);
+    const cached = await redis.get<string>(key);
     if (cached) {
-      return cached;
+      // Parse the JSON string back to the original type
+      return (typeof cached === 'string' ? JSON.parse(cached) : cached) as T;
     }
   } catch (error) {
     console.warn(`Redis get error for key ${key}:`, error);
@@ -63,7 +64,8 @@ export async function getCachedOrFetch<T>(
 
   try {
     if (data) {
-      await redis.setex(key, ttl, data);
+      // Explicitly serialize to JSON string for consistent storage
+      await redis.setex(key, ttl, JSON.stringify(data));
     }
   } catch (error) {
     console.warn(`Redis set error for key ${key}:`, error);

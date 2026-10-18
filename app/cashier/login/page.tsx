@@ -68,18 +68,13 @@ export default function CashierLoginPage() {
         <div className="flex justify-between items-center mb-6">
           <Link 
             href="/" 
-            className="w-10 h-10 rounded-full flex items-center justify-center border transition-transform active:scale-95"
-            style={{
-              backgroundColor: 'var(--color-input-bg)',
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-text)',
-            }}
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors active:scale-95 cursor-pointer"
           >
-            <ArrowRight size={18} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
+            <ArrowRight size={16} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
           </Link>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
-            <span className="text-xs font-semibold tracking-wider uppercase opacity-75">Cashier Portal</span>
+            <span className="w-2 h-2 rounded-[2px] bg-[var(--color-accent)]" />
+            <span className="text-[10px] font-mono font-semibold tracking-wider uppercase text-[var(--color-text-secondary)]">Cashier Portal</span>
           </div>
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
@@ -88,42 +83,33 @@ export default function CashierLoginPage() {
         </div>
 
         {/* Login Card */}
-        <div className="glass-card p-6 sm:p-7 transition-all">
+        <div className="rounded-[8px] p-6 sm:p-7 border border-[var(--color-border)] bg-[var(--color-card-bg)] shadow-2xl transition-all">
           <div className="text-center mb-6 flex flex-col items-center">
             <div
-              className="w-16 h-16 mb-3 rounded-2xl flex items-center justify-center shadow-md transition-transform"
-              style={{
-                backgroundColor: 'var(--color-accent)',
-                color: 'var(--color-accent-text)',
-              }}
+              className="w-12 h-12 mb-3 rounded-[4px] border border-[var(--color-border)] flex items-center justify-center bg-[var(--color-accent)] text-white shadow-sm"
             >
-              <QrCode size={32} weight="light" />
+              <QrCode size={26} weight="light" />
             </div>
-            <h1 className="text-xl font-bold tracking-tight" style={{ color: 'var(--color-text)' }}>
+            <h1 className="text-xl font-light tracking-tight text-[var(--color-text)]">
               {t('cashierLogin.title')}
             </h1>
-            <p className="text-xs mt-1 opacity-60">
+            <p className="text-xs font-mono opacity-60 mt-1">
               {t('cashierLogin.subtitle')}
             </p>
           </div>
 
           {errorMsg && (
             <div
-              className="mb-4 p-3 rounded-xl border text-xs flex items-center gap-2"
-              style={{
-                backgroundColor: 'var(--color-error-bg)',
-                color: 'var(--color-error-text)',
-                borderColor: 'var(--color-error-border)',
-              }}
+              className="mb-4 p-3 rounded-[4px] border border-[var(--color-error-border)] bg-[var(--color-error-bg)] text-[var(--color-error-text)] text-xs font-mono flex items-center gap-2"
             >
-              <WarningCircle size={18} weight="light" className="shrink-0" />
+              <WarningCircle size={16} weight="light" className="shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          <form onSubmit={handleLogin} className="flex flex-col gap-3.5">
             <div>
-              <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="cashier-email-input">
+              <label className="block text-[11px] font-mono uppercase tracking-wider mb-1.5 opacity-75" htmlFor="cashier-email-input">
                 {t('cashierLogin.email')}
               </label>
               <div className="relative flex items-center">
@@ -135,14 +121,14 @@ export default function CashierLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="cashier@example.com"
-                  className="ios-input"
+                  className="w-full h-10 px-3 rounded-[4px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors pe-10"
                 />
-                <EnvelopeSimple size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
+                <EnvelopeSimple size={16} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="cashier-password-input">
+              <label className="block text-[11px] font-mono uppercase tracking-wider mb-1.5 opacity-75" htmlFor="cashier-password-input">
                 {t('cashierLogin.password')}
               </label>
               <div className="relative flex items-center">
@@ -154,9 +140,9 @@ export default function CashierLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="ios-input"
+                  className="w-full h-10 px-3 rounded-[4px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors pe-10"
                 />
-                <Lock size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
+                <Lock size={16} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
@@ -164,16 +150,16 @@ export default function CashierLoginPage() {
               type="submit"
               id="cashier-login-btn"
               disabled={isLoading}
-              className="ios-btn-primary w-full mt-2"
+              className="w-full h-10 rounded-[8px] font-mono text-xs uppercase tracking-wider transition-all active:scale-[0.99] disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110 flex items-center justify-center gap-2 mt-1 cursor-pointer"
             >
               {isLoading ? (
                 <>
-                  <CircleNotch size={18} weight="light" className="animate-spin" />
+                  <CircleNotch size={16} weight="light" className="animate-spin" />
                   <span>{t('cashierLogin.signingIn')}</span>
                 </>
               ) : (
                 <>
-                  <Storefront size={18} weight="light" />
+                  <Storefront size={16} weight="light" />
                   <span>{t('cashierLogin.signIn')}</span>
                 </>
               )}
@@ -181,8 +167,8 @@ export default function CashierLoginPage() {
           </form>
         </div>
 
-        <footer className="text-center text-[11px] py-4 flex items-center justify-center gap-1.5 opacity-40">
-          <Storefront size={14} weight="light" />
+        <footer className="text-center text-[10px] font-mono uppercase tracking-wider py-4 flex items-center justify-center gap-1.5 opacity-40">
+          <Storefront size={13} weight="light" />
           <span>Pointat Cashier Station</span>
         </footer>
       </div>

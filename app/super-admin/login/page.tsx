@@ -79,50 +79,31 @@ export default function SuperAdminLoginPage() {
 
   return (
     <main
-      className="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors duration-300 relative overflow-hidden"
-      style={{
-        background: 'transparent',
-        color: 'var(--color-text)'
-      }}
+      className="page-bg min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors duration-300 relative overflow-hidden"
     >
-      {/* Ambient Background Glows */}
-      <div style={{
-        position: 'absolute',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(108,99,255,0.09) 0%, transparent 70%)',
-        top: '-200px',
-        right: '-200px',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute',
-        width: '450px',
-        height: '450px',
-        background: 'radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%)',
-        bottom: '-120px',
-        left: '-120px',
-        pointerEvents: 'none',
-      }} />
+      {/* Ambient Ameba Control Room Glow */}
+      <div 
+        tabIndex={-1}
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 opacity-40 dark:opacity-75 z-0"
+        style={{
+          background: 'radial-gradient(circle at 50% 20%, rgba(4, 40, 203, 0.22) 0%, rgba(52, 252, 255, 0.05) 35%, transparent 70%)',
+        }}
+      />
 
-      <div className="w-full max-w-sm flex flex-col flex-1 py-2 relative z-10">
+      <div className="w-full max-w-sm flex flex-col flex-1 py-2 relative z-10 my-auto">
         {/* Header */}
         <header className="flex items-center justify-between w-full pb-4">
           <Link
             href="/"
             aria-label={t('common.home')}
-            className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm border transition-transform active:scale-95"
-            style={{
-              backgroundColor: 'var(--color-card-bg)',
-              color: 'var(--color-accent)',
-              borderColor: 'var(--color-border)',
-            }}
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] transition-transform active:scale-95"
           >
-            <ArrowRight weight="light" className={`w-5 h-5 ${isRtl ? '' : 'rotate-180'}`} />
+            <ArrowRight weight="light" className={`w-4 h-4 ${isRtl ? '' : 'rotate-180'}`} />
           </Link>
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#6C63FF' }} />
-            <span className="text-xs font-mono font-bold tracking-wider uppercase" style={{ color: '#A5B4FC' }}>Platform Command</span>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-arc-cyan)' }} />
+            <span className="text-[10px] font-mono font-medium tracking-wider uppercase text-[var(--color-text-muted)]">Platform Command</span>
           </div>
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
@@ -132,49 +113,35 @@ export default function SuperAdminLoginPage() {
 
         {/* Login Card */}
         <div
-          className="rounded-3xl p-6 sm:p-7 border shadow-2xl my-auto flex flex-col gap-5 backdrop-blur-xl transition-colors"
-          style={{
-            backgroundColor: 'var(--color-card-bg)',
-            borderColor: 'var(--color-border)',
-          }}
+          className="rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 sm:p-7 my-auto flex flex-col gap-5 transition-colors"
         >
           <div className="text-center flex flex-col items-center">
             {/* Badge */}
             <div
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase mb-3.5 border"
-              style={{
-                backgroundColor: 'rgba(108, 99, 255, 0.12)',
-                borderColor: 'rgba(108, 99, 255, 0.28)',
-                color: '#A5B4FC',
-              }}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] text-[10px] font-mono font-medium tracking-wider uppercase mb-3.5 border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]"
             >
-              <ShieldWarning weight="light" className="w-3 h-3" style={{ color: '#A5B4FC' }} />
-              <span>الإدارة المركزية • Super Admin Command</span>
+              <ShieldWarning weight="light" className="w-3.5 h-3.5" />
+              <span>الإدارة المركزية • Super Admin</span>
             </div>
 
             <div
-              className="w-16 h-16 mb-3 rounded-2xl flex items-center justify-center shadow-lg"
-              style={{
-                background: 'linear-gradient(135deg, #6C63FF, #4ECDC4)',
-                color: '#ffffff',
-                boxShadow: '0 10px 25px rgba(108, 99, 255, 0.35)',
-              }}
+              className="w-12 h-12 mb-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)] transition-transform"
             >
-              <ShieldWarning weight="light" className="w-8 h-8" />
+              <ShieldWarning weight="light" className="w-6 h-6" />
             </div>
-            <h1 className="text-xl font-bold mb-1 tracking-tight text-white">{t('superAdmin.loginTitle')}</h1>
-            <p className="text-xs max-w-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            <h1 className="text-xl font-light mb-1 tracking-tight text-[var(--color-text)]">{t('superAdmin.loginTitle')}</h1>
+            <p className="text-xs max-w-xs leading-relaxed text-[var(--color-text-muted)]">
               {t('superAdmin.loginSubtitle')}
             </p>
           </div>
 
           {errorMsg && (
             <div
-              className="p-3 rounded-xl border text-xs flex items-center gap-2"
+              className="p-3 rounded-[4px] border text-xs font-mono flex items-center gap-2"
               style={{
-                backgroundColor: 'rgba(248, 113, 113, 0.12)',
-                color: '#F87171',
-                borderColor: 'rgba(248, 113, 113, 0.25)',
+                backgroundColor: 'var(--color-error-bg)',
+                color: 'var(--color-error-text)',
+                borderColor: 'var(--color-error-border)',
               }}
             >
               <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
@@ -184,7 +151,7 @@ export default function SuperAdminLoginPage() {
 
           <form onSubmit={handleLogin} className="flex flex-col gap-3.5">
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.7)' }}>{t('superAdmin.email')}</label>
+              <label className="block text-[11px] font-mono uppercase tracking-wider mb-1.5 text-[var(--color-text-muted)]">{t('superAdmin.email')}</label>
               <div className="relative">
                 <input
                   type="email"
@@ -194,18 +161,14 @@ export default function SuperAdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="superadmin@example.com"
-                  className={`w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-none transition-all text-white ${isRtl ? 'pr-9' : 'pl-9'}`}
-                  style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                  }}
+                  className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                 />
-                <EnvelopeSimple weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-3' : 'left-3'}`} style={{ color: 'rgba(108,99,255,0.6)' }} />
+                <EnvelopeSimple weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.7)' }}>{t('superAdmin.password')}</label>
+              <label className="block text-[11px] font-mono uppercase tracking-wider mb-1.5 text-[var(--color-text-muted)]">{t('superAdmin.password')}</label>
               <div className="relative">
                 <input
                   type="password"
@@ -215,23 +178,18 @@ export default function SuperAdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={`w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-none transition-all text-white ${isRtl ? 'pr-9' : 'pl-9'}`}
-                  style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                  }}
+                  className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                 />
-                <Lock weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-3' : 'left-3'}`} style={{ color: 'rgba(108,99,255,0.6)' }} />
+                <Lock weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
-            <div className="flex justify-between items-center -mt-1 text-[11px]">
-              <span className="font-mono text-[10px]" style={{ color: 'rgba(78,205,196,0.6)' }}>AUTH: RESTRICTED_ROOT</span>
+            <div className="flex justify-between items-center text-[11px] font-mono pt-1">
+              <span className="text-[10px] text-[var(--color-text-muted)] uppercase">AUTH: RESTRICTED_ROOT</span>
               <Link
                 href="/forgot-password"
                 id="superadmin-forgot-password-link"
-                className="font-semibold transition-colors"
-                style={{ color: '#6C63FF' }}
+                className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
               >
                 {t('superAdmin.forgotPassword')}
               </Link>
@@ -241,12 +199,7 @@ export default function SuperAdminLoginPage() {
               type="submit"
               id="superadmin-login-btn"
               disabled={isLoading}
-              className="w-full py-3.5 rounded-xl text-xs font-bold transition-all shadow-lg mt-2 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer active:scale-[0.99]"
-              style={{
-                background: 'linear-gradient(135deg, #6C63FF 0%, #4ECDC4 100%)',
-                color: '#ffffff',
-                boxShadow: '0 8px 25px rgba(108, 99, 255, 0.4)',
-              }}
+              className="w-full h-10 rounded-[8px] font-mono text-xs uppercase tracking-wider font-semibold text-white bg-[var(--color-accent)] hover:opacity-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-2 transition-opacity"
             >
               {isLoading ? <CircleNotch weight="light" className="w-4 h-4 animate-spin" /> : <ShieldWarning weight="light" className="w-4 h-4" />}
               <span>{isLoading ? t('superAdmin.signingIn') : t('superAdmin.signIn')}</span>
@@ -254,7 +207,7 @@ export default function SuperAdminLoginPage() {
           </form>
         </div>
 
-        <footer className="text-center text-[11px] py-3 flex items-center justify-center gap-1.5" style={{ color: 'rgba(255,255,255,0.25)' }}>
+        <footer className="text-center text-[11px] font-mono py-3 flex items-center justify-center gap-1.5 text-[var(--color-text-muted)]">
           <Lock weight="light" className="w-3.5 h-3.5" />
           <span>{t('superAdmin.footer') || 'منطقة سيادية • جميع العمليات مراقبة ومسجلة أمنياً'}</span>
         </footer>

@@ -12,6 +12,7 @@
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
+import { generateQrToken } from '../lib/customer';
 
 const BASE_URL = 'http://localhost:3000';
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -57,14 +58,14 @@ async function createTestOwner(bizId: string, prefix: string) {
   });
 
   const anonClient = createClient(SUPABASE_URL, ANON_KEY);
-  const { data: session } = await anonClient.auth.signInWithPassword({
+  const { data: session, error: sessionErr } = await anonClient.auth.signInWithPassword({
     email,
     password,
   });
-  
+  if (sessionErr || !session.session) throw new Error(`Failed to sign in test user: ${sessionErr?.message}`);
   return {
     email,
-    token: session.session!.access_token,
+    token: session.session.access_token,
     userId: user.user.id,
   };
 }
@@ -103,7 +104,7 @@ async function main() {
         business_id: multiBranchBiz.id,
         name: 'Test Customer MultiBranch',
         phone_number: '+201099998888',
-        qr_token: 'c0000000-0000-0000-0000-000000000001',
+        qr_token: generateQrToken(),
       })
       .select()
       .single();
@@ -368,7 +369,7 @@ async function main() {
       business_id: bizA.id,
       name: 'Shared Partner Customer A',
       phone_number: sharedPhone,
-      qr_token: 'c0000000-0000-0000-0000-000000000002',
+      qr_token: generateQrToken(),
     });
     if (custAErr) throw new Error(`Failed to insert customer A: ${custAErr.message}`);
 
@@ -397,7 +398,7 @@ async function main() {
       business_id: bizB.id,
       name: 'Shared Partner Customer B',
       phone_number: sharedPhone,
-      qr_token: 'c0000000-0000-0000-0000-000000000003',
+      qr_token: generateQrToken(),
     });
     if (custBErr) throw new Error(`Failed to insert customer B: ${custBErr.message}`);
 

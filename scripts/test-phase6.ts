@@ -20,10 +20,11 @@ async function runPhase6Tests() {
   try {
     // 1. Create demo business
     console.log('1. Creating test business for offers...');
-    const { data: biz } = await adminClient
+    const { data: biz, error: bizErr } = await adminClient
       .from('businesses')
       .insert({ name: 'Offers Cafe', subdomain: `offers-test-${Date.now()}` })
       .select().single();
+    if (bizErr || !biz) throw new Error(`Failed to create test business: ${bizErr?.message}`);
     testBizId = biz.id;
 
     const today = new Date();

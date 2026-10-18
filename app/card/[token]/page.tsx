@@ -18,21 +18,18 @@ export default async function CardPage({ params }: CardPageProps) {
   if (!customer) {
     return (
       <main 
-        className="min-h-screen flex flex-col items-center justify-center p-6 text-center"
-        style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-text)' }}
+        className="min-h-screen flex flex-col items-center justify-center p-6 text-center page-bg"
       >
         <div 
-          className="max-w-sm w-full p-8 rounded-3xl border shadow-sm"
-          style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+          className="max-w-sm w-full p-8 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)]"
         >
           <div 
-            className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center text-3xl font-bold"
-            style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-accent)' }}
+            className="w-12 h-12 mx-auto mb-4 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center text-xl font-mono text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]"
           >
             !
           </div>
-          <h1 className="text-xl font-bold mb-2">رمز العميل غير صحيح</h1>
-          <p className="text-sm opacity-70">
+          <h1 className="text-lg font-light tracking-tight mb-2 text-[var(--color-text)]">رمز العميل غير صحيح</h1>
+          <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
             لم يتم العثور على بطاقة ولاء مطابقة لهذا الرمز. يرجى التأكد من مسح الرمز الصحيح.
           </p>
         </div>

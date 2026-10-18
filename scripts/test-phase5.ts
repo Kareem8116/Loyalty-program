@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { getBranchMenuItems, getRedemptionRates } from '../lib/cashier';
 import { createCustomer, getCustomerPointsBalance } from '../lib/customer';
+import { invalidateCache } from '../lib/redis';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
@@ -79,9 +80,18 @@ async function runPhase5Tests() {
 
     // 5. Test 5.4: Settings (Redemption rates configuration)
     console.log('\n5️⃣ Testing Step 5.4: Redemption rates configuration update...');
-    // Default rates
+    // Insert default rates first so getRedemptionRates reads from DB (not fallback defaults)
+    await adminClient
+      .from('redemption_rates')
+      .insert({
+        business_id: testBizId,
+        points_per_currency_unit: 1.0,
+        currency_per_point: 0.1,
+      });
+    await invalidateCache(`redemption_rates:${testBizId}`);
+
     const initialRates = await getRedemptionRates(testBizId);
-    console.log(`   Initial rates: 1 EGP = ${initialRates.points_per_currency_unit} pt, 1 pt = ${initialRates.currency_per_point} EGP`);
+    console.log(`   Initial rates (from DB): 1 EGP = ${initialRates.points_per_currency_unit} pt, 1 pt = ${initialRates.currency_per_point} EGP`);
 
     // Owner updates rates: 1 EGP = 2.0 pts, 1 pt = 0.25 EGP
     await adminClient
@@ -93,7 +103,6 @@ async function runPhase5Tests() {
         updated_at: new Date().toISOString(),
       }, { onConflict: 'business_id' });
 
-    const { invalidateCache } = await import('../lib/redis');
     await invalidateCache(`redemption_rates:${testBizId}`);
 
     const updatedRates = await getRedemptionRates(testBizId);

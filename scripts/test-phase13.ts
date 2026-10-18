@@ -181,7 +181,7 @@ async function main() {
       body: JSON.stringify({
         businessId: business.id,
         name: 'API No Consent',
-        phoneNumber: '+201000000004',
+        phoneNumber: '01000000004',
       }),
     });
     const apiNoConsentData = await apiNoConsentRes.json();
@@ -198,7 +198,7 @@ async function main() {
       body: JSON.stringify({
         businessId: business.id,
         name: 'API False Consent',
-        phoneNumber: '+201000000005',
+        phoneNumber: '01000000005',
         consentGiven: false,
       }),
     });
@@ -216,7 +216,7 @@ async function main() {
       body: JSON.stringify({
         businessId: business.id,
         name: 'API Valid Customer',
-        phoneNumber: '+201000000006',
+        phoneNumber: '01000000006',
         consentGiven: true,
       }),
     });

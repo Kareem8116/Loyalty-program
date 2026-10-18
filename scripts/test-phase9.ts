@@ -69,11 +69,12 @@ async function main() {
 
   // Sign in to get token
   const anonClient = createClient(SUPABASE_URL, ANON_KEY);
-  const { data: saSession } = await anonClient.auth.signInWithPassword({
+  const { data: saSession, error: saSignInErr } = await anonClient.auth.signInWithPassword({
     email: saEmail,
     password: saPassword,
   });
-  const superAdminToken = saSession.session!.access_token;
+  if (saSignInErr || !saSession.session) throw new Error(`Failed to sign in super admin: ${saSignInErr?.message}`);
+  const superAdminToken = saSession.session.access_token;
   console.log(`  Super Admin: ${saEmail}`);
 
   // Create test business + owner for authorization tests
@@ -100,11 +101,12 @@ async function main() {
       role: 'owner',
     });
   }
-  const { data: ownerSession } = await anonClient.auth.signInWithPassword({
+  const { data: ownerSession, error: ownerSignInErr } = await anonClient.auth.signInWithPassword({
     email: ownerEmail,
     password: ownerPassword,
   });
-  const ownerToken = ownerSession.session?.access_token;
+  if (ownerSignInErr || !ownerSession.session) throw new Error(`Failed to sign in owner: ${ownerSignInErr?.message}`);
+  const ownerToken = ownerSession.session.access_token;
   console.log(`  Owner: ${ownerEmail}\n`);
 
   // =========================================================================
@@ -200,7 +202,7 @@ async function main() {
         subdomain: newSubdomain,
         ownerEmail: newOwnerEmail,
         ownerPassword: 'NewOwner2026!',
-        ownerPhone: '+201012345678',
+        ownerPhone: '01012345678',
         branchName: 'First Branch',
       }),
     });
@@ -262,11 +264,12 @@ async function main() {
     assert(res.status === 400, 'Missing ownerPhone => 400', `Got ${res.status}`);
   }
   {
+    // Use an already-known existing subdomain (demo-coffee created in phase 8 setup)
     const res = await fetch(`${BASE_URL}/api/super-admin/businesses`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${superAdminToken}` },
       body: JSON.stringify({
-        name: 'Dup', subdomain: newSubdomain, ownerEmail: 'dup@test.com', ownerPassword: '12345678', ownerPhone: '+201099998888', branchName: 'X',
+        name: 'Dup', subdomain: 'demo-coffee', ownerEmail: 'dup@test.com', ownerPassword: 'ValidPass2026!', ownerPhone: '01099998888', branchName: 'X',
       }),
     });
     assert(res.status === 409, 'Duplicate subdomain => 409', `Got ${res.status}`);

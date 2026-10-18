@@ -599,20 +599,18 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       {/* Phase 32: Offline Resilience Banner */}
       <OfflineSyncBanner maxLimit={maxOfflineLimit} onSyncComplete={handleSyncComplete} />
 
-      {/* 4.2: Customer Header & Current Balance Card */}
+      {/* 4.2: Customer Header & Current Balance Card: 8px radius, hairline border */}
       <div 
-        className="rounded-3xl p-5 border shadow-sm flex flex-col relative overflow-hidden backdrop-blur-xl"
-        style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+        className="rounded-[8px] p-4 border border-[var(--color-border)] bg-[var(--color-card-bg)] flex flex-col relative overflow-hidden"
       >
-        <div className="flex items-center justify-between pb-3 border-b" style={{ borderColor: 'var(--color-border)' }}>
+        <div className="flex items-center justify-between pb-3 border-b border-[var(--color-separator)]">
           <div>
-            <span className="text-[11px] uppercase tracking-wider block opacity-60">{t('cashierControl.currentCustomer')}</span>
-            <h2 className="text-base font-bold" id="cashier-customer-name">{customer.name}</h2>
+            <span className="text-[11px] font-mono uppercase tracking-[0.08em] block text-[var(--color-text-muted)]">{t('cashierControl.currentCustomer')}</span>
+            <h2 className="text-sm font-medium text-[var(--color-text)]" id="cashier-customer-name">{customer.name}</h2>
           </div>
           <button
             onClick={onReset}
-            className="flex items-center gap-1 text-xs py-1 px-2.5 rounded-lg border transition-all active:scale-95"
-            style={{ borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
+            className="flex items-center gap-1 text-xs font-mono uppercase tracking-[0.05em] py-1 px-2.5 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)] hover:border-[var(--color-signal-blue)] transition-all active:scale-95 cursor-pointer"
           >
             <ArrowLeft weight="light" className={`w-3.5 h-3.5 ${isRtl ? '' : 'rotate-180'}`} />
             <span>{t('cashierControl.anotherScan')}</span>
@@ -622,20 +620,20 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
         <div 
           className="pt-3 flex items-baseline justify-between"
         >
-          <span className="text-xs opacity-70">{t('cashierControl.pointsBalanceLabel')}</span>
+          <span className="text-xs font-mono uppercase tracking-[0.05em] text-[var(--color-text-muted)]">{t('cashierControl.pointsBalanceLabel')}</span>
           <div className="flex flex-col items-end">
             <div className="flex items-baseline gap-1.5">
               <span 
-                className="text-3xl font-black transition-all duration-300"
-                style={{ color: successFlash ? '#22c55e' : 'var(--color-accent)' }}
+                className="text-4xl font-light font-display tracking-tight transition-all duration-300 text-[var(--color-text)]"
+                style={{ color: successFlash ? '#34fcff' : undefined }}
                 id="cashier-points-display"
               >
                 {pointsBalance.toLocaleString()}
               </span>
-              <span className="text-xs opacity-80">{t('cashierControl.pts')}</span>
+              <span className="text-xs font-mono uppercase text-[var(--color-text-muted)]">{t('cashierControl.pts')}</span>
             </div>
             {/* Monetary value of customer's points */}
-            <span className="text-[11px] opacity-55 font-mono">
+            <span className="text-[11px] opacity-60 font-mono text-[var(--color-text-muted)]">
               ≈ {(pointsBalance * currencyPerPoint).toFixed(2)} {t('common.currencyUnit')}
             </span>
           </div>
@@ -645,18 +643,13 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       {/* 15.3: Daily Limit Exceeded — special prominent warning */}
       {dailyLimitError && (
         <div
-          className="p-4 rounded-2xl border-2 flex flex-col gap-2"
-          style={{
-            backgroundColor: 'var(--color-error-bg)',
-            borderColor: 'var(--color-error-border)',
-            color: 'var(--color-error-text)',
-          }}
+          className="p-3.5 rounded-[6px] border border-red-500/30 bg-red-500/10 text-red-400 flex flex-col gap-2 font-mono text-xs"
         >
-          <div className="flex items-center gap-2 font-bold text-sm">
-            <ShieldWarning weight="light" className="w-5 h-5 shrink-0" />
+          <div className="flex items-center gap-2 font-medium text-xs">
+            <ShieldWarning weight="light" className="w-4 h-4 shrink-0" />
             <span>{t('cashierControl.dailyLimitExceeded')}</span>
           </div>
-          <p className="text-xs opacity-80">
+          <p className="text-[11px] opacity-80">
             {t('cashierControl.dailyLimitExceededDetail', {
               today: dailyLimitError.pointsAddedToday,
               limit: dailyLimitError.dailyLimit,
@@ -669,7 +662,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       {/* Feedback Message */}
       {statusMessage && (
         <div 
-          className="p-3 rounded-2xl text-xs font-medium flex items-center gap-2 border"
+          className="p-3 rounded-[6px] text-xs font-mono flex items-center gap-2 border"
           style={{
             backgroundColor: statusMessage.type === 'success' ? 'var(--color-success-bg)' : 'var(--color-error-bg)',
             color: statusMessage.type === 'success' ? 'var(--color-success-text)' : 'var(--color-error-text)',
@@ -681,19 +674,19 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
         </div>
       )}
 
-      {/* Action Tabs: Add vs Redeem vs Reversals — Phase 28.4 */}
+      {/* Action Tabs: Add vs Redeem vs Reversals — Ameba 6px container, 4px buttons, font-mono */}
       <div 
-        className="grid grid-cols-3 p-1 rounded-2xl border backdrop-blur-xl gap-1"
-        style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+        className="grid grid-cols-3 p-1 rounded-[6px] border border-[var(--color-border)] bg-[var(--color-input-bg)] gap-1"
       >
         {/* Add Points tab */}
         <button
           onClick={() => { setActiveTab('add'); setStatusMessage(null); }}
           id="tab-add-points"
-          className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
-            activeTab === 'add' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
+          className={`py-2 rounded-[4px] text-xs font-mono uppercase tracking-[0.05em] transition-all flex items-center justify-center gap-1 cursor-pointer ${
+            activeTab === 'add' 
+              ? 'bg-[var(--color-signal-blue)] text-white font-medium' 
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
           }`}
-          style={activeTab === 'add' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
         >
           <PlusCircle weight="light" className="w-3.5 h-3.5" />
           <span>{t('cashierControl.addTab')}</span>
@@ -703,10 +696,11 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
         <button
           onClick={() => { setActiveTab('redeem'); setStatusMessage(null); }}
           id="tab-redeem-points"
-          className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
-            activeTab === 'redeem' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
+          className={`py-2 rounded-[4px] text-xs font-mono uppercase tracking-[0.05em] transition-all flex items-center justify-center gap-1 cursor-pointer ${
+            activeTab === 'redeem' 
+              ? 'bg-[var(--color-signal-blue)] text-white font-medium' 
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
           }`}
-          style={activeTab === 'redeem' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
         >
           <MinusCircle weight="light" className="w-3.5 h-3.5" />
           <span>{t('cashierControl.redeemTab')}</span>
@@ -720,10 +714,11 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             loadCustomerHistory();
           }}
           id="tab-reversal-points"
-          className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
-            activeTab === 'reversal' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
+          className={`py-2 rounded-[4px] text-xs font-mono uppercase tracking-[0.05em] transition-all flex items-center justify-center gap-1 cursor-pointer ${
+            activeTab === 'reversal' 
+              ? 'bg-[var(--color-signal-blue)] text-white font-medium' 
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
           }`}
-          style={activeTab === 'reversal' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
         >
           <ArrowCounterClockwise weight="light" className="w-3.5 h-3.5" />
           <span>{isRtl ? 'استرجاع' : 'Returns'}</span>
@@ -736,25 +731,22 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       {activeTab === 'add' && (
         <form 
           onSubmit={handleAddPoints}
-          className="glass-card rounded-3xl p-5 flex flex-col gap-4"
-          style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+          className="rounded-[8px] p-4 border border-[var(--color-border)] bg-[var(--color-card-bg)] flex flex-col gap-3.5"
         >
-          <div className="flex items-center justify-between text-xs pb-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
-            <span className="font-semibold">{t('cashierControl.addModeLabel')}</span>
-            <div className="flex gap-2">
+          <div className="flex items-center justify-between text-xs pb-2 border-b border-[var(--color-border)]">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-secondary)]">{t('cashierControl.addModeLabel')}</span>
+            <div className="flex gap-1.5 p-0.5 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)]">
               <button
                 type="button"
                 onClick={() => setAddMode('bill')}
-                className={`px-2 py-1 rounded-lg text-[11px] font-medium border ${addMode === 'bill' ? 'font-bold' : 'opacity-60'}`}
-                style={addMode === 'bill' ? { borderColor: 'var(--color-accent)', color: 'var(--color-accent)' } : { borderColor: 'var(--color-border)' }}
+                className={`px-2.5 py-1 rounded-[4px] text-[11px] font-mono transition-colors ${addMode === 'bill' ? 'bg-[var(--color-accent)] text-white font-semibold' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'}`}
               >
                 {t('cashierControl.byBill')}
               </button>
               <button
                 type="button"
                 onClick={() => setAddMode('manual')}
-                className={`px-2 py-1 rounded-lg text-[11px] font-medium border ${addMode === 'manual' ? 'font-bold' : 'opacity-60'}`}
-                style={addMode === 'manual' ? { borderColor: 'var(--color-accent)', color: 'var(--color-accent)' } : { borderColor: 'var(--color-border)' }}
+                className={`px-2.5 py-1 rounded-[4px] text-[11px] font-mono transition-colors ${addMode === 'manual' ? 'bg-[var(--color-accent)] text-white font-semibold' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'}`}
               >
                 {t('cashierControl.directPoints')}
               </button>
@@ -763,7 +755,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
           {addMode === 'bill' ? (
             <div>
-              <label className="block text-xs font-medium opacity-80 mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider opacity-75 mb-1.5">
                 {t('cashierControl.billAmount')}
               </label>
               <div className="relative">
@@ -776,19 +768,18 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                   value={billAmount}
                   onChange={(e) => setBillAmount(e.target.value)}
                   placeholder="150"
-                  className={`w-full py-2.5 px-3 rounded-xl text-sm border focus:outline-hidden ${isRtl ? 'pl-9' : 'pr-9'}`}
-                  style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                  className={`w-full py-2 px-3 rounded-[4px] text-sm border font-mono border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden ${isRtl ? 'pl-9' : 'pr-9'}`}
                   required
                 />
                 <Receipt weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
-              <span className="text-[11px] opacity-60 mt-1 block">
+              <span className="text-[11px] font-mono opacity-60 mt-1 block">
                 {t('cashierControl.rateHint', { rate: pointsPerCurrency })}
               </span>
             </div>
           ) : (
             <div>
-              <label className="block text-xs font-medium opacity-80 mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider opacity-75 mb-1.5">
                 {t('cashierControl.pointsToAdd')}
               </label>
               <input
@@ -800,8 +791,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 value={manualAddPoints}
                 onChange={(e) => setManualAddPoints(e.target.value)}
                 placeholder="50"
-                className="w-full py-2.5 px-3 rounded-xl text-sm border focus:outline-hidden"
-                style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                className="w-full py-2 px-3 rounded-[4px] text-sm border font-mono border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden"
                 required
               />
             </div>
@@ -809,7 +799,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
           {/* 15.10: POS Invoice Reference Input */}
           <div>
-            <label className="block text-xs font-medium opacity-80 mb-1.5">
+            <label className="block text-xs font-mono uppercase tracking-wider opacity-75 mb-1.5">
               {t('cashierControl.invoiceReference')}
             </label>
             <input
@@ -818,23 +808,21 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
               value={invoiceReference}
               onChange={(e) => setInvoiceReference(e.target.value)}
               placeholder={t('cashierControl.invoiceReferencePlaceholder')}
-              className="w-full py-2.5 px-3 rounded-xl text-sm border focus:outline-hidden"
-              style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+              className="w-full py-2 px-3 rounded-[4px] text-sm border font-mono border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden"
               required
             />
-            <span className="text-[11px] opacity-60 mt-1 block">
+            <span className="text-[11px] font-mono opacity-60 mt-1 block">
               {t('cashierControl.invoiceReferenceHint')}
             </span>
           </div>
 
           {/* Points summary to add */}
           <div 
-            className="p-3 rounded-xl flex items-center justify-between text-xs"
-            style={{ backgroundColor: 'var(--color-bg)' }}
+            className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] flex items-center justify-between text-xs"
           >
-            <span className="opacity-70">{t('cashierControl.pointsDue')}</span>
-            <span className="font-bold text-base" style={{ color: 'var(--color-accent)' }}>
-              +{calculatedPointsToAdd} {t('cashierControl.pts')}
+            <span className="opacity-75 font-mono">{t('cashierControl.pointsDue')}</span>
+            <span className="font-mono font-medium text-base text-[var(--color-accent)]">
+              +{calculatedPointsToAdd} <span className="text-[11px] opacity-75">{t('cashierControl.pts')}</span>
             </span>
           </div>
 
@@ -842,7 +830,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             type="submit"
             id="submit-add-points-btn"
             disabled={calculatedPointsToAdd <= 0 || isSubmitting}
-            className="w-full py-3 rounded-xl text-xs font-bold transition-all shadow-lg active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 btn-gradient"
+            className="w-full py-2.5 rounded-[8px] text-xs font-medium uppercase tracking-wider transition-all active:scale-[0.99] disabled:opacity-40 flex items-center justify-center gap-2 bg-[var(--color-accent)] text-white hover:brightness-110 cursor-pointer"
           >
             {isSubmitting ? <CircleNotch weight="light" className="w-4 h-4 animate-spin" /> : <PlusCircle weight="light" className="w-4 h-4" />}
             <span>{isSubmitting ? t('cashierControl.adding') : t('cashierControl.confirmAdd')}</span>
@@ -854,8 +842,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
               type="button"
               id="open-manager-pin-btn"
               onClick={() => setShowManagerPinModal(true)}
-              className="w-full py-2.5 px-3 rounded-xl text-xs font-bold border flex items-center justify-center gap-1.5 transition-all active:scale-95"
-              style={{ borderColor: 'var(--color-accent)', color: 'var(--color-accent)' }}
+              className="w-full py-2 px-3 rounded-[8px] text-xs font-medium border border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 flex items-center justify-center gap-1.5 transition-all active:scale-[0.99] cursor-pointer"
             >
               <ShieldWarning weight="light" className="w-4 h-4" />
               <span>{t('cashierControl.retryWithManager')}</span>
@@ -870,48 +857,45 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
       {activeTab === 'redeem' && (
         <form 
           onSubmit={initiateRedemption}
-          className="glass-card rounded-3xl p-5 flex flex-col gap-4"
-          style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+          className="rounded-[8px] p-4 border border-[var(--color-border)] bg-[var(--color-card-bg)] flex flex-col gap-3.5"
         >
-          <div className="flex items-center justify-between text-xs pb-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
-            <span className="font-semibold">{t('cashierControl.deductModeLabel')}</span>
+          <div className="flex items-center justify-between text-xs pb-2 border-b border-[var(--color-border)]">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--color-text-secondary)]">{t('cashierControl.deductModeLabel')}</span>
             {/* 4.4: Only show mode toggle when business allows 'both' methods */}
             {redemptionType === 'both' && (
-              <div className="flex gap-2">
+              <div className="flex gap-1.5 p-0.5 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)]">
                 <button
                   type="button"
                   onClick={() => setDeductMode('menu')}
-                  className={`px-2 py-1 rounded-lg text-[11px] font-medium border ${deductMode === 'menu' ? 'font-bold' : 'opacity-60'}`}
-                  style={deductMode === 'menu' ? { borderColor: 'var(--color-accent)', color: 'var(--color-accent)' } : { borderColor: 'var(--color-border)' }}
+                  className={`px-2.5 py-1 rounded-[4px] text-[11px] font-mono transition-colors ${deductMode === 'menu' ? 'bg-[var(--color-accent)] text-white font-semibold' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'}`}
                 >
                   {t('cashierControl.byMenu')}
                 </button>
                 <button
                   type="button"
                   onClick={() => setDeductMode('manual')}
-                  className={`px-2 py-1 rounded-lg text-[11px] font-medium border ${deductMode === 'manual' ? 'font-bold' : 'opacity-60'}`}
-                  style={deductMode === 'manual' ? { borderColor: 'var(--color-accent)', color: 'var(--color-accent)' } : { borderColor: 'var(--color-border)' }}
+                  className={`px-2.5 py-1 rounded-[4px] text-[11px] font-mono transition-colors ${deductMode === 'manual' ? 'bg-[var(--color-accent)] text-white font-semibold' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'}`}
                 >
                   {t('cashierControl.directPoints')}
                 </button>
               </div>
             )}
             {redemptionType === 'product' && (
-              <span className="text-[11px] opacity-60">{t('cashierControl.byMenu')}</span>
+              <span className="text-[11px] font-mono opacity-70">{t('cashierControl.byMenu')}</span>
             )}
             {redemptionType === 'cash' && (
-              <span className="text-[11px] opacity-60">{t('cashierControl.directPoints')}</span>
+              <span className="text-[11px] font-mono opacity-70">{t('cashierControl.directPoints')}</span>
             )}
           </div>
 
           {deductMode === 'menu' ? (
             <div>
-              <label className="block text-xs font-medium opacity-80 mb-2">
+              <label className="block text-xs font-mono uppercase tracking-wider opacity-75 mb-2">
                 {t('cashierControl.chooseItem')}
               </label>
-              <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
+              <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto">
                 {menuItems.length === 0 ? (
-                  <p className="text-xs opacity-60 text-center py-4">{t('cashierControl.emptyMenu')}</p>
+                  <p className="text-xs opacity-60 text-center py-4 font-mono">{t('cashierControl.emptyMenu')}</p>
                 ) : (
                   menuItems.map((item) => {
                     const requiredPoints = Math.ceil(item.price / currencyPerPoint);
@@ -924,23 +908,19 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                         key={item.id}
                         onClick={() => setSelectedMenuItem(item)}
                         disabled={!canAfford}
-                        className={`p-2.5 rounded-xl border transition-all flex items-center justify-between text-xs ${
-                          isSelected ? 'ring-2' : ''
-                        } ${!canAfford ? 'opacity-40 cursor-not-allowed' : 'active:scale-98'}`}
-                        style={{
-                          backgroundColor: isSelected ? 'var(--color-bg)' : 'transparent',
-                          borderColor: isSelected ? 'var(--color-accent)' : 'var(--color-border)',
-                        }}
+                        className={`p-2.5 rounded-[4px] border transition-all flex items-center justify-between text-xs cursor-pointer ${
+                          isSelected ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/10' : 'border-[var(--color-border)] bg-[var(--color-bg)] hover:border-[var(--color-accent)]/50'
+                        } ${!canAfford ? 'opacity-35 cursor-not-allowed' : 'active:scale-[0.99]'}`}
                       >
                         <div className="flex items-center gap-2">
-                          <Coffee weight="light" className="w-3.5 h-3.5 opacity-60" />
-                          <span className="font-semibold">{item.name}</span>
+                          <Coffee weight="light" className="w-4 h-4 opacity-70" />
+                          <span className="font-medium">{item.name}</span>
                         </div>
                         <div className={isRtl ? 'text-left' : 'text-right'}>
-                          <span className="font-bold block" style={{ color: 'var(--color-accent)' }}>
-                            {requiredPoints} {t('cashierControl.pts')}
+                          <span className="font-mono font-medium block text-[var(--color-accent)]">
+                            {requiredPoints} pts
                           </span>
-                          <span className="text-[10px] opacity-60">({item.price} {t('common.currencyUnit')})</span>
+                          <span className="text-[10px] font-mono opacity-60">({item.price} {t('common.currencyUnit')})</span>
                         </div>
                       </button>
                     );
@@ -950,7 +930,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             </div>
           ) : (
             <div>
-              <label className="block text-xs font-medium opacity-80 mb-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider opacity-75 mb-1.5">
                 {t('cashierControl.pointsToDeduct')}
               </label>
               <input
@@ -963,8 +943,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 value={manualDeductPoints}
                 onChange={(e) => setManualDeductPoints(e.target.value)}
                 placeholder="50"
-                className="w-full py-2.5 px-3 rounded-xl text-sm border focus:outline-hidden"
-                style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                className="w-full py-2 px-3 rounded-[4px] text-sm border font-mono border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden"
                 required
               />
             </div>
@@ -972,17 +951,16 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
           {/* Points deduction summary */}
           <div 
-            className="p-3 rounded-xl flex items-center justify-between text-xs"
-            style={{ backgroundColor: 'var(--color-bg)' }}
+            className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] flex items-center justify-between text-xs"
           >
-            <span className="opacity-70">{t('cashierControl.pointsRequired')}</span>
-            <span className="font-bold text-base" style={{ color: 'var(--color-error-text)' }}>
-              -{calculatedPointsToDeduct} {t('cashierControl.pts')}
+            <span className="opacity-75 font-mono">{t('cashierControl.pointsRequired')}</span>
+            <span className="font-mono font-medium text-base text-[var(--color-error-text)]">
+              -{calculatedPointsToDeduct} <span className="text-[11px] opacity-75">{t('cashierControl.pts')}</span>
             </span>
           </div>
 
           {!hasEnoughPoints && calculatedPointsToDeduct > 0 && (
-            <p className="text-[11px] text-center font-medium flex items-center justify-center gap-1" style={{ color: 'var(--color-error-text)' }}>
+            <p className="text-[11px] text-center font-mono flex items-center justify-center gap-1.5 text-[var(--color-error-text)]">
               <WarningCircle weight="light" className="w-3.5 h-3.5 shrink-0" />
               <span>{t('cashierControl.insufficientBalance')}</span>
             </p>
@@ -992,7 +970,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
             type="submit"
             id="submit-redeem-points-btn"
             disabled={calculatedPointsToDeduct <= 0 || !hasEnoughPoints || isSubmitting}
-            className="w-full py-3 rounded-xl text-xs font-bold transition-all shadow-lg active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 btn-gradient"
+            className="w-full py-2.5 rounded-[8px] text-xs font-medium uppercase tracking-wider transition-all active:scale-[0.99] disabled:opacity-40 flex items-center justify-center gap-2 bg-[var(--color-accent)] text-white hover:brightness-110 cursor-pointer"
           >
             {isSubmitting ? <CircleNotch weight="light" className="w-4 h-4 animate-spin" /> : <MinusCircle weight="light" className="w-4 h-4" />}
             <span>{isSubmitting ? t('cashierControl.redeeming') : t('cashierControl.confirmRedeem')}</span>
@@ -1004,20 +982,19 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           Phase 35: Redemption OTP Modal
          ========================================================================= */}
       {showRedemptionOtpModal && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
           <div
-            className="w-full max-w-xs rounded-3xl p-6 border shadow-2xl flex flex-col gap-4 backdrop-blur-xl"
-            style={{ backgroundColor: 'rgba(10, 8, 20, 0.97)', borderColor: 'rgba(255,255,255,0.08)' }}
+            className="w-full max-w-sm rounded-[8px] p-5 border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] flex flex-col gap-4 shadow-2xl"
           >
             {/* Header */}
             <div className="flex items-center gap-2">
-              <DeviceMobile weight="light" className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
-              <h3 className="text-sm font-bold text-white">
+              <DeviceMobile weight="light" className="w-5 h-5 text-[var(--color-accent)]" />
+              <h3 className="text-sm font-light tracking-tight">
                 {isRtl ? 'تأكيد استبدال النقاط' : 'Confirm Point Redemption'}
               </h3>
             </div>
 
-            <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>
+            <p className="text-xs leading-relaxed opacity-75 font-mono">
               {isRtl
                 ? 'تم إرسال كود تحقق على موبايل العميل. يرجى إدخاله لإتمام عملية الاستبدال.'
                 : 'A verification code has been sent to the customer\'s phone. Enter it to complete the redemption.'}
@@ -1025,7 +1002,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
             {/* OTP Input */}
             <div>
-              <label className="block text-xs font-semibold mb-2 opacity-70 text-white">
+              <label className="block text-[11px] font-mono uppercase tracking-wider mb-2 opacity-75">
                 {isRtl ? 'كود التحقق' : 'Verification Code'}
               </label>
               <input
@@ -1037,13 +1014,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 value={redemptionOtp}
                 onChange={(e) => setRedemptionOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                 placeholder="000000"
-                className="w-full py-3 px-4 rounded-2xl text-center text-xl tracking-[0.4em] font-mono border focus:outline-none focus:ring-2"
-                style={{
-                  backgroundColor: 'rgba(255,255,255,0.07)',
-                  borderColor: redemptionOtpError ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.12)',
-                  color: '#ffffff',
-                  '--tw-ring-color': 'var(--color-accent)',
-                } as React.CSSProperties}
+                className="w-full py-2.5 px-3 rounded-[4px] text-center text-xl tracking-[0.35em] font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden"
                 autoFocus
                 dir="ltr"
               />
@@ -1051,21 +1022,21 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
             {/* Status: Sending / Sent / Error */}
             {isSendingRedemptionOtp && (
-              <div className="flex items-center gap-2 text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
+              <div className="flex items-center gap-2 text-xs font-mono opacity-70">
                 <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
                 <span>{isRtl ? 'جاري إرسال الكود...' : 'Sending code...'}</span>
               </div>
             )}
 
             {redemptionOtpSent && !isSendingRedemptionOtp && !redemptionOtpError && (
-              <div className="flex items-center gap-2 text-xs text-emerald-400">
+              <div className="flex items-center gap-2 text-xs font-mono text-emerald-500">
                 <Check weight="light" className="w-3.5 h-3.5" />
                 <span>{isRtl ? 'تم إرسال الكود على موبايل العميل' : 'Code sent to customer\'s phone'}</span>
               </div>
             )}
 
             {redemptionOtpError && (
-              <div className="flex items-start gap-2 text-xs text-rose-400">
+              <div className="flex items-start gap-2 text-xs font-mono text-[var(--color-error-text)]">
                 <WarningCircle weight="light" className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                 <span>{redemptionOtpError}</span>
               </div>
@@ -1077,8 +1048,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
               id="resend-redemption-otp-btn"
               onClick={sendRedemptionOtp}
               disabled={isSendingRedemptionOtp || redemptionOtpCooldown > 0}
-              className="flex items-center justify-center gap-1.5 text-xs py-1.5 rounded-xl border transition-all disabled:opacity-40"
-              style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.6)' }}
+              className="flex items-center justify-center gap-1.5 text-xs font-mono py-1.5 rounded-[4px] border border-[var(--color-border)] opacity-75 hover:opacity-100 transition-all disabled:opacity-40 cursor-pointer"
             >
               <ArrowsClockwise weight="light" className="w-3.5 h-3.5" />
               <span>
@@ -1099,8 +1069,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                   setRedemptionOtpError(null);
                   if (cooldownTimerRef.current) clearInterval(cooldownTimerRef.current);
                 }}
-                className="flex-1 py-2.5 rounded-xl text-xs font-semibold border transition-all"
-                style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.7)' }}
+                className="flex-1 py-2 rounded-[8px] text-xs font-mono border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-all cursor-pointer"
               >
                 {isRtl ? 'إلغاء' : 'Cancel'}
               </button>
@@ -1109,7 +1078,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 id="confirm-redemption-otp-btn"
                 disabled={redemptionOtp.length < 6 || isSubmitting || isSendingRedemptionOtp}
                 onClick={() => handleRedeemPoints()}
-                className="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all disabled:opacity-50 btn-gradient flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 rounded-[8px] text-xs font-medium uppercase tracking-wider transition-all disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110 flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 {isSubmitting
                   ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
@@ -1123,16 +1092,15 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
       {/* 15.6: Customer PIN Confirmation Modal */}
       {showCustomerPinModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
           <div 
-            className="w-full max-w-xs rounded-3xl p-6 border shadow-2xl flex flex-col gap-4 backdrop-blur-xl"
-            style={{ backgroundColor: 'rgba(16, 14, 28, 0.95)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
+            className="w-full max-w-sm rounded-[8px] p-5 border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] flex flex-col gap-4 shadow-2xl"
           >
             <div className="flex items-center gap-2">
-              <ShieldWarning weight="light" className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
-              <h3 className="text-sm font-bold">{t('cashierControl.customerPinRequired')}</h3>
+              <ShieldWarning weight="light" className="w-5 h-5 text-[var(--color-accent)]" />
+              <h3 className="text-sm font-light tracking-tight">{t('cashierControl.customerPinRequired')}</h3>
             </div>
-            <p className="text-xs opacity-80 leading-relaxed">
+            <p className="text-xs opacity-75 font-mono leading-relaxed">
               {t('cashierControl.customerPinPrompt')}
             </p>
             <input
@@ -1144,16 +1112,14 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
               value={customerPin}
               onChange={(e) => setCustomerPin(e.target.value)}
               placeholder="••••"
-              className="w-full py-2.5 px-3 rounded-xl text-center text-lg tracking-widest font-mono border focus:outline-hidden"
-              style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', color: '#FFFFFF' }}
+              className="w-full py-2 px-3 rounded-[4px] text-center text-lg tracking-widest font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden"
               autoFocus
             />
-            <div className="flex gap-2">
+            <div className="flex gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => { setShowCustomerPinModal(false); setCustomerPin(''); }}
-                className="flex-1 py-2.5 rounded-xl text-xs font-semibold border transition-all"
-                style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                className="flex-1 py-2 rounded-[8px] text-xs font-mono border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-all cursor-pointer"
               >
                 {t('common.cancel')}
               </button>
@@ -1162,7 +1128,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 id="confirm-customer-pin-btn"
                 disabled={customerPin.trim().length < 4 || isSubmitting}
                 onClick={() => handleRedeemPoints(customerPin)}
-                className="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all disabled:opacity-50 btn-gradient"
+                className="flex-1 py-2 rounded-[8px] text-xs font-medium uppercase tracking-wider transition-all disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110 cursor-pointer"
               >
                 {t('cashierControl.confirmRedeem')}
               </button>
@@ -1173,16 +1139,15 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
       {/* 15.8: Manager Approval PIN Modal */}
       {showManagerPinModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
           <div 
-            className="w-full max-w-xs rounded-3xl p-6 border shadow-2xl flex flex-col gap-4 backdrop-blur-xl"
-            style={{ backgroundColor: 'rgba(16, 14, 28, 0.95)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
+            className="w-full max-w-sm rounded-[8px] p-5 border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] flex flex-col gap-4 shadow-2xl"
           >
             <div className="flex items-center gap-2">
               <ShieldWarning weight="light" className="w-5 h-5 text-amber-500" />
-              <h3 className="text-sm font-bold">{t('cashierControl.managerPinRequired')}</h3>
+              <h3 className="text-sm font-light tracking-tight">{t('cashierControl.managerPinRequired')}</h3>
             </div>
-            <p className="text-xs opacity-80 leading-relaxed">
+            <p className="text-xs opacity-75 font-mono leading-relaxed">
               {t('cashierControl.retryWithManager')}
             </p>
             <input
@@ -1193,16 +1158,14 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
               value={managerPin}
               onChange={(e) => setManagerPin(e.target.value)}
               placeholder="••••"
-              className="w-full py-2.5 px-3 rounded-xl text-center text-lg tracking-widest font-mono border focus:outline-hidden"
-              style={{ backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.1)', color: '#FFFFFF' }}
+              className="w-full py-2 px-3 rounded-[4px] text-center text-lg tracking-widest font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden"
               autoFocus
             />
-            <div className="flex gap-2">
+            <div className="flex gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => { setShowManagerPinModal(false); setManagerPin(''); }}
-                className="flex-1 py-2.5 rounded-xl text-xs font-semibold border transition-all"
-                style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}
+                className="flex-1 py-2 rounded-[8px] text-xs font-mono border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-all cursor-pointer"
               >
                 {t('common.cancel')}
               </button>
@@ -1211,7 +1174,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 id="confirm-manager-pin-btn"
                 disabled={managerPin.trim().length < 4 || isSubmitting}
                 onClick={() => handleAddPoints(undefined, managerPin)}
-                className="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all disabled:opacity-50 btn-gradient"
+                className="flex-1 py-2 rounded-[8px] text-xs font-medium uppercase tracking-wider transition-all disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110 cursor-pointer"
               >
                 {t('cashierControl.confirmAdd')}
               </button>
@@ -1219,31 +1182,30 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
           </div>
         </div>
       )}
+
       {/* =========================================================================
           TAB 3: Phase 28.4 استرجاع عملية (Reversals & Returns)
          ========================================================================= */}
       {activeTab === 'reversal' && (
         <div 
-          className="rounded-3xl p-5 border shadow-sm flex flex-col gap-3 backdrop-blur-xl"
-          style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+          className="rounded-[8px] p-4 border border-[var(--color-border)] bg-[var(--color-card-bg)] flex flex-col gap-3"
         >
-          <div className="flex items-center justify-between pb-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
+          <div className="flex items-center justify-between pb-2 border-b border-[var(--color-border)]">
             <div className="flex items-center gap-2">
-              <ArrowCounterClockwise weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
-              <h3 className="text-xs font-bold">{isRtl ? 'العمليات الأخيرة وإمكانية الاسترجاع' : 'Recent Transactions & Reversals'}</h3>
+              <ArrowCounterClockwise weight="light" className="w-4 h-4 text-[var(--color-accent)]" />
+              <h3 className="text-xs font-light tracking-tight">{isRtl ? 'العمليات الأخيرة وإمكانية الاسترجاع' : 'Recent Transactions & Reversals'}</h3>
             </div>
             <button
               type="button"
               onClick={loadCustomerHistory}
               disabled={isLoadingHistory}
-              className="p-1 rounded-lg border text-xs opacity-70 hover:opacity-100 transition-all cursor-pointer"
-              style={{ borderColor: 'var(--color-border)' }}
+              className="p-1 rounded-[4px] border border-[var(--color-border)] text-xs opacity-70 hover:opacity-100 transition-all cursor-pointer"
             >
               <CircleNotch weight="light" className={`w-3.5 h-3.5 ${isLoadingHistory ? 'animate-spin' : ''}`} />
             </button>
           </div>
 
-          <p className="text-[11px] opacity-70 leading-relaxed">
+          <p className="text-[11px] font-mono opacity-70 leading-relaxed">
             {isRtl ? 'يمكنك استرجاع العمليات الخاطئة أو المرتجعات خلال 48 ساعة. استرجاع الاستبدال يعيد النقاط لأصلها، واسترجاع الإضافة يخصمها.' : 'Reversals cancel the operation and refund points back to their original state.'}
           </p>
 
@@ -1252,7 +1214,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
               <CircleNotch weight="light" className="w-5 h-5 animate-spin opacity-50" />
             </div>
           ) : customerHistory.length === 0 ? (
-            <p className="text-xs opacity-60 text-center py-6">
+            <p className="text-xs font-mono opacity-60 text-center py-6">
               {isRtl ? 'لا توجد عمليات سابقة لهذا العميل' : 'No previous transactions found'}
             </p>
           ) : (
@@ -1265,27 +1227,26 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 return (
                   <div
                     key={tx.id}
-                    className="p-3 rounded-2xl border text-xs flex items-center justify-between gap-2"
-                    style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                    className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-xs flex items-center justify-between gap-2"
                   >
                     <div className="flex flex-col min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className={`font-mono font-bold ${tx.points_change > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                        <span className={`font-mono font-medium ${tx.points_change > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
                           {tx.points_change > 0 ? `+${tx.points_change}` : tx.points_change} pts
                         </span>
                         {isAlreadyReversed && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full border bg-amber-500/10 text-amber-500 border-amber-500/30">
+                          <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-[4px] border bg-amber-500/10 text-amber-500 border-amber-500/30">
                             {isRtl ? 'تم استرجاعها' : 'Reversed'}
                           </span>
                         )}
                         {isReversal && (
-                          <span className="text-[10px] px-2 py-0.5 rounded-full border bg-purple-500/10 text-purple-400 border-purple-500/30">
+                          <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded-[4px] border bg-purple-500/10 text-purple-400 border-purple-500/30">
                             {isRtl ? 'عملية عكسية' : 'Reversal entry'}
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] opacity-70 truncate mt-0.5">{tx.reason || ''}</span>
-                      <span className="text-[10px] opacity-50 mt-0.5">
+                      <span className="text-[11px] opacity-75 truncate mt-0.5">{tx.reason || ''}</span>
+                      <span className="text-[10px] font-mono opacity-50 mt-0.5">
                         {new Date(tx.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
@@ -1298,8 +1259,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                           setReversalError(null);
                           setReversalReason('');
                         }}
-                        className="px-2.5 py-1 rounded-xl text-[11px] font-bold border transition-all active:scale-95 shrink-0 cursor-pointer"
-                        style={{ borderColor: 'var(--color-accent)', color: 'var(--color-accent)', backgroundColor: 'var(--color-card-bg)' }}
+                        className="px-2.5 py-1 rounded-[4px] text-[11px] font-mono border border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-all active:scale-[0.99] shrink-0 cursor-pointer"
                       >
                         {isRtl ? 'استرجاع' : 'Reverse'}
                       </button>
@@ -1314,18 +1274,17 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
       {/* Phase 28.4: Reversal Confirmation Modal */}
       {selectedTxForReversal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
           <form
             onSubmit={handleConfirmReversal}
-            className="w-full max-w-sm rounded-3xl p-5 border shadow-2xl flex flex-col gap-4"
-            style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+            className="w-full max-w-sm rounded-[8px] p-5 border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] flex flex-col gap-4 shadow-2xl"
           >
-            <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
+            <div className="flex items-center gap-2 text-amber-500 font-light text-sm">
               <ArrowCounterClockwise weight="light" className="w-5 h-5" />
               <span>{isRtl ? 'تأكيد استرجاع العملية' : 'Confirm Transaction Reversal'}</span>
             </div>
 
-            <p className="text-xs opacity-80 leading-relaxed">
+            <p className="text-xs font-mono opacity-75 leading-relaxed">
               {isRtl
                 ? `أنت على وشك إلغاء تأثير هذه العملية (${selectedTxForReversal.points_change > 0 ? `+${selectedTxForReversal.points_change}` : selectedTxForReversal.points_change} نقطة). سيتم تحديث الرصيد وتوثيق الاسترجاع فوراً.`
                 : `You are about to reverse ${selectedTxForReversal.points_change} pts.`}
@@ -1333,19 +1292,14 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
 
             {reversalError && (
               <div 
-                className="p-2.5 rounded-xl border text-xs"
-                style={{
-                  backgroundColor: 'var(--color-error-bg)',
-                  borderColor: 'var(--color-error-border)',
-                  color: 'var(--color-error-text)'
-                }}
+                className="p-2.5 rounded-[4px] border border-[var(--color-error-border)] bg-[var(--color-error-bg)] text-[var(--color-error-text)] text-xs font-mono"
               >
                 {reversalError}
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-semibold mb-1 opacity-80">
+              <label className="block text-xs font-mono uppercase tracking-wider mb-1 opacity-75">
                 {isRtl ? 'سبب الاسترجاع (اختياري)' : 'Reversal Reason (Optional)'}
               </label>
               <input
@@ -1353,8 +1307,7 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
                 value={reversalReason}
                 onChange={(e) => setReversalReason(e.target.value)}
                 placeholder={isRtl ? 'مثال: مرتجع عميل / خطأ في الإدخال' : 'e.g., Customer return / cashier mistake'}
-                className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
-                style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                className="w-full py-2 px-3 rounded-[4px] text-xs border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden"
                 autoFocus
               />
             </div>
@@ -1363,16 +1316,14 @@ export default function CashierControl({ customer, onReset }: CashierControlProp
               <button
                 type="button"
                 onClick={() => setSelectedTxForReversal(null)}
-                className="flex-1 py-2 rounded-xl text-xs font-semibold border transition-all"
-                style={{ borderColor: 'var(--color-border)' }}
+                className="flex-1 py-2 rounded-[8px] text-xs font-mono border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-all cursor-pointer"
               >
                 {t('common.cancel')}
               </button>
               <button
                 type="submit"
                 disabled={isSubmittingReversal}
-                className="flex-1 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
-                style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
+                className="flex-1 py-2 rounded-[8px] text-xs font-medium uppercase tracking-wider transition-all disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110 cursor-pointer"
               >
                 {isSubmittingReversal ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin mx-auto" /> : (isRtl ? 'تأكيد الاسترجاع' : 'Confirm Reversal')}
               </button>

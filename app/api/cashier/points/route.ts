@@ -13,6 +13,15 @@ const memoryIdempotency = new Map<string, { data: any; timestamp: number }>();
 export async function POST(request: NextRequest) {
   let body: any = null;
   try {
+    // AUTH-FIRST: Check authentication before reading body (returns 401 before 400)
+    const authHeader = request.headers.get('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     body = await request.json();
     const {
       businessId,
@@ -37,6 +46,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+
     const pointsNum = parseInt(pointsChange, 10);
     if (isNaN(pointsNum) || pointsNum === 0) {
       return NextResponse.json(
@@ -44,6 +54,14 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // AUTH-BEFORE-BUSINESS-LOGIC: Validate tenant membership first (ensures 403 before 400)
+    const guard = await requireAuthenticatedTenant(request, {
+      targetBusinessId: businessId,
+      allowedRoles: ['super_admin', 'owner', 'branch_admin', 'cashier'],
+    });
+    if (!guard.success) return guard.response;
+    const { userId, branchId: userBranchId, supabase: userClient } = guard.context;
 
     // 15.10: Invoice reference is mandatory for points additions (POS sync)
     if (pointsNum > 0 && (!invoiceReference || !invoiceReference.trim())) {
@@ -154,14 +172,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Central Tenant & Auth Guard: Authenticates user, ensures they belong to businessId, and passes RLS client
-    const guard = await requireAuthenticatedTenant(request, {
-      targetBusinessId: businessId,
-      allowedRoles: ['super_admin', 'owner', 'branch_admin', 'cashier'],
-    });
-    if (!guard.success) return guard.response;
-
-    const { userId, branchId: userBranchId, supabase: userClient } = guard.context;
+    // Guard already applied above (moved before business logic validations)
 
     const result = await recordPointsTransaction({
       businessId,

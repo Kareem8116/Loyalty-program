@@ -239,24 +239,19 @@ export default function UnifiedLoginPage() {
 
   return (
     <main className="page-bg min-h-screen flex items-center justify-center p-4">
-      <div className="glass-card w-full max-w-[420px] p-7 sm:p-8 relative z-10 transition-all shadow-xl">
+      <div className="w-full max-w-[400px] p-6 sm:p-7 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] shadow-2xl relative z-10">
         {/* Navigation Header */}
         <div className="flex justify-between items-center mb-6">
           <Link
             href="/"
             aria-label={t('common.home') || 'Home'}
-            className="w-9 h-9 rounded-full flex items-center justify-center border transition-transform active:scale-95"
-            style={{
-              backgroundColor: 'var(--color-input-bg)',
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-text)',
-            }}
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors active:scale-95 cursor-pointer"
           >
-            <ArrowRight size={18} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
+            <ArrowRight size={16} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
           </Link>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
-            <span className="text-xs font-semibold tracking-wider text-muted uppercase">Pointat</span>
+            <span className="w-2 h-2 rounded-[2px] bg-[var(--color-accent)]" />
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[var(--color-text-secondary)]">Pointat</span>
           </div>
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
@@ -267,18 +262,14 @@ export default function UnifiedLoginPage() {
         {/* Brand Icon & Heading */}
         <div className="flex flex-col items-center text-center mb-6">
           <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3 shadow-md transition-transform"
-            style={{
-              backgroundColor: 'var(--color-accent)',
-              color: 'var(--color-accent-text)',
-            }}
+            className="w-12 h-12 rounded-[4px] border border-[var(--color-border)] flex items-center justify-center mb-3 bg-[var(--color-accent)] text-white"
           >
-            <Star size={28} weight="fill" />
+            <Star size={24} weight="fill" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-primary">
+          <h1 className="text-xl font-light tracking-tight text-[var(--color-text)]">
             {locale === 'ar' ? 'تسجيل الدخول' : 'Sign In'}
           </h1>
-          <p className="text-xs text-muted mt-1">
+          <p className="text-xs font-mono opacity-60 mt-1">
             {locale === 'ar'
               ? 'سجل دخولك برقم موبايلك وكلمة المرور'
               : 'Sign in with your phone number and password'}
@@ -288,29 +279,24 @@ export default function UnifiedLoginPage() {
         {/* Error Notification */}
         {error && (
           <div
-            className="p-3 rounded-xl text-xs flex items-center gap-2 mb-4 border"
-            style={{
-              backgroundColor: 'var(--color-error-bg)',
-              color: 'var(--color-error-text)',
-              borderColor: 'var(--color-error-border)',
-            }}
+            className="p-3 rounded-[4px] text-xs font-mono flex items-center gap-2 mb-4 border border-[var(--color-error-border)] bg-[var(--color-error-bg)] text-[var(--color-error-text)]"
           >
-            <WarningCircle size={18} weight="light" className="shrink-0" />
+            <WarningCircle size={16} weight="light" className="shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {/* Unified Login Form */}
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <form onSubmit={handleLogin} className="flex flex-col gap-3.5">
           {/* Phone Number */}
           <div>
-            <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="cl-identifier">
+            <label className="block text-[11px] font-mono uppercase tracking-wider mb-1.5 opacity-75" htmlFor="cl-identifier">
               {inputLabel}
             </label>
             <div className="relative flex items-center">
               <input
                 id="cl-identifier"
-                className="ios-input pe-10"
+                className="w-full h-10 px-3 rounded-[4px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors pe-10"
                 type="text"
                 inputMode="tel"
                 placeholder={inputPlaceholder}
@@ -321,7 +307,7 @@ export default function UnifiedLoginPage() {
                 dir="ltr"
               />
               <Phone
-                size={18}
+                size={16}
                 weight="light"
                 className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`}
               />
@@ -331,13 +317,12 @@ export default function UnifiedLoginPage() {
           {/* Password */}
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <label className="text-xs font-semibold opacity-80" htmlFor="cl-password">
+              <label className="text-[11px] font-mono uppercase tracking-wider opacity-75" htmlFor="cl-password">
                 {locale === 'ar' ? 'كلمة المرور' : 'Password'}
               </label>
               <Link
                 href="/forgot-password"
-                className="text-xs opacity-70 hover:opacity-100 transition-opacity"
-                style={{ color: 'var(--color-text)' }}
+                className="text-[11px] font-mono opacity-65 hover:opacity-100 transition-opacity text-[var(--color-accent)]"
               >
                 {locale === 'ar' ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
               </Link>
@@ -345,7 +330,7 @@ export default function UnifiedLoginPage() {
             <div className="relative flex items-center">
               <input
                 id="cl-password"
-                className="ios-input pe-10"
+                className="w-full h-10 px-3 rounded-[4px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors pe-10"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={password}
@@ -357,12 +342,12 @@ export default function UnifiedLoginPage() {
                 type="button"
                 tabIndex={-1}
                 onClick={() => setShowPassword((v) => !v)}
-                className={`absolute opacity-50 hover:opacity-100 transition-opacity focus:outline-none ${isRtl ? 'left-3' : 'right-3'}`}
+                className={`absolute opacity-50 hover:opacity-100 transition-opacity focus:outline-none cursor-pointer ${isRtl ? 'left-3' : 'right-3'}`}
                 aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
               >
                 {showPassword
-                  ? <EyeSlash size={18} weight="light" />
-                  : <Eye size={18} weight="light" />}
+                  ? <EyeSlash size={16} weight="light" />
+                  : <Eye size={16} weight="light" />}
               </button>
             </div>
           </div>
@@ -370,12 +355,12 @@ export default function UnifiedLoginPage() {
           <button
             id="cl-signin-btn"
             type="submit"
-            className="ios-btn-primary w-full mt-2"
+            className="w-full h-10 rounded-[8px] font-mono text-xs uppercase tracking-wider transition-all active:scale-[0.99] disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110 flex items-center justify-center gap-2 mt-1 cursor-pointer"
             disabled={loading || !identifier.trim() || !password}
           >
             {loading ? (
               <>
-                <CircleNotch size={18} weight="light" className="animate-spin" />
+                <CircleNotch size={16} weight="light" className="animate-spin" />
                 <span>{locale === 'ar' ? 'جاري تسجيل الدخول...' : 'Signing in...'}</span>
               </>
             ) : (
@@ -385,21 +370,20 @@ export default function UnifiedLoginPage() {
         </form>
 
         {/* Separator */}
-        <div className="my-6 flex items-center gap-3">
-          <div className="flex-1 h-[0.5px]" style={{ backgroundColor: 'var(--color-separator)' }} />
-          <span className="text-[11px] opacity-40">{locale === 'ar' ? 'أو' : 'or'}</span>
-          <div className="flex-1 h-[0.5px]" style={{ backgroundColor: 'var(--color-separator)' }} />
+        <div className="my-5 flex items-center gap-3">
+          <div className="flex-1 h-px bg-[var(--color-border)]" />
+          <span className="text-[10px] font-mono uppercase opacity-40">{locale === 'ar' ? 'أو' : 'or'}</span>
+          <div className="flex-1 h-px bg-[var(--color-border)]" />
         </div>
 
         {/* Customer Registration Prompt */}
-        <div className="text-center text-xs">
+        <div className="text-center text-xs font-mono">
           <span className="opacity-60">
             {locale === 'ar' ? 'عميل جديد؟ ' : 'New customer? '}
           </span>
           <Link
             href="/signup"
-            className="font-bold underline underline-offset-4 hover:opacity-80 transition-opacity"
-            style={{ color: 'var(--color-text)' }}
+            className="font-medium text-[var(--color-accent)] hover:underline underline-offset-4 transition-all"
           >
             {locale === 'ar' ? 'إنشاء حساب جديد' : 'Create an account'}
           </Link>

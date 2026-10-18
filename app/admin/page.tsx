@@ -67,6 +67,7 @@ export default function AdminDashboardPage() {
   const [newCustConsent, setNewCustConsent] = useState(false);
   const [newCustReferralCode, setNewCustReferralCode] = useState('');
   const [isAddingCustomer, setIsAddingCustomer] = useState(false);
+  const [isFillingSelf, setIsFillingSelf] = useState(false);
 
   // Tab 4: Settings state (5.4 & 14.1)
   const [pointsPerUnit, setPointsPerUnit] = useState('1.0');
@@ -89,8 +90,8 @@ export default function AdminDashboardPage() {
   // Tab 4: Phase 9.5 & 9.5.2 Branding state
   const [brandingDisplayName, setBrandingDisplayName] = useState('');
   const [brandingLogoUrl, setBrandingLogoUrl] = useState('');
-  const [brandingPrimaryColor, setBrandingPrimaryColor] = useState('#FAF7F2');
-  const [brandingAccentColor, setBrandingAccentColor] = useState('#B08968');
+  const [brandingPrimaryColor, setBrandingPrimaryColor] = useState('#00052e');
+  const [brandingAccentColor, setBrandingAccentColor] = useState('#0428cb');
   const [brandingFontFamily, setBrandingFontFamily] = useState('Inter');
   const [brandingLayoutVariant, setBrandingLayoutVariant] = useState<'centered-classic' | 'qr-top' | 'horizontal-offers'>('centered-classic');
   const [isSavingBranding, setIsSavingBranding] = useState(false);
@@ -1255,6 +1256,44 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Fill own profile data into the add-customer form
+  const fillSelfAsCustomer = async () => {
+    if (!jwtToken) return;
+    setIsFillingSelf(true);
+    try {
+      const res = await fetch('/api/account/profile', {
+        headers: { Authorization: `Bearer ${jwtToken}` },
+      });
+      const data = await res.json();
+      if (data.success && data.profile) {
+        const { name, phone } = data.profile;
+        if (name) setNewCustName(name);
+        if (phone) {
+          // Normalize: strip +20 prefix if present
+          const normalized = phone.startsWith('+20') ? '0' + phone.slice(3) : phone;
+          setNewCustPhone(normalized);
+          setFeedback({ type: 'success', text: isRtl ? 'تم تعبئة بياناتك تلقائياً' : 'Your data has been filled in' });
+        } else {
+          // Name filled, but no phone — prompt user to enter it
+          setFeedback({
+            type: 'error',
+            text: isRtl
+              ? 'تم تعبئة الاسم. أضف رقم هاتفك من ملفك الشخصي أو اكتبه يدوياً'
+              : 'Name filled. Add your phone in your profile or enter it manually',
+          });
+        }
+        setTimeout(() => setFeedback(null), 5000);
+      } else {
+        setFeedback({ type: 'error', text: isRtl ? 'لم يتم العثور على بيانات الملف الشخصي' : 'Could not load profile data' });
+      }
+    } catch {
+      setFeedback({ type: 'error', text: isRtl ? 'خطأ في تحميل البيانات' : 'Failed to load profile' });
+    } finally {
+      setIsFillingSelf(false);
+    }
+  };
+
+
   // 5.4: Save Redemption Rates Settings
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1370,7 +1409,7 @@ export default function AdminDashboardPage() {
         position: 'absolute',
         width: '600px',
         height: '600px',
-        background: 'radial-gradient(circle, rgba(108,99,255,0.09) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(4,40,203,0.18) 0%, rgba(52,252,255,0.03) 40%, transparent 70%)',
         top: '-200px',
         right: '-200px',
         pointerEvents: 'none',
@@ -1379,7 +1418,7 @@ export default function AdminDashboardPage() {
         position: 'absolute',
         width: '450px',
         height: '450px',
-        background: 'radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(4,40,203,0.12) 0%, transparent 70%)',
         bottom: '-120px',
         left: '-120px',
         pointerEvents: 'none',
@@ -1389,14 +1428,14 @@ export default function AdminDashboardPage() {
         
         {/* Header bar */}
         <header 
-          className="rounded-3xl p-4 sm:p-5 border shadow-sm flex items-center justify-between backdrop-blur-xl"
-          style={{ backgroundColor: 'rgba(16, 14, 28, 0.80)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
+          className="rounded-[8px] p-4 sm:p-5 border border-[var(--color-border)] bg-[var(--color-card-bg)] flex items-center justify-between transition-colors"
+          style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
         >
           <div className="flex items-center gap-3">
             <Link
               href="/"
               aria-label={t('common.home')}
-              className="w-9 h-9 rounded-full flex items-center justify-center border shadow-xs transition-transform active:scale-95"
+              className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] transition-transform active:scale-95"
               style={{ borderColor: 'var(--color-border)' }}
             >
               <ArrowRight weight="light" className={`w-4 h-4 ${isRtl ? '' : 'rotate-180'}`} />
@@ -1405,7 +1444,7 @@ export default function AdminDashboardPage() {
               <div className="flex items-center gap-2">
                 <h1 className="text-sm font-bold">{businessName || t('admin.demoStore')}</h1>
                 <span 
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase"
+                  className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-[4px] uppercase border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]"
                   style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-accent)' }}
                 >
                   {userRole}
@@ -1427,7 +1466,7 @@ export default function AdminDashboardPage() {
               id="admin-profile-btn"
               title={t('accountDeletion.profileTitle')}
               aria-label={t('accountDeletion.profileTitle')}
-              className="w-9 h-9 rounded-full flex items-center justify-center border transition-all hover:opacity-80 active:scale-95 cursor-pointer"
+              className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] transition-all hover:opacity-80 active:scale-95 cursor-pointer"
               style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)', color: 'var(--color-accent)' }}
             >
               <User weight="light" className="w-4 h-4" />
@@ -1437,7 +1476,7 @@ export default function AdminDashboardPage() {
               id="admin-logout-btn"
               title={t('admin.logout')}
               aria-label={t('admin.logout')}
-              className="w-9 h-9 rounded-full flex items-center justify-center border text-rose-500 transition-transform active:scale-95 cursor-pointer"
+              className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] text-rose-500 transition-transform active:scale-95 cursor-pointer"
               style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)' }}
             >
               <SignOut weight="light" className="w-4 h-4" />
@@ -1448,7 +1487,7 @@ export default function AdminDashboardPage() {
         {/* Global Feedback Alert */}
         {feedback && (
           <div 
-            className="p-3 rounded-2xl text-xs font-medium flex items-center gap-2 border"
+            className="p-3 rounded-[4px] text-xs font-medium flex items-center gap-2 border"
             style={{
               backgroundColor: feedback.type === 'success' ? 'var(--color-success-bg)' : 'var(--color-error-bg)',
               color: feedback.type === 'success' ? 'var(--color-success-text)' : 'var(--color-error-text)',
@@ -1464,7 +1503,7 @@ export default function AdminDashboardPage() {
         {/* 15.4: Alert badge for cashiers near/over limit */}
         {!auditAlertDismissed && cashiers.some(c => c.isNearLimit || c.isOverLimit) && (
           <div
-            className="p-3 rounded-2xl border-2 flex items-start gap-2 text-xs"
+            className="p-3 rounded-[4px] border-2 flex items-start gap-2 text-xs"
             style={{
               backgroundColor: 'var(--color-error-bg)',
               borderColor: 'var(--color-error-border)',
@@ -1492,15 +1531,13 @@ export default function AdminDashboardPage() {
         )}
 
         <nav 
-          className="flex items-center overflow-x-auto p-1.5 rounded-2xl border text-[10px] sm:text-xs font-bold shadow-xs gap-1.5 backdrop-blur-xl no-scrollbar"
-          style={{ backgroundColor: 'rgba(16, 14, 28, 0.75)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
+          className="flex items-center overflow-x-auto p-1 rounded-[6px] border border-[var(--color-border)] bg-[var(--color-input-bg)] text-xs font-mono uppercase font-semibold gap-1 no-scrollbar"
+          style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)' }}
         >
           <button
             onClick={() => { setActiveTab('menu'); setFeedback(null); }}
             id="tab-menu-items"
-            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
-              activeTab === 'menu' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-            }`}
+            className={`py-1.5 px-3 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${activeTab === 'menu' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
             style={activeTab === 'menu' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
             <Coffee weight="light" className="w-3.5 h-3.5 shrink-0" />
@@ -1512,9 +1549,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => { setActiveTab('offers'); setFeedback(null); }}
               id="tab-offers"
-              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
-                activeTab === 'offers' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-              }`}
+              className={`py-1.5 px-3 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${activeTab === 'offers' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               style={activeTab === 'offers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <Sparkle weight="light" className="w-3.5 h-3.5 shrink-0" />
@@ -1525,9 +1560,7 @@ export default function AdminDashboardPage() {
           <button
             onClick={() => { setActiveTab('customers'); setFeedback(null); }}
             id="tab-customers"
-            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
-              activeTab === 'customers' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-            }`}
+            className={`py-1.5 px-3 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${activeTab === 'customers' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
             style={activeTab === 'customers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
             <Users weight="light" className="w-3.5 h-3.5 shrink-0" />
@@ -1543,8 +1576,8 @@ export default function AdminDashboardPage() {
               }
             }}
             id="tab-cashiers"
-            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer relative ${
-              activeTab === 'cashiers' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
+            className={`py-2 px-3 rounded-[4px] transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer relative ${
+              activeTab === 'cashiers' ? '' : 'opacity-70 hover:opacity-100'
             }`}
             style={activeTab === 'cashiers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
@@ -1561,9 +1594,7 @@ export default function AdminDashboardPage() {
           <button
             onClick={() => { setActiveTab('settings'); setFeedback(null); if (businessId) loadPointsSummary(businessId); }}
             id="tab-settings"
-            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
-              activeTab === 'settings' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-            }`}
+            className={`py-1.5 px-3 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${activeTab === 'settings' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
             style={activeTab === 'settings' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
             <Gear weight="light" className="w-3.5 h-3.5 shrink-0" />
@@ -1575,9 +1606,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => { setActiveTab('partnerships'); setFeedback(null); }}
               id="tab-partnerships"
-              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
-                activeTab === 'partnerships' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-              }`}
+              className={`py-1.5 px-3 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${activeTab === 'partnerships' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               style={activeTab === 'partnerships' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <Handshake weight="light" className="w-3.5 h-3.5 shrink-0" />
@@ -1594,8 +1623,8 @@ export default function AdminDashboardPage() {
               }
             }}
             id="tab-audit-log"
-            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer relative ${
-              activeTab === 'audit' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
+            className={`py-2 px-3 rounded-[4px] transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer relative ${
+              activeTab === 'audit' ? '' : 'opacity-70 hover:opacity-100'
             }`}
             style={activeTab === 'audit' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
@@ -1620,9 +1649,7 @@ export default function AdminDashboardPage() {
                 }
               }}
               id="tab-tiers"
-              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
-                activeTab === 'tiers' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-              }`}
+              className={`py-1.5 px-3 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${activeTab === 'tiers' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               style={activeTab === 'tiers' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <Medal weight="light" className="w-3.5 h-3.5 shrink-0" />
@@ -1641,9 +1668,7 @@ export default function AdminDashboardPage() {
                 }
               }}
               id="tab-referral"
-              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
-                activeTab === 'referral' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-              }`}
+              className={`py-1.5 px-3 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${activeTab === 'referral' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               style={activeTab === 'referral' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <Gift weight="light" className="w-3.5 h-3.5 shrink-0" />
@@ -1662,9 +1687,7 @@ export default function AdminDashboardPage() {
                 }
               }}
               id="tab-analytics"
-              className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${
-                activeTab === 'analytics' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-              }`}
+              className={`py-1.5 px-3 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer ${activeTab === 'analytics' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
               style={activeTab === 'analytics' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
             >
               <ChartBar weight="light" className="w-3.5 h-3.5 shrink-0" />
@@ -1681,8 +1704,8 @@ export default function AdminDashboardPage() {
               }
             }}
             id="tab-daily-review"
-            className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer relative ${
-              activeTab === 'dailyReview' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
+            className={`py-2 px-3 rounded-[4px] transition-all flex items-center justify-center gap-1.5 shrink-0 whitespace-nowrap cursor-pointer relative ${
+              activeTab === 'dailyReview' ? '' : 'opacity-70 hover:opacity-100'
             }`}
             style={activeTab === 'dailyReview' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
           >
@@ -1704,7 +1727,7 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col gap-4">
             <form 
               onSubmit={handleAddMenuItem}
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">{t('admin.addMenuItem')}</h2>
@@ -1717,7 +1740,7 @@ export default function AdminDashboardPage() {
                     value={newItemName}
                     onChange={(e) => setNewItemName(e.target.value)}
                     required
-                    className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                   {newItemName.trim() !== '' && !validateName(newItemName).isValid && (
@@ -1737,7 +1760,7 @@ export default function AdminDashboardPage() {
                     value={newItemPrice}
                     onChange={(e) => setNewItemPrice(e.target.value)}
                     required
-                    className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                   {newItemPrice.trim() !== '' && !validatePositiveNumber(newItemPrice, false).isValid && (
@@ -1751,7 +1774,7 @@ export default function AdminDashboardPage() {
                 type="submit"
                 id="submit-menu-item-btn"
                 disabled={isAddingItem}
-                className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
+                className="py-2.5 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  flex items-center justify-center gap-1.5 disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
                 {isAddingItem ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Plus weight="light" className="w-3.5 h-3.5" />}
@@ -1760,7 +1783,7 @@ export default function AdminDashboardPage() {
             </form>
 
             <div 
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">{t('admin.menuItemsCount', { count: menuItems.length })}</h2>
@@ -1773,7 +1796,7 @@ export default function AdminDashboardPage() {
                     return (
                       <div 
                         key={item.id}
-                        className="p-3 rounded-2xl border flex items-center justify-between text-xs transition-colors"
+                        className="p-3 rounded-[4px] border flex items-center justify-between text-xs transition-colors"
                         style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
                       >
                         <div>
@@ -1806,7 +1829,7 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col gap-4">
             <form 
               onSubmit={handleAddOffer}
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">{t('admin.addOffer')}</h2>
@@ -1819,7 +1842,7 @@ export default function AdminDashboardPage() {
                   value={offerTitle}
                   onChange={(e) => setOfferTitle(e.target.value)}
                   required
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -1832,7 +1855,7 @@ export default function AdminDashboardPage() {
                   onChange={(e) => setOfferDesc(e.target.value)}
                   required
                   rows={2}
-                  className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -1844,7 +1867,7 @@ export default function AdminDashboardPage() {
                     id="offer-type-select"
                     value={offerType}
                     onChange={(e) => setOfferType(e.target.value as any)}
-                    className="w-full py-2 px-2.5 rounded-xl text-xs border"
+                    className="w-full py-2 px-2.5 rounded-[4px] text-xs border"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   >
                     <option value="special">{t('admin.specialOption')}</option>
@@ -1861,7 +1884,7 @@ export default function AdminDashboardPage() {
                     value={offerStartDate}
                     onChange={(e) => setOfferStartDate(e.target.value)}
                     required
-                    className="w-full py-1.5 px-2 rounded-xl text-xs border"
+                    className="w-full py-1.5 px-2 rounded-[4px] text-xs border"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -1875,7 +1898,7 @@ export default function AdminDashboardPage() {
                     value={offerEndDate}
                     onChange={(e) => setOfferEndDate(e.target.value)}
                     required
-                    className="w-full py-1.5 px-2 rounded-xl text-xs border"
+                    className="w-full py-1.5 px-2 rounded-[4px] text-xs border"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -1887,7 +1910,7 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center gap-2">
                   <label 
                     htmlFor="offer-image-file"
-                    className="cursor-pointer py-2 px-3 rounded-xl border text-xs flex items-center gap-1.5 transition-colors hover:opacity-80"
+                    className="cursor-pointer py-2 px-3 rounded-[4px] border text-xs flex items-center gap-1.5 transition-colors hover:opacity-80"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   >
                     <ImageIcon weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
@@ -1905,7 +1928,7 @@ export default function AdminDashboardPage() {
                       type="button"
                       onClick={handleClearImage}
                       title="Clear image"
-                      className="p-2 rounded-xl border transition-colors hover:opacity-70"
+                      className="p-2 rounded-[4px] border transition-colors hover:opacity-70"
                       style={{ borderColor: 'var(--color-border)', color: 'var(--color-error-text)' }}
                     >
                       <X weight="light" className="w-3.5 h-3.5" />
@@ -1914,7 +1937,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 {imagePreview && (
-                  <div className="mt-2 w-full h-24 rounded-xl overflow-hidden relative border" style={{ borderColor: 'var(--color-border)' }}>
+                  <div className="mt-2 w-full h-24 rounded-[4px] overflow-hidden relative border" style={{ borderColor: 'var(--color-border)' }}>
                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 )}
@@ -1924,7 +1947,7 @@ export default function AdminDashboardPage() {
                 type="submit"
                 id="submit-offer-btn"
                 disabled={isAddingOffer}
-                className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50 mt-1"
+                className="py-2.5 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  flex items-center justify-center gap-1.5 disabled:opacity-50 mt-1"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
                 {isAddingOffer ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Sparkle weight="light" className="w-3.5 h-3.5" />}
@@ -1934,7 +1957,7 @@ export default function AdminDashboardPage() {
 
             {/* Offers List */}
             <div 
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">{t('admin.offersCount', { count: offers.length })}</h2>
@@ -1946,18 +1969,18 @@ export default function AdminDashboardPage() {
                   {offers.map((offer) => (
                     <div 
                       key={offer.id}
-                      className="p-3.5 rounded-2xl border flex flex-col gap-2"
+                      className="p-3.5 rounded-[4px] border flex flex-col gap-2"
                       style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
                     >
                       {offer.image_url && (
-                        <div className="w-full h-24 rounded-xl overflow-hidden relative border" style={{ borderColor: 'var(--color-border)' }}>
+                        <div className="w-full h-24 rounded-[4px] overflow-hidden relative border" style={{ borderColor: 'var(--color-border)' }}>
                           <img src={offer.image_url} alt={offer.title} className="w-full h-full object-cover" />
                         </div>
                       )}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span 
-                            className="text-[10px] font-bold px-2 py-0.5 rounded-full border"
+                            className="text-[10px] font-bold px-2 py-0.5 rounded-[4px] border"
                             style={{
                               backgroundColor: offer.type === 'special' ? 'var(--color-badge-special-bg)' : 'var(--color-badge-daily-bg)',
                               color: offer.type === 'special' ? 'var(--color-badge-special-text)' : 'var(--color-badge-daily-text)',
@@ -1998,10 +2021,27 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col gap-4">
             <form 
               onSubmit={handleAddCustomer}
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
-              <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">{t('admin.newCustomerTitle')}</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">{t('admin.newCustomerTitle')}</h2>
+                <button
+                  type="button"
+                  id="fill-self-as-customer-btn"
+                  onClick={fillSelfAsCustomer}
+                  disabled={isFillingSelf}
+                  className="flex items-center gap-1.5 text-[11px] font-semibold py-1.5 px-3 rounded-[4px] border transition-all hover:opacity-80 active:scale-95 disabled:opacity-50"
+                  style={{ borderColor: 'var(--color-accent)', color: 'var(--color-accent)' }}
+                  title={isRtl ? 'تعبئة بياناتك كعميل جديد' : 'Fill your own data as a new customer'}
+                >
+                  {isFillingSelf
+                    ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" />
+                    : <User weight="bold" className="w-3.5 h-3.5" />
+                  }
+                  <span>{isRtl ? 'أضف نفسك كعميل' : 'Add myself as customer'}</span>
+                </button>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <input
@@ -2011,7 +2051,7 @@ export default function AdminDashboardPage() {
                     value={newCustName}
                     onChange={(e) => setNewCustName(e.target.value)}
                     required
-                    className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                   {newCustName.trim() !== '' && !validateName(newCustName).isValid && (
@@ -2030,7 +2070,7 @@ export default function AdminDashboardPage() {
                     value={newCustPhone}
                     onChange={(e) => setNewCustPhone(e.target.value)}
                     required
-                    className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                   {newCustPhone.trim() !== '' && !validateEgyptianPhone(newCustPhone).isValid && (
@@ -2046,7 +2086,7 @@ export default function AdminDashboardPage() {
                     placeholder={t('admin.referralCodePlaceholder')}
                     value={newCustReferralCode}
                     onChange={(e) => setNewCustReferralCode(e.target.value.toUpperCase())}
-                    className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden font-mono uppercase"
+                    className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden font-mono uppercase"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -2054,7 +2094,7 @@ export default function AdminDashboardPage() {
 
               {/* 13.2 & 13.3: Mandatory Consent Checkbox */}
               <div 
-                className="p-3 rounded-xl border flex items-start gap-2.5 transition-colors"
+                className="p-3 rounded-[4px] border flex items-start gap-2.5 transition-colors"
                 style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
               >
                 <input
@@ -2077,7 +2117,7 @@ export default function AdminDashboardPage() {
                 type="submit"
                 id="submit-customer-btn"
                 disabled={isAddingCustomer || !newCustConsent}
-                className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
+                className="py-2.5 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  flex items-center justify-center gap-1.5 disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
                 {isAddingCustomer ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Plus weight="light" className="w-3.5 h-3.5" />}
@@ -2086,7 +2126,7 @@ export default function AdminDashboardPage() {
             </form>
 
             <div 
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <h2 className="text-xs font-bold uppercase tracking-wider opacity-80">{t('admin.customersCount', { count: customers.length })}</h2>
@@ -2098,7 +2138,7 @@ export default function AdminDashboardPage() {
                   {customers.map((c) => (
                     <div 
                       key={c.id}
-                      className="p-3 rounded-2xl border flex items-center justify-between text-xs"
+                      className="p-3 rounded-[4px] border flex items-center justify-between text-xs"
                       style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
                     >
                       <div>
@@ -2107,7 +2147,7 @@ export default function AdminDashboardPage() {
                           <span className="text-[11px] opacity-60 font-mono" dir="ltr">{c.phone_number}</span>
                           {c.referral_code && (
                             <span 
-                              className="text-[9px] px-1.5 py-0.5 rounded-full font-mono font-bold border"
+                              className="text-[9px] px-1.5 py-0.5 rounded-[4px] font-mono font-bold border"
                               style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)', color: 'var(--color-accent)' }}
                             >
                               {c.referral_code}
@@ -2115,7 +2155,7 @@ export default function AdminDashboardPage() {
                           )}
                           {c.consent_given_at && (
                             <span 
-                              className="text-[9px] px-1.5 py-0.5 rounded-full font-medium border"
+                              className="text-[9px] px-1.5 py-0.5 rounded-[4px] font-medium border"
                               style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)', color: 'var(--color-accent)' }}
                             >
                               {t('admin.consentBadge')}
@@ -2132,7 +2172,7 @@ export default function AdminDashboardPage() {
                           target="_blank"
                           title={t('admin.viewCardTitle')}
                           aria-label={t('admin.viewCardTitle')}
-                          className="p-2 rounded-lg border transition-transform active:scale-95 shadow-xs"
+                          className="p-2 rounded-lg border transition-transform active:scale-95 "
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
                         >
                           <QrCode weight="light" className="w-4 h-4" />
@@ -2154,7 +2194,7 @@ export default function AdminDashboardPage() {
 
             {/* ── Points Summary Dashboard ── */}
             <div
-              className="p-5 rounded-3xl border shadow-sm"
+              className="p-5 rounded-[8px] border "
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center justify-between mb-4">
@@ -2166,7 +2206,7 @@ export default function AdminDashboardPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {/* Today */}
-                <div className="p-3 rounded-2xl" style={{ backgroundColor: 'var(--color-bg)' }}>
+                <div className="p-3 rounded-[4px]" style={{ backgroundColor: 'var(--color-bg)' }}>
                   <span className="text-[11px] opacity-60 uppercase tracking-wider block mb-2">{isRtl ? 'اليوم' : 'Today'}</span>
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
@@ -2180,7 +2220,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
                 {/* This Month */}
-                <div className="p-3 rounded-2xl" style={{ backgroundColor: 'var(--color-bg)' }}>
+                <div className="p-3 rounded-[4px]" style={{ backgroundColor: 'var(--color-bg)' }}>
                   <span className="text-[11px] opacity-60 uppercase tracking-wider block mb-2">{isRtl ? 'الشهر' : 'This Month'}</span>
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
@@ -2203,7 +2243,7 @@ export default function AdminDashboardPage() {
 
             <form 
               onSubmit={handleSaveSettings}
-            className="p-6 rounded-3xl border shadow-sm flex flex-col gap-4"
+            className="p-6 rounded-[8px] border  flex flex-col gap-4"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <div>
@@ -2227,7 +2267,7 @@ export default function AdminDashboardPage() {
                   value={pointsPerUnit}
                   onChange={(e) => setPointsPerUnit(e.target.value)}
                   required
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -2245,7 +2285,7 @@ export default function AdminDashboardPage() {
                   value={currencyPerPoint}
                   onChange={(e) => setCurrencyPerPoint(e.target.value)}
                   required
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -2264,7 +2304,7 @@ export default function AdminDashboardPage() {
                   value={pointsExpiryMonths}
                   onChange={(e) => setPointsExpiryMonths(e.target.value)}
                   required
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
                 <p className="text-[11px] opacity-60 mt-1">{t('admin.pointsExpiryHint')}</p>
@@ -2282,7 +2322,7 @@ export default function AdminDashboardPage() {
                       type="button"
                       id={`redemption-type-${type}`}
                       onClick={() => setRedemptionType(type)}
-                      className="py-2.5 px-2 rounded-xl text-[11px] font-bold border transition-all active:scale-95"
+                      className="py-2.5 px-2 rounded-[4px] text-[11px] font-bold border transition-all active:scale-95"
                       style={
                         redemptionType === type
                           ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)', borderColor: 'var(--color-accent)' }
@@ -2311,7 +2351,7 @@ export default function AdminDashboardPage() {
                   value={maxOfflineTransactions}
                   onChange={(e) => setMaxOfflineTransactions(e.target.value)}
                   required
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
                 <p className="text-[11px] opacity-60 mt-1">{t('admin.maxOfflineLimitDesc')}</p>
@@ -2322,7 +2362,7 @@ export default function AdminDashboardPage() {
               type="submit"
               id="save-settings-btn"
               disabled={isSavingSettings}
-              className="py-3 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-2 flex items-center justify-center gap-1.5 disabled:opacity-50"
+              className="py-3 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  mt-2 flex items-center justify-center gap-1.5 disabled:opacity-50"
               style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
             >
               {isSavingSettings ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Check weight="light" className="w-3.5 h-3.5" />}
@@ -2333,7 +2373,7 @@ export default function AdminDashboardPage() {
           {/* Phase 9.5 & 9.5.2: الهوية البصرية والتصميم (Branding & Identity) */}
           <form 
             onSubmit={handleSaveBranding}
-            className="p-6 rounded-3xl border shadow-sm flex flex-col gap-4 mt-6"
+            className="p-6 rounded-[8px] border  flex flex-col gap-4 mt-6"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <div className="flex items-center gap-2">
@@ -2356,7 +2396,7 @@ export default function AdminDashboardPage() {
                   placeholder={businessName || 'مثال: كافيه النخيل'}
                   value={brandingDisplayName}
                   onChange={(e) => setBrandingDisplayName(e.target.value)}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -2370,7 +2410,7 @@ export default function AdminDashboardPage() {
                   placeholder="https://example.com/logo.png"
                   value={brandingLogoUrl}
                   onChange={(e) => setBrandingLogoUrl(e.target.value)}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -2393,7 +2433,7 @@ export default function AdminDashboardPage() {
                       type="text"
                       value={brandingPrimaryColor}
                       onChange={(e) => setBrandingPrimaryColor(e.target.value)}
-                      className="flex-1 py-1.5 px-2 rounded-xl text-xs border font-mono"
+                      className="flex-1 py-1.5 px-2 rounded-[4px] text-xs border font-mono"
                       style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                     />
                   </div>
@@ -2415,7 +2455,7 @@ export default function AdminDashboardPage() {
                       type="text"
                       value={brandingAccentColor}
                       onChange={(e) => setBrandingAccentColor(e.target.value)}
-                      className="flex-1 py-1.5 px-2 rounded-xl text-xs border font-mono"
+                      className="flex-1 py-1.5 px-2 rounded-[4px] text-xs border font-mono"
                       style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                     />
                   </div>
@@ -2431,7 +2471,7 @@ export default function AdminDashboardPage() {
 
                 if (pCheck.passesAA && aCheck.passesAA) {
                   return (
-                    <div className="p-2.5 rounded-xl border text-xs flex items-center gap-2" style={{ backgroundColor: 'rgba(34, 197, 94, 0.08)', borderColor: 'rgba(34, 197, 94, 0.25)', color: '#16A34A' }}>
+                    <div className="p-2.5 rounded-[4px] border text-xs flex items-center gap-2" style={{ backgroundColor: 'rgba(34, 197, 94, 0.08)', borderColor: 'rgba(34, 197, 94, 0.25)', color: '#16A34A' }}>
                       <CheckCircle weight="light" className="w-4 h-4 shrink-0" />
                       <span>{isRtl ? 'الألوان المختارة تحقق معايير سهولة القراءة والتباين (WCAG AA Pass)' : 'Colors pass accessibility contrast standards (WCAG AA Pass)'}</span>
                     </div>
@@ -2439,7 +2479,7 @@ export default function AdminDashboardPage() {
                 }
 
                 return (
-                  <div className="p-3 rounded-xl border text-xs flex flex-col gap-2" style={{ backgroundColor: 'rgba(234, 88, 12, 0.08)', borderColor: 'rgba(234, 88, 12, 0.3)', color: '#C2410C' }}>
+                  <div className="p-3 rounded-[4px] border text-xs flex flex-col gap-2" style={{ backgroundColor: 'rgba(234, 88, 12, 0.08)', borderColor: 'rgba(234, 88, 12, 0.3)', color: '#C2410C' }}>
                     <div className="flex items-center gap-1.5 font-bold">
                       <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                       <span>{isRtl ? 'تنبيه سهولة القراءة والتباين (WCAG AA)' : 'Accessibility Contrast Warning (WCAG AA)'}</span>
@@ -2484,7 +2524,7 @@ export default function AdminDashboardPage() {
                 <select
                   value={brandingFontFamily}
                   onChange={(e) => setBrandingFontFamily(e.target.value)}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <option value="Inter">Inter (Modern Clean)</option>
@@ -2509,7 +2549,7 @@ export default function AdminDashboardPage() {
                       key={v.id}
                       type="button"
                       onClick={() => setBrandingLayoutVariant(v.id as any)}
-                      className="p-2 rounded-xl border text-[11px] font-bold text-center transition-all cursor-pointer"
+                      className="p-2 rounded-[4px] border text-[11px] font-bold text-center transition-all cursor-pointer"
                       style={
                         brandingLayoutVariant === v.id
                           ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)', borderColor: 'var(--color-accent)' }
@@ -2527,7 +2567,7 @@ export default function AdminDashboardPage() {
               type="submit"
               id="save-branding-btn"
               disabled={isSavingBranding}
-              className="py-3 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-2 flex items-center justify-center gap-1.5 disabled:opacity-50"
+              className="py-3 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  mt-2 flex items-center justify-center gap-1.5 disabled:opacity-50"
               style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
             >
               {isSavingBranding ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Check weight="light" className="w-3.5 h-3.5" />}
@@ -2539,7 +2579,7 @@ export default function AdminDashboardPage() {
           {userRole === 'owner' && (
             <form
               onSubmit={handleSaveNotifications}
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center justify-between">
@@ -2576,7 +2616,7 @@ export default function AdminDashboardPage() {
                   value={notifPhoneNumberId}
                   onChange={(e) => setNotifPhoneNumberId(e.target.value)}
                   placeholder="123456789012345"
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden font-mono"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden font-mono"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -2590,7 +2630,7 @@ export default function AdminDashboardPage() {
                   value={notifAccessToken}
                   onChange={(e) => setNotifAccessToken(e.target.value)}
                   placeholder={notifLoaded && notifPhoneNumberId ? '••••••••••••••• (already saved)' : 'EAAxxxxxxxxx...'}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden font-mono"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden font-mono"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -2598,7 +2638,7 @@ export default function AdminDashboardPage() {
                 type="submit"
                 id="save-notifications-btn"
                 disabled={isSavingNotif}
-                className="py-3 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
+                className="py-3 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  flex items-center justify-center gap-1.5 disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
                 {isSavingNotif ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Check weight="light" className="w-3.5 h-3.5" />}
@@ -2618,7 +2658,7 @@ export default function AdminDashboardPage() {
             {/* 10.3 Send Partnership Request Form */}
             <form
               onSubmit={handleSendPartnershipRequest}
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center gap-2">
@@ -2641,7 +2681,7 @@ export default function AdminDashboardPage() {
                     value={targetSubdomain}
                     onChange={(e) => setTargetSubdomain(e.target.value)}
                     required
-                    className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -2656,7 +2696,7 @@ export default function AdminDashboardPage() {
                     placeholder={t('partnerships.termsPlaceholder')}
                     value={partnershipTerms}
                     onChange={(e) => setPartnershipTerms(e.target.value)}
-                    className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -2666,7 +2706,7 @@ export default function AdminDashboardPage() {
                 type="submit"
                 id="send-partnership-btn"
                 disabled={isSendingRequest}
-                className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-1.5 self-start disabled:opacity-50"
+                className="py-2.5 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  mt-1 flex items-center justify-center gap-1.5 self-start disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
                 {isSendingRequest ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <PaperPlaneTilt weight="light" className="w-3.5 h-3.5" />}
@@ -2682,7 +2722,7 @@ export default function AdminDashboardPage() {
 
               {partnerships.length === 0 ? (
                 <div 
-                  className="p-8 rounded-3xl border text-center text-xs opacity-60"
+                  className="p-8 rounded-[8px] border text-center text-xs opacity-60"
                   style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                 >
                   {t('partnerships.emptyList')}
@@ -2697,7 +2737,7 @@ export default function AdminDashboardPage() {
                     return (
                       <div
                         key={p.id}
-                        className="p-4 rounded-2xl border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                        className="p-4 rounded-[4px] border  flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                         style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                       >
                         <div className="flex flex-col gap-1">
@@ -2705,7 +2745,7 @@ export default function AdminDashboardPage() {
                             <span className="text-xs font-bold">{p.partner_name}</span>
                             <span className="text-[10px] opacity-60 font-mono">(@{p.partner_subdomain})</span>
                             <span
-                              className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                              className="text-[10px] font-bold px-2 py-0.5 rounded-[4px]"
                               style={{
                                 backgroundColor: isActive
                                   ? 'var(--color-success-bg)'
@@ -2767,7 +2807,7 @@ export default function AdminDashboardPage() {
             {partnerships.some((p) => p.status === 'active') && (
               <form
                 onSubmit={handleTransferPoints}
-                className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+                className="p-5 rounded-[8px] border  flex flex-col gap-3"
                 style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
               >
                 <div className="flex items-center gap-2">
@@ -2788,7 +2828,7 @@ export default function AdminDashboardPage() {
                       value={transferPartnershipId}
                       onChange={(e) => setTransferPartnershipId(e.target.value)}
                       required
-                      className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                      className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                       style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                     >
                       <option value="">{t('partnerships.selectPartnershipPlaceholder')}</option>
@@ -2813,7 +2853,7 @@ export default function AdminDashboardPage() {
                       value={transferCustomerId}
                       onChange={(e) => setTransferCustomerId(e.target.value)}
                       required
-                      className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                      className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                       style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                     />
                   </div>
@@ -2830,7 +2870,7 @@ export default function AdminDashboardPage() {
                       value={transferPoints}
                       onChange={(e) => setTransferPoints(e.target.value)}
                       required
-                      className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                      className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                       style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                     />
                   </div>
@@ -2840,7 +2880,7 @@ export default function AdminDashboardPage() {
                   type="submit"
                   id="transfer-points-btn"
                   disabled={isTransferring}
-                  className="py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-1.5 self-start disabled:opacity-50"
+                  className="py-2.5 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  mt-1 flex items-center justify-center gap-1.5 self-start disabled:opacity-50"
                   style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                 >
                   {isTransferring ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <ArrowsLeftRight weight="light" className="w-3.5 h-3.5" />}
@@ -2859,7 +2899,7 @@ export default function AdminDashboardPage() {
 
             {/* 15.2: Cashier Daily Limits Manager */}
             <div
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-4"
+              className="p-5 rounded-[8px] border  flex flex-col gap-4"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center justify-between">
@@ -2873,7 +2913,7 @@ export default function AdminDashboardPage() {
                 <button
                   onClick={() => setShowAddCashierModal(true)}
                   id="admin-add-cashier-btn"
-                  className="py-1.5 px-3 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center gap-1.5 cursor-pointer"
+                  className="py-1.5 px-3 rounded-[4px] text-xs font-bold transition-transform active:scale-95  flex items-center gap-1.5 cursor-pointer"
                   style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                 >
                   <UserPlus weight="light" className="w-3.5 h-3.5" />
@@ -2883,7 +2923,7 @@ export default function AdminDashboardPage() {
 
               {/* Add Cashier Form / Modal */}
               {showAddCashierModal && (
-                <div className="p-4 rounded-2xl border flex flex-col gap-3 transition-all" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-accent)' }}>
+                <div className="p-4 rounded-[4px] border flex flex-col gap-3 transition-all" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-accent)' }}>
                   <div className="flex items-center justify-between pb-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
                     <span className="text-xs font-bold">{isRtl ? 'إضافة موظف كاشير جديد' : 'Add New Cashier'}</span>
                     <button
@@ -2905,7 +2945,7 @@ export default function AdminDashboardPage() {
                           value={newCashierName}
                           onChange={(e) => setNewCashierName(e.target.value)}
                           placeholder={isRtl ? 'مثال: أحمد محمد' : 'e.g. Ahmed Ali'}
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         />
                         {newCashierName.trim() !== '' && !validateName(newCashierName).isValid && (
@@ -2924,7 +2964,7 @@ export default function AdminDashboardPage() {
                           value={newCashierEmail}
                           onChange={(e) => setNewCashierEmail(e.target.value)}
                           placeholder="cashier@example.com"
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         />
                         {newCashierEmail.trim() !== '' && !validateEmail(newCashierEmail).isValid && (
@@ -2943,7 +2983,7 @@ export default function AdminDashboardPage() {
                           value={newCashierPassword}
                           onChange={(e) => setNewCashierPassword(e.target.value)}
                           placeholder="••••••••"
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         />
                         {newCashierPassword !== '' && !validatePassword(newCashierPassword).isValid && (
@@ -2962,7 +3002,7 @@ export default function AdminDashboardPage() {
                           value={newCashierPhone}
                           onChange={(e) => setNewCashierPhone(e.target.value)}
                           placeholder="01012345678"
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         />
                         {newCashierPhone.trim() !== '' && !validateEgyptianPhone(newCashierPhone).isValid && (
@@ -2978,7 +3018,7 @@ export default function AdminDashboardPage() {
                           <select
                             value={newCashierBranchId}
                             onChange={(e) => setNewCashierBranchId(e.target.value)}
-                            className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                            className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                           >
                             <option value="">{isRtl ? 'جميع الفروع / غير محدد' : 'All Branches / None'}</option>
@@ -2999,7 +3039,7 @@ export default function AdminDashboardPage() {
                           value={newCashierDailyLimit}
                           onChange={(e) => setNewCashierDailyLimit(e.target.value)}
                           placeholder="1000"
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         />
                       </div>
@@ -3014,7 +3054,7 @@ export default function AdminDashboardPage() {
                           value={newCashierTxLimit}
                           onChange={(e) => setNewCashierTxLimit(e.target.value)}
                           placeholder="500"
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         />
                       </div>
@@ -3024,14 +3064,14 @@ export default function AdminDashboardPage() {
                       <button
                         type="button"
                         onClick={() => setShowAddCashierModal(false)}
-                        className="py-1.5 px-3 rounded-xl text-xs font-semibold opacity-70 hover:opacity-100 cursor-pointer"
+                        className="py-1.5 px-3 rounded-[4px] text-xs font-semibold opacity-70 hover:opacity-100 cursor-pointer"
                       >
                         {t('common.cancel')}
                       </button>
                       <button
                         type="submit"
                         disabled={isCreatingCashier}
-                        className="py-1.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                        className="py-1.5 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                         style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                       >
                         {isCreatingCashier ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <UserPlus weight="light" className="w-3.5 h-3.5" />}
@@ -3052,7 +3092,7 @@ export default function AdminDashboardPage() {
                     return (
                       <div
                         key={cashier.roleId}
-                        className="p-3 rounded-2xl border"
+                        className="p-3 rounded-[4px] border"
                         style={{
                           backgroundColor: 'var(--color-bg)',
                           borderColor: isOver ? 'var(--color-error-border)' : isNear ? 'var(--color-accent)' : 'var(--color-border)',
@@ -3083,7 +3123,7 @@ export default function AdminDashboardPage() {
                               )}
                             </div>
                           </div>
-                          <div className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                          <div className={`text-[11px] font-bold px-2 py-0.5 rounded-[4px] ${
                             isOver ? 'bg-red-100 text-red-700' : isNear ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'
                           }`}>
                             {cashier.dailyPointsLimit > 0
@@ -3095,9 +3135,9 @@ export default function AdminDashboardPage() {
                         {/* Usage bar */}
                         {cashier.dailyPointsLimit > 0 && (
                           <div className="mb-2">
-                            <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--color-border)' }}>
+                            <div className="h-1.5 rounded-[4px] overflow-hidden" style={{ backgroundColor: 'var(--color-border)' }}>
                               <div
-                                className="h-full rounded-full transition-all"
+                                className="h-full rounded-[4px] transition-all"
                                 style={{
                                   width: `${Math.min(cashier.usagePercent, 100)}%`,
                                   backgroundColor: isOver ? 'var(--color-error-text)' : isNear ? '#f59e0b' : 'var(--color-accent)',
@@ -3185,7 +3225,7 @@ export default function AdminDashboardPage() {
             {/* === 15.1: Audit Log Section === */}
             {activeTab === 'audit' && (
             <div
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-4"
+              className="p-5 rounded-[8px] border  flex flex-col gap-4"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center gap-2">
@@ -3284,7 +3324,7 @@ export default function AdminDashboardPage() {
                     return (
                       <div
                         key={log.id}
-                        className="p-3 rounded-2xl border text-[11px] flex flex-col gap-1"
+                        className="p-3 rounded-[4px] border text-[11px] flex flex-col gap-1"
                         style={{
                           backgroundColor: 'var(--color-bg)',
                           borderColor: isRejected ? 'var(--color-error-border)' : 'var(--color-border)',
@@ -3301,7 +3341,7 @@ export default function AdminDashboardPage() {
                             <span className="font-semibold">{actionLabel}</span>
                           </div>
                           <span
-                            className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                            className={`px-2 py-0.5 rounded-[4px] font-bold text-[10px] ${
                               isRejected ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
                             }`}
                           >
@@ -3340,7 +3380,7 @@ export default function AdminDashboardPage() {
             {/* Create Tier Form */}
             <form 
               onSubmit={handleAddTier} 
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
@@ -3358,7 +3398,7 @@ export default function AdminDashboardPage() {
                     onChange={(e) => setNewTierName(e.target.value)}
                     placeholder={t('tiers.tierNamePlaceholder')}
                     required
-                    className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -3373,7 +3413,7 @@ export default function AdminDashboardPage() {
                     placeholder="0"
                     min="0"
                     required
-                    className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -3387,7 +3427,7 @@ export default function AdminDashboardPage() {
                   value={newTierBenefits}
                   onChange={(e) => setNewTierBenefits(e.target.value)}
                   placeholder={t('tiers.benefitsPlaceholder')}
-                  className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -3396,7 +3436,7 @@ export default function AdminDashboardPage() {
                 type="submit"
                 id="add-tier-btn"
                 disabled={isAddingTier || !newTierName.trim()}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
+                className="w-full py-2.5 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
                 {isAddingTier ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <Plus weight="light" className="w-3.5 h-3.5" />}
@@ -3406,7 +3446,7 @@ export default function AdminDashboardPage() {
 
             {/* Tiers List */}
             <div 
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-4"
+              className="p-5 rounded-[8px] border  flex flex-col gap-4"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex items-center justify-between">
@@ -3427,7 +3467,7 @@ export default function AdminDashboardPage() {
                       return (
                         <div
                           key={tier.id}
-                          className="p-4 rounded-2xl border flex flex-col gap-3"
+                          className="p-4 rounded-[4px] border flex flex-col gap-3"
                           style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-accent)' }}
                         >
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -3483,13 +3523,13 @@ export default function AdminDashboardPage() {
                     return (
                       <div
                         key={tier.id}
-                        className="p-4 rounded-2xl border flex items-center justify-between gap-3"
+                        className="p-4 rounded-[4px] border flex items-center justify-between gap-3"
                         style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                       >
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <span 
-                              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-xs"
+                              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-[4px] text-xs font-bold border "
                               style={{
                                 backgroundColor: 'var(--color-card-bg)',
                                 borderColor: 'var(--color-accent)',
@@ -3517,7 +3557,7 @@ export default function AdminDashboardPage() {
                               setEditTierMinPoints(String(tier.min_points_earned));
                               setEditTierBenefits(tier.benefits_description || '');
                             }}
-                            className="w-8 h-8 rounded-xl border flex items-center justify-center transition-opacity hover:opacity-80"
+                            className="w-8 h-8 rounded-[4px] border flex items-center justify-center transition-opacity hover:opacity-80"
                             style={{ borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
                             title={t('common.edit')}
                           >
@@ -3528,7 +3568,7 @@ export default function AdminDashboardPage() {
                             type="button"
                             onClick={() => handleDeleteTier(tier.id, tier.name)}
                             disabled={deletingTierId === tier.id}
-                            className="w-8 h-8 rounded-xl border flex items-center justify-center transition-opacity hover:opacity-80 disabled:opacity-50"
+                            className="w-8 h-8 rounded-[4px] border flex items-center justify-center transition-opacity hover:opacity-80 disabled:opacity-50"
                             style={{ borderColor: 'var(--color-border)', color: 'var(--color-error-text)' }}
                             title={t('common.delete')}
                           >
@@ -3557,7 +3597,7 @@ export default function AdminDashboardPage() {
             {/* Referral Settings Form */}
             <form
               onSubmit={handleSaveReferral}
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-4"
+              className="p-5 rounded-[8px] border  flex flex-col gap-4"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div>
@@ -3582,7 +3622,7 @@ export default function AdminDashboardPage() {
                     value={referrerRewardPoints}
                     onChange={(e) => setReferrerRewardPoints(e.target.value)}
                     required
-                    className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -3598,7 +3638,7 @@ export default function AdminDashboardPage() {
                     value={refereeRewardPoints}
                     onChange={(e) => setRefereeRewardPoints(e.target.value)}
                     required
-                    className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -3608,7 +3648,7 @@ export default function AdminDashboardPage() {
                 type="submit"
                 id="save-referral-btn"
                 disabled={isSavingReferral}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
+                className="w-full py-2.5 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
                 {isSavingReferral ? (
@@ -3622,7 +3662,7 @@ export default function AdminDashboardPage() {
 
             {/* Referral Stats Summary Card */}
             <div
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
               id="referral-stats-card"
             >
@@ -3632,7 +3672,7 @@ export default function AdminDashboardPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div
-                  className="p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-1"
+                  className="p-4 rounded-[4px] border flex flex-col items-center justify-center text-center gap-1"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <span className="text-[11px] opacity-60 font-medium">{t('admin.totalReferrals')}</span>
@@ -3642,7 +3682,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div
-                  className="p-4 rounded-2xl border flex flex-col items-center justify-center text-center gap-1"
+                  className="p-4 rounded-[4px] border flex flex-col items-center justify-center text-center gap-1"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <span className="text-[11px] opacity-60 font-medium">{t('admin.totalReferralPoints')}</span>
@@ -3662,7 +3702,7 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col gap-5">
             {/* Header & Timeframe Filter Pills */}
             <div 
-              className="p-5 rounded-3xl border shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              className="p-5 rounded-[8px] border  flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div>
@@ -3677,7 +3717,7 @@ export default function AdminDashboardPage() {
 
               {/* Timeframe selector */}
               <div 
-                className="p-1 rounded-2xl border flex items-center gap-1 self-start sm:self-auto text-xs font-semibold shrink-0"
+                className="p-1 rounded-[4px] border flex items-center gap-1 self-start sm:self-auto text-xs font-semibold shrink-0"
                 style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
               >
                 {(['7d', '30d', '90d', 'all'] as const).map((tf) => (
@@ -3688,8 +3728,8 @@ export default function AdminDashboardPage() {
                       setAnalyticsTimeframe(tf);
                       if (businessId) loadAnalytics(businessId, tf);
                     }}
-                    className={`px-3 py-1.5 rounded-xl transition-all ${
-                      analyticsTimeframe === tf ? 'shadow-xs font-bold' : 'opacity-60 hover:opacity-100'
+                    className={`px-3 py-1.5 rounded-[4px] transition-all ${
+                      analyticsTimeframe === tf ? ' font-bold' : 'opacity-60 hover:opacity-100'
                     }`}
                     style={
                       analyticsTimeframe === tf
@@ -3717,7 +3757,7 @@ export default function AdminDashboardPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {/* KPI 1: Active Customers */}
                   <div
-                    className="p-4 rounded-2xl border flex flex-col justify-between gap-2 shadow-2xs"
+                    className="p-4 rounded-[4px] border flex flex-col justify-between gap-2 shadow-2xs"
                     style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                     id="kpi-active-customers"
                   >
@@ -3742,7 +3782,7 @@ export default function AdminDashboardPage() {
 
                   {/* KPI 2: Points Issued */}
                   <div
-                    className="p-4 rounded-2xl border flex flex-col justify-between gap-2 shadow-2xs"
+                    className="p-4 rounded-[4px] border flex flex-col justify-between gap-2 shadow-2xs"
                     style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                     id="kpi-points-issued"
                   >
@@ -3762,7 +3802,7 @@ export default function AdminDashboardPage() {
 
                   {/* KPI 3: Points Redeemed */}
                   <div
-                    className="p-4 rounded-2xl border flex flex-col justify-between gap-2 shadow-2xs"
+                    className="p-4 rounded-[4px] border flex flex-col justify-between gap-2 shadow-2xs"
                     style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                     id="kpi-points-redeemed"
                   >
@@ -3782,7 +3822,7 @@ export default function AdminDashboardPage() {
 
                   {/* KPI 4: Redemption Rate */}
                   <div
-                    className="p-4 rounded-2xl border flex flex-col justify-between gap-2 shadow-2xs"
+                    className="p-4 rounded-[4px] border flex flex-col justify-between gap-2 shadow-2xs"
                     style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                     id="kpi-redemption-rate"
                   >
@@ -3795,11 +3835,11 @@ export default function AdminDashboardPage() {
                         {analyticsData?.redemptionRate ?? 0}%
                       </span>
                       <div 
-                        className="w-full h-1.5 rounded-full overflow-hidden mt-1.5"
+                        className="w-full h-1.5 rounded-[4px] overflow-hidden mt-1.5"
                         style={{ backgroundColor: 'var(--color-bg)' }}
                       >
                         <div
-                          className="h-full rounded-full transition-all duration-500"
+                          className="h-full rounded-[4px] transition-all duration-500"
                           style={{
                             width: `${Math.min(100, analyticsData?.redemptionRate ?? 0)}%`,
                             backgroundColor: 'var(--color-accent)',
@@ -3812,7 +3852,7 @@ export default function AdminDashboardPage() {
 
                 {/* Points Activity Timeline Chart */}
                 <div
-                  className="p-5 rounded-3xl border shadow-sm flex flex-col gap-4"
+                  className="p-5 rounded-[8px] border  flex flex-col gap-4"
                   style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                   id="analytics-activity-chart-card"
                 >
@@ -3941,7 +3981,7 @@ export default function AdminDashboardPage() {
 
                 {/* Top 5 Redeemed Rewards */}
                 <div
-                  className="p-5 rounded-3xl border shadow-sm flex flex-col gap-4"
+                  className="p-5 rounded-[8px] border  flex flex-col gap-4"
                   style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                   id="analytics-top-items-card"
                 >
@@ -3963,13 +4003,13 @@ export default function AdminDashboardPage() {
                         return (
                           <div
                             key={idx}
-                            className="p-3.5 rounded-2xl border flex flex-col gap-2"
+                            className="p-3.5 rounded-[4px] border flex flex-col gap-2"
                             style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                           >
                             <div className="flex items-center justify-between text-xs">
                               <div className="flex items-center gap-2 min-w-0">
                                 <span 
-                                  className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
+                                  className="w-5 h-5 rounded-[4px] flex items-center justify-center text-[10px] font-bold shrink-0"
                                   style={{
                                     backgroundColor: idx === 0 ? 'var(--color-accent)' : 'var(--color-card-bg)',
                                     color: idx === 0 ? 'var(--color-btn-text)' : 'var(--color-text)',
@@ -3992,11 +4032,11 @@ export default function AdminDashboardPage() {
 
                             {/* Relative Popularity Bar */}
                             <div 
-                              className="w-full h-1.5 rounded-full overflow-hidden"
+                              className="w-full h-1.5 rounded-[4px] overflow-hidden"
                               style={{ backgroundColor: 'var(--color-card-bg)' }}
                             >
                               <div
-                                className="h-full rounded-full transition-all duration-500"
+                                className="h-full rounded-[4px] transition-all duration-500"
                                 style={{
                                   width: `${pct}%`,
                                   backgroundColor: 'var(--color-accent)',
@@ -4021,7 +4061,7 @@ export default function AdminDashboardPage() {
           <div className="flex flex-col gap-4">
             {/* Header & Filter Card */}
             <div
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-4"
+              className="p-5 rounded-[8px] border  flex flex-col gap-4"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -4038,7 +4078,7 @@ export default function AdminDashboardPage() {
                   id="refresh-daily-review-btn"
                   onClick={() => businessId && loadDailyReview(businessId)}
                   disabled={isLoadingDailyReview}
-                  className="self-start sm:self-auto px-3 py-1.5 rounded-xl border text-xs flex items-center gap-1.5 transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
+                  className="self-start sm:self-auto px-3 py-1.5 rounded-[4px] border text-xs flex items-center gap-1.5 transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
                   style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
                 >
                   <CircleNotch weight="light" className={`w-3.5 h-3.5 ${isLoadingDailyReview ? 'animate-spin' : ''}`} />
@@ -4048,7 +4088,7 @@ export default function AdminDashboardPage() {
 
               {/* Filters: Date Picker + Today Shortcut + Flagged Only Toggle */}
               <div 
-                className="p-3 rounded-2xl border flex flex-wrap items-center justify-between gap-3 text-xs"
+                className="p-3 rounded-[4px] border flex flex-wrap items-center justify-between gap-3 text-xs"
                 style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
               >
                 <div className="flex items-center gap-2">
@@ -4061,7 +4101,7 @@ export default function AdminDashboardPage() {
                       setDailyReviewDate(e.target.value);
                       if (businessId) loadDailyReview(businessId, e.target.value, dailyReviewFlaggedOnly);
                     }}
-                    className="py-1 px-2.5 rounded-xl border text-xs focus:outline-hidden"
+                    className="py-1 px-2.5 rounded-[4px] border text-xs focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                   />
                   <button
@@ -4071,7 +4111,7 @@ export default function AdminDashboardPage() {
                       setDailyReviewDate(todayStr);
                       if (businessId) loadDailyReview(businessId, todayStr, dailyReviewFlaggedOnly);
                     }}
-                    className="px-2.5 py-1 rounded-xl text-xs font-bold border opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
+                    className="px-2.5 py-1 rounded-[4px] text-xs font-bold border opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
                     style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                   >
                     {t('admin.today')}
@@ -4096,7 +4136,7 @@ export default function AdminDashboardPage() {
               {/* 4 Summary Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div
-                  className="p-3.5 rounded-2xl border flex flex-col gap-1 shadow-xs"
+                  className="p-3.5 rounded-[4px] border flex flex-col gap-1 "
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <span className="text-[11px] opacity-70">{t('admin.totalIssuedToday')}</span>
@@ -4106,7 +4146,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div
-                  className="p-3.5 rounded-2xl border flex flex-col gap-1 shadow-xs"
+                  className="p-3.5 rounded-[4px] border flex flex-col gap-1 "
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <span className="text-[11px] opacity-70">{t('admin.totalRedeemedToday')}</span>
@@ -4116,7 +4156,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div
-                  className="p-3.5 rounded-2xl border flex flex-col gap-1 shadow-xs"
+                  className="p-3.5 rounded-[4px] border flex flex-col gap-1 "
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <span className="text-[11px] opacity-70">{t('admin.totalTxToday')}</span>
@@ -4126,7 +4166,7 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div
-                  className="p-3.5 rounded-2xl border flex flex-col gap-1 shadow-xs"
+                  className="p-3.5 rounded-[4px] border flex flex-col gap-1 "
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 >
                   <span className="text-[11px] opacity-70">{t('admin.flaggedCount')}</span>
@@ -4140,7 +4180,7 @@ export default function AdminDashboardPage() {
             {/* Phase 31.4: Anomalies Section ("عمليات تحتاج انتباه") */}
             {dailyReviewData?.anomalies && dailyReviewData.anomalies.length > 0 && (
               <div 
-                className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+                className="p-5 rounded-[8px] border  flex flex-col gap-3"
                 style={{
                   backgroundColor: 'var(--color-card-bg)',
                   borderColor: 'rgba(245, 158, 11, 0.4)',
@@ -4149,7 +4189,7 @@ export default function AdminDashboardPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div 
-                      className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                      className="w-8 h-8 rounded-[4px] flex items-center justify-center shrink-0"
                       style={{ backgroundColor: 'rgba(245, 158, 11, 0.15)', color: '#D97706' }}
                     >
                       <ShieldWarning weight="light" className="w-4 h-4" />
@@ -4157,7 +4197,7 @@ export default function AdminDashboardPage() {
                     <div>
                       <h3 className="text-xs font-bold flex items-center gap-1.5">
                         <span>{t('admin.anomaliesTitle')}</span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                        <span className="px-2 py-0.5 rounded-[4px] text-[10px] font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400">
                           {dailyReviewData.anomalies.length}
                         </span>
                       </h3>
@@ -4172,7 +4212,7 @@ export default function AdminDashboardPage() {
                   {dailyReviewData.anomalies.map((anom: any) => (
                     <div
                       key={anom.id}
-                      className="p-3.5 rounded-2xl border flex flex-col gap-2 transition-all"
+                      className="p-3.5 rounded-[4px] border flex flex-col gap-2 transition-all"
                       style={{
                         backgroundColor: 'var(--color-bg)',
                         borderColor: anom.severity === 'high' ? 'rgba(239, 68, 68, 0.4)' : 'rgba(245, 158, 11, 0.3)',
@@ -4181,7 +4221,7 @@ export default function AdminDashboardPage() {
                       <div className="flex items-center justify-between gap-2 flex-wrap text-xs">
                         <div className="flex items-center gap-2">
                           <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold ${
                               anom.severity === 'high'
                                 ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400'
                                 : 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
@@ -4193,12 +4233,12 @@ export default function AdminDashboardPage() {
                           </span>
 
                           {anom.isAiGenerated ? (
-                            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-600 dark:text-purple-400">
+                            <span className="flex items-center gap-1 px-2 py-0.5 rounded-[4px] text-[10px] font-bold bg-purple-500/15 text-purple-600 dark:text-purple-400">
                               <Sparkle weight="light" className="w-3 h-3" />
                               <span>{t('admin.anomalyAiBadge')}</span>
                             </span>
                           ) : (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-medium border opacity-70" style={{ borderColor: 'var(--color-border)' }}>
+                            <span className="px-2 py-0.5 rounded-[4px] text-[10px] font-medium border opacity-70" style={{ borderColor: 'var(--color-border)' }}>
                               {t('admin.anomalyRuleBadge')}
                             </span>
                           )}
@@ -4226,7 +4266,7 @@ export default function AdminDashboardPage() {
                             <strong>{anom.transaction.cashierName}</strong>
                           </span>
                           {anom.transaction.invoiceReference && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono border" style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}>
+                            <span className="px-2 py-0.5 rounded-[4px] text-[10px] font-mono border" style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}>
                               #{anom.transaction.invoiceReference}
                             </span>
                           )}
@@ -4256,7 +4296,7 @@ export default function AdminDashboardPage() {
 
             {/* Transactions List */}
             <div
-              className="p-5 rounded-3xl border shadow-sm flex flex-col gap-3"
+              className="p-5 rounded-[8px] border  flex flex-col gap-3"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
               <h3 className="text-xs font-bold uppercase tracking-wider opacity-80">
@@ -4277,7 +4317,7 @@ export default function AdminDashboardPage() {
                     <div
                       key={tx.id}
                       id={`daily-tx-${tx.id}`}
-                      className="p-3.5 rounded-2xl border flex flex-col gap-2 transition-colors"
+                      className="p-3.5 rounded-[4px] border flex flex-col gap-2 transition-colors"
                       style={{
                         backgroundColor: tx.flaggedByOwner ? 'var(--color-error-bg)' : 'var(--color-bg)',
                         borderColor: tx.flaggedByOwner ? 'var(--color-error-border)' : 'var(--color-border)',
@@ -4286,7 +4326,7 @@ export default function AdminDashboardPage() {
                       <div className="flex items-center justify-between gap-2 text-xs">
                         <div className="flex items-center gap-2 min-w-0">
                           <span
-                            className="w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0"
+                            className="w-6 h-6 rounded-[4px] flex items-center justify-center font-bold text-xs shrink-0"
                             style={{
                               backgroundColor: 'var(--color-card-bg)',
                               color: tx.pointsChange > 0 ? 'var(--color-accent)' : 'rgb(244 63 94)',
@@ -4307,7 +4347,7 @@ export default function AdminDashboardPage() {
                               )}
                               {tx.invoiceReference && (
                                 <span
-                                  className="px-2 py-0.5 rounded-full text-[10px] font-mono border"
+                                  className="px-2 py-0.5 rounded-[4px] text-[10px] font-mono border"
                                   style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                                 >
                                   #{tx.invoiceReference}
@@ -4337,7 +4377,7 @@ export default function AdminDashboardPage() {
                             type="button"
                             onClick={() => handleToggleFlag(tx)}
                             title={tx.flaggedByOwner ? t('admin.unflag') : t('admin.flagForReview')}
-                            className="p-2 rounded-xl border transition-transform active:scale-95 flex items-center gap-1 text-[11px] font-bold cursor-pointer"
+                            className="p-2 rounded-[4px] border transition-transform active:scale-95 flex items-center gap-1 text-[11px] font-bold cursor-pointer"
                             style={{
                               backgroundColor: 'var(--color-card-bg)',
                               borderColor: tx.flaggedByOwner ? 'var(--color-error-border)' : 'var(--color-border)',
@@ -4352,12 +4392,12 @@ export default function AdminDashboardPage() {
 
                           {/* Phase 28.4: Reversal status badge or action button */}
                           {tx.isReversed && (
-                            <span className="px-2 py-1 rounded-xl text-[10px] font-bold border bg-amber-500/10 text-amber-500 border-amber-500/30">
+                            <span className="px-2 py-1 rounded-[4px] text-[10px] font-bold border bg-amber-500/10 text-amber-500 border-amber-500/30">
                               {isRtl ? 'معكوسة' : 'Reversed'}
                             </span>
                           )}
                           {tx.type === 'reversal' && (
-                            <span className="px-2 py-1 rounded-xl text-[10px] font-bold border bg-purple-500/10 text-purple-400 border-purple-500/30">
+                            <span className="px-2 py-1 rounded-[4px] text-[10px] font-bold border bg-purple-500/10 text-purple-400 border-purple-500/30">
                               {isRtl ? 'استرجاع' : 'Reversal'}
                             </span>
                           )}
@@ -4369,7 +4409,7 @@ export default function AdminDashboardPage() {
                                 setAdminReversalReason('');
                               }}
                               title={isRtl ? 'استرجاع العملية' : 'Reverse transaction'}
-                              className="p-2 rounded-xl border transition-transform active:scale-95 flex items-center gap-1 text-[11px] font-bold cursor-pointer"
+                              className="p-2 rounded-[4px] border transition-transform active:scale-95 flex items-center gap-1 text-[11px] font-bold cursor-pointer"
                               style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)', color: 'var(--color-accent)' }}
                             >
                               <ArrowCounterClockwise weight="light" className="w-3.5 h-3.5" />
@@ -4382,7 +4422,7 @@ export default function AdminDashboardPage() {
                       {/* If flagged, show flag reason box */}
                       {tx.flaggedByOwner && (
                         <div
-                          className="px-3 py-1.5 rounded-xl border text-[11px] flex items-center justify-between gap-2"
+                          className="px-3 py-1.5 rounded-[4px] border text-[11px] flex items-center justify-between gap-2"
                           style={{
                             backgroundColor: 'var(--color-card-bg)',
                             borderColor: 'var(--color-error-border)',
@@ -4416,13 +4456,13 @@ export default function AdminDashboardPage() {
         {flagModalTx && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
             <div 
-              className="w-full max-w-md p-6 rounded-3xl border shadow-xl flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-200"
+              className="w-full max-w-md p-6 rounded-[8px] border shadow-xl flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-200"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)', color: 'var(--color-text)' }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div 
-                    className="w-8 h-8 rounded-full flex items-center justify-center"
+                    className="w-8 h-8 rounded-[4px] flex items-center justify-center"
                     style={{ backgroundColor: 'var(--color-bg)', color: 'var(--color-accent)' }}
                   >
                     <Flag weight="light" className="w-4 h-4 text-rose-500" />
@@ -4432,7 +4472,7 @@ export default function AdminDashboardPage() {
                 <button
                   type="button"
                   onClick={() => setFlagModalTx(null)}
-                  className="w-8 h-8 rounded-full flex items-center justify-center border opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+                  className="w-8 h-8 rounded-[4px] flex items-center justify-center border opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
                   style={{ borderColor: 'var(--color-border)' }}
                 >
                   <X weight="light" className="w-4 h-4" />
@@ -4440,7 +4480,7 @@ export default function AdminDashboardPage() {
               </div>
 
               <div 
-                className="p-3 rounded-2xl border text-xs flex flex-col gap-1"
+                className="p-3 rounded-[4px] border text-xs flex flex-col gap-1"
                 style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
               >
                 <div className="flex justify-between">
@@ -4470,7 +4510,7 @@ export default function AdminDashboardPage() {
                     value={flagReasonInput}
                     onChange={(e) => setFlagReasonInput(e.target.value)}
                     placeholder={t('admin.flagReasonPlaceholder')}
-                    className="py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden resize-none"
+                    className="py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden resize-none"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -4479,7 +4519,7 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={() => setFlagModalTx(null)}
-                    className="py-2 px-4 rounded-xl text-xs font-bold border opacity-80 hover:opacity-100 cursor-pointer"
+                    className="py-2 px-4 rounded-[4px] text-xs font-bold border opacity-80 hover:opacity-100 cursor-pointer"
                     style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
                   >
                     {t('common.cancel')}
@@ -4488,7 +4528,7 @@ export default function AdminDashboardPage() {
                     type="submit"
                     id="submit-flag-btn"
                     disabled={isSubmittingFlag}
-                    className="py-2 px-5 rounded-xl text-xs font-bold transition-transform active:scale-95 disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
+                    className="py-2 px-5 rounded-[4px] text-xs font-bold transition-transform active:scale-95 disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
                     style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                   >
                     {isSubmittingFlag ? (
@@ -4510,7 +4550,7 @@ export default function AdminDashboardPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
           <form
             onSubmit={handleAdminReversal}
-            className="w-full max-w-sm rounded-3xl p-5 border shadow-2xl flex flex-col gap-4"
+            className="w-full max-w-sm rounded-[8px] p-5 border shadow-2xl flex flex-col gap-4"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <div className="flex items-center gap-2 text-amber-500 font-bold text-sm">
@@ -4533,7 +4573,7 @@ export default function AdminDashboardPage() {
                 value={adminReversalReason}
                 onChange={(e) => setAdminReversalReason(e.target.value)}
                 placeholder={isRtl ? 'مثال: مرتجع عميل / خطأ في الإدخال' : 'e.g. Return / cashier mistake'}
-                className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                 style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 autoFocus
               />
@@ -4543,7 +4583,7 @@ export default function AdminDashboardPage() {
               <button
                 type="button"
                 onClick={() => setReversingTx(null)}
-                className="flex-1 py-2 rounded-xl text-xs font-semibold border transition-all"
+                className="flex-1 py-2 rounded-[4px] text-xs font-semibold border transition-all"
                 style={{ borderColor: 'var(--color-border)' }}
               >
                 {t('common.cancel')}
@@ -4551,7 +4591,7 @@ export default function AdminDashboardPage() {
               <button
                 type="submit"
                 disabled={isSubmittingAdminReversal}
-                className="flex-1 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+                className="flex-1 py-2 rounded-[4px] text-xs font-bold transition-all disabled:opacity-50"
                 style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
               >
                 {isSubmittingAdminReversal ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin mx-auto" /> : (isRtl ? 'تأكيد الاسترجاع' : 'Confirm Reversal')}
@@ -4580,15 +4620,15 @@ export default function AdminDashboardPage() {
         extraInfo={
           <div className="space-y-2 mt-1">
             <div className="grid grid-cols-3 gap-1.5 text-center text-xs">
-              <div className="p-2 rounded-xl border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+              <div className="p-2 rounded-[4px] border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
                 <span className="text-[9px] opacity-60 block">{isRtl ? 'المنتجات' : 'Items'}</span>
                 <strong className="font-bold">{menuItems.length}</strong>
               </div>
-              <div className="p-2 rounded-xl border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+              <div className="p-2 rounded-[4px] border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
                 <span className="text-[9px] opacity-60 block">{isRtl ? 'العروض' : 'Offers'}</span>
                 <strong className="font-bold">{offers.length}</strong>
               </div>
-              <div className="p-2 rounded-xl border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+              <div className="p-2 rounded-[4px] border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
                 <span className="text-[9px] opacity-60 block">{isRtl ? 'العملاء' : 'Clients'}</span>
                 <strong className="font-bold">{customers.length}</strong>
               </div>
@@ -4597,14 +4637,14 @@ export default function AdminDashboardPage() {
         }
         dangerZone={
           <div
-            className="p-4 rounded-2xl border"
+            className="p-4 rounded-[4px] border"
             style={{
               backgroundColor: 'rgba(239, 68, 68, 0.05)',
               borderColor: 'rgba(239, 68, 68, 0.25)',
             }}
           >
             {deleteAdminError && (
-              <div className="p-2.5 mb-3 rounded-xl border text-xs text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-2">
+              <div className="p-2.5 mb-3 rounded-[4px] border text-xs text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-2">
                 <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                 <span>{deleteAdminError}</span>
               </div>
@@ -4623,7 +4663,7 @@ export default function AdminDashboardPage() {
                   type="button"
                   onClick={() => setShowAdminDeleteConfirm(true)}
                   id="admin-open-delete-btn"
-                  className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs font-bold text-white transition-transform active:scale-95  flex items-center justify-center gap-2 cursor-pointer"
                   style={{ backgroundColor: '#EF4444' }}
                 >
                   <Trash weight="light" className="w-3.5 h-3.5" />
@@ -4633,7 +4673,7 @@ export default function AdminDashboardPage() {
             ) : (
               <div className="text-center">
                 <div
-                  className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
+                  className="w-10 h-10 mx-auto mb-2 rounded-[4px] flex items-center justify-center"
                   style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
                 >
                   <Warning weight="light" className="w-5 h-5" />
@@ -4649,7 +4689,7 @@ export default function AdminDashboardPage() {
                     type="button"
                     onClick={() => setShowAdminDeleteConfirm(false)}
                     disabled={isDeletingAdmin}
-                    className="flex-1 py-2 rounded-xl border text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
+                    className="flex-1 py-2 rounded-[4px] border text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
                     style={{ borderColor: 'var(--color-border)' }}
                   >
                     {t('accountDeletion.cancelButton')}
@@ -4659,7 +4699,7 @@ export default function AdminDashboardPage() {
                     onClick={handleDeleteAdminAccount}
                     id="admin-confirm-delete-btn"
                     disabled={isDeletingAdmin}
-                    className="flex-1 py-2 rounded-xl text-xs font-bold text-white transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="flex-1 py-2 rounded-[4px] text-xs font-bold text-white transition-transform active:scale-95  flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                     style={{ backgroundColor: '#EF4444' }}
                   >
                     {isDeletingAdmin ? (

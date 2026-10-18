@@ -1145,14 +1145,12 @@ export default function MyPlacesPage() {
 // ──────────────────────────────────────────
 
 const mpStyles = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   .mp-root {
     min-height: 100vh;
     background: var(--page-bg-gradient);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
     direction: rtl;
     color: var(--color-text);
     position: relative;
@@ -1167,9 +1165,7 @@ const mpStyles = `
     justify-content: space-between;
     padding: 1rem 1.5rem;
     background: var(--color-header-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 0.5px solid var(--color-separator);
+    border-bottom: 1px solid var(--color-separator);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -1182,66 +1178,76 @@ const mpStyles = `
   }
 
   .mp-header-logo {
-    width: 36px;
-    height: 36px;
-    background: var(--color-accent);
-    color: var(--color-accent-text);
-    border-radius: 12px;
+    width: 32px;
+    height: 32px;
+    background: var(--color-signal-blue);
+    color: #ffffff;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
-    font-weight: 800;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
   }
 
   .mp-header-title {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--color-text);
+    letter-spacing: -0.2px;
   }
 
   .mp-header-right {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
   }
 
   .mp-link-btn {
-    padding: 0.5rem 1rem;
-    background: var(--color-accent);
+    padding: 0.45rem 0.9rem;
+    background: var(--color-signal-blue);
     border: none;
-    border-radius: 12px;
-    color: var(--color-accent-text);
-    font-size: 0.85rem;
-    font-weight: 600;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
+    transition: all 0.15s ease;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
   }
 
-  .mp-link-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .mp-link-btn:hover { background: var(--color-accent-hover); }
 
   .mp-logout-btn {
-    padding: 0.5rem 1rem;
+    padding: 0.45rem 0.85rem;
     background: transparent;
     border: 1px solid var(--color-border);
-    border-radius: 12px;
+    border-radius: 8px;
     color: var(--color-text-muted);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
+    transition: all 0.15s ease;
+    font-family: var(--font-body);
   }
 
-  .mp-logout-btn:hover { border-color: var(--color-text); color: var(--color-text); }
+  .mp-logout-btn:hover { border-color: var(--color-signal-blue); color: var(--color-signal-blue); }
 
   /* Main */
-  .mp-main { padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; }
+  .mp-main { padding: 2.5rem 1.5rem; max-width: 900px; margin: 0 auto; }
 
   .mp-welcome { margin-bottom: 2rem; }
-  .mp-welcome-title { font-size: 2rem; font-weight: 800; margin-bottom: 0.25rem; color: var(--color-text); }
-  .mp-welcome-hint { color: var(--color-text-muted); font-size: 0.9rem; margin-top: 0.5rem; }
+  .mp-welcome-title { 
+    font-size: 2.25rem; 
+    font-weight: 300; 
+    letter-spacing: -0.6px;
+    line-height: 1.25;
+    margin-bottom: 0.35rem; 
+    color: var(--color-text); 
+    font-family: var(--font-display);
+  }
+  .mp-welcome-hint { color: var(--color-text-muted); font-size: 0.875rem; margin-top: 0.35rem; }
 
   /* Grid */
   .mp-grid {
@@ -1250,63 +1256,67 @@ const mpStyles = `
     gap: 1.25rem;
   }
 
-  /* Place card */
+  /* Place card: Ameba 8px radius, hairline border, no elevation shadow */
   .mp-card {
     background: var(--color-card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--color-border);
-    border-radius: 20px;
-    padding: 1.5rem;
+    border-radius: 8px;
+    padding: 1.25rem;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
-    animation: cardIn 0.4s ease-out;
+    transition: border-color 0.2s ease, transform 0.15s ease;
+    animation: cardIn 0.3s ease-out;
   }
 
   @keyframes cardIn {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .mp-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); border-color: var(--color-border); }
+  .mp-card:hover { transform: translateY(-2px); border-color: var(--color-signal-blue); }
 
   .mp-card-shine {
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--color-accent);
-    border-radius: 20px 20px 0 0;
+    height: 1px;
+    background: var(--color-signal-blue);
   }
 
   .mp-card-header {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.85rem;
     margin-bottom: 1.25rem;
   }
 
   .mp-card-logo {
-    width: 48px;
-    height: 48px;
-    background: var(--color-accent);
-    color: var(--color-accent-text);
-    border-radius: 14px;
+    width: 42px;
+    height: 42px;
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     overflow: hidden;
+    font-family: var(--font-mono);
   }
 
-  .mp-card-info { flex: 1; }
-  .mp-card-name { font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--color-text); }
-  .mp-card-status { font-size: 0.8rem; font-weight: 500; }
+  .mp-card-info { flex: 1; min-width: 0; }
+  .mp-card-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; color: var(--color-text); }
+  .mp-card-status { 
+    font-size: 0.75rem; 
+    font-family: var(--font-mono); 
+    letter-spacing: 0.05em; 
+    text-transform: uppercase;
+  }
 
   .mp-card-lock {
-    font-size: 1.25rem;
-    opacity: 0.8;
-    transition: all 0.3s;
+    font-size: 1.1rem;
+    opacity: 0.7;
+    transition: all 0.2s;
   }
   .mp-card-lock.locked { animation: shake 0.5s ease; }
   @keyframes shake {
@@ -1318,9 +1328,10 @@ const mpStyles = `
   .mp-card-lockinfo {
     background: var(--color-error-bg);
     border: 1px solid var(--color-error-border);
-    border-radius: 12px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
+    border-radius: 4px;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
     color: var(--color-error-text);
     margin-bottom: 1rem;
     text-align: center;
@@ -1330,18 +1341,19 @@ const mpStyles = `
 
   .mp-card-btn {
     width: 100%;
-    padding: 0.75rem;
-    background: var(--color-accent);
+    padding: 0.65rem;
+    background: var(--color-signal-blue);
     border: none;
-    border-radius: 12px;
-    color: var(--color-accent-text);
-    font-size: 0.9rem;
-    font-weight: 600;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
+    transition: all 0.15s ease;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
   }
-  .mp-card-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+  .mp-card-btn:hover:not(:disabled) { background: var(--color-accent-hover); }
   .mp-card-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
   .mp-card-btn-ghost {
@@ -1349,112 +1361,112 @@ const mpStyles = `
     padding: 0.5rem;
     background: transparent;
     border: 1px solid var(--color-border);
-    border-radius: 12px;
+    border-radius: 8px;
     color: var(--color-text-muted);
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
+    transition: all 0.15s ease;
+    font-family: var(--font-body);
   }
-  .mp-card-btn-ghost:hover { border-color: var(--color-text); color: var(--color-text); }
+  .mp-card-btn-ghost:hover { border-color: var(--color-signal-blue); color: var(--color-signal-blue); }
 
   /* Loading / Error / Empty */
   .mp-loading, .mp-error, .mp-empty {
     text-align: center;
     padding: 4rem 2rem;
     color: var(--color-text-muted);
+    font-family: var(--font-mono);
   }
   .mp-error { color: var(--color-error-text); }
   .mp-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(125,125,125,0.2);
-    border-top-color: var(--color-accent);
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-signal-blue);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin: 0 auto 1rem;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .mp-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
-  .mp-empty h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--color-text); }
+  .mp-empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.6; }
+  .mp-empty h3 { font-size: 1rem; margin-bottom: 0.4rem; color: var(--color-text); }
 
   .mp-link-phone-cta {
-    margin-top: 1.5rem;
-    padding: 0.75rem 2rem;
-    background: var(--color-accent);
+    margin-top: 1.25rem;
+    padding: 0.65rem 1.75rem;
+    background: var(--color-signal-blue);
     border: none;
-    border-radius: 14px;
-    color: var(--color-accent-text);
-    font-size: 0.9rem;
-    font-weight: 600;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
+    transition: all 0.15s ease;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
   }
-  .mp-link-phone-cta:hover { opacity: 0.9; transform: translateY(-2px); }
+  .mp-link-phone-cta:hover { background: var(--color-accent-hover); }
 
   /* Overlay & Modal */
   .mp-overlay {
     position: fixed;
     inset: 0;
     background: var(--color-overlay-bg);
-    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
     padding: 1rem;
-    animation: fadeIn 0.2s ease;
+    animation: fadeIn 0.15s ease;
   }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
   .mp-modal {
     background: var(--color-card-bg);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--color-border);
-    border-radius: 24px;
-    padding: 2rem;
+    border-radius: 8px;
+    padding: 1.75rem;
     width: 100%;
     max-width: 380px;
     color: var(--color-text);
-    animation: modalIn 0.3s ease-out;
+    animation: modalIn 0.2s ease-out;
     position: relative;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    box-shadow: none;
   }
   @keyframes modalIn {
-    from { opacity: 0; transform: translateY(20px) scale(0.97); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  .mp-modal-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; text-align: center; color: var(--color-text); }
-  .mp-modal-sub { color: var(--color-text-muted); font-size: 0.875rem; text-align: center; margin-bottom: 1.25rem; line-height: 1.5; }
+  .mp-modal-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.35rem; text-align: center; color: var(--color-text); }
+  .mp-modal-sub { color: var(--color-text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 1.25rem; line-height: 1.5; }
 
   .mp-modal-field { margin-bottom: 1rem; }
-  .mp-modal-label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--color-text); opacity: 0.8; }
+  .mp-modal-label { display: block; font-size: 0.75rem; font-family: var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.4rem; color: var(--color-text-muted); }
 
   .mp-modal-input, .mp-pin-input {
     width: 100%;
-    padding: 0.875rem 1rem;
+    padding: 0.75rem 1rem;
     background: var(--color-input-bg);
     border: 1px solid var(--color-border);
-    border-radius: 12px;
+    border-radius: 4px;
     color: var(--color-text);
-    font-size: 1rem;
-    font-family: inherit;
+    font-size: 0.95rem;
+    font-family: var(--font-body);
     outline: none;
-    transition: all 0.2s;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .mp-pin-input {
     font-size: 1.5rem;
     text-align: center;
     letter-spacing: 0.5rem;
     direction: ltr;
+    font-family: var(--font-mono);
   }
   .mp-modal-input:focus, .mp-pin-input:focus {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(0,196,140,0.15);
+    border-color: var(--color-signal-blue);
+    box-shadow: 0 0 0 3px rgba(4, 40, 203, 0.15);
   }
 
   .mp-check-label {
@@ -1462,24 +1474,25 @@ const mpStyles = `
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.825rem;
     color: var(--color-text-muted);
     margin: 0.75rem 0;
   }
   .mp-check-label input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: var(--color-accent);
+    accent-color: var(--color-signal-blue);
     cursor: pointer;
   }
 
   .mp-modal-error {
     background: var(--color-error-bg);
     border: 1px solid var(--color-error-border);
-    border-radius: 12px;
-    padding: 0.625rem 0.875rem;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
     color: var(--color-error-text);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
     text-align: center;
     margin: 0.75rem 0;
   }
@@ -1487,45 +1500,47 @@ const mpStyles = `
   .mp-modal-success {
     background: var(--color-success-bg);
     border: 1px solid var(--color-success-border);
-    border-radius: 12px;
-    padding: 0.75rem;
+    border-radius: 4px;
+    padding: 0.65rem;
     color: var(--color-success-text);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
     text-align: center;
     margin: 0.75rem 0;
   }
 
-  .mp-modal-actions { display: flex; flex-direction: column; gap: 0.625rem; margin-top: 1.25rem; }
+  .mp-modal-actions { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
 
   .mp-modal-btn {
     width: 100%;
-    padding: 0.875rem;
-    background: var(--color-accent);
+    padding: 0.75rem;
+    background: var(--color-signal-blue);
     border: none;
-    border-radius: 14px;
-    color: var(--color-accent-text);
-    font-size: 0.95rem;
-    font-weight: 600;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
+    transition: all 0.15s ease;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
   }
-  .mp-modal-btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+  .mp-modal-btn:hover:not(:disabled) { background: var(--color-accent-hover); }
   .mp-modal-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
   .mp-modal-btn-ghost {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.65rem;
     background: transparent;
     border: 1px solid var(--color-border);
-    border-radius: 14px;
+    border-radius: 8px;
     color: var(--color-text-muted);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
+    transition: all 0.15s ease;
+    font-family: var(--font-body);
   }
-  .mp-modal-btn-ghost:hover { border-color: var(--color-text); color: var(--color-text); }
+  .mp-modal-btn-ghost:hover { border-color: var(--color-signal-blue); color: var(--color-signal-blue); }
 
   .mp-forgot-link {
     display: block;
@@ -1534,31 +1549,13 @@ const mpStyles = `
     background: none;
     border: none;
     color: var(--color-text-muted);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     cursor: pointer;
     text-align: center;
     transition: opacity 0.2s;
-    font-family: inherit;
+    font-family: var(--font-mono);
   }
   .mp-forgot-link:hover { opacity: 0.8; }
-
-  .mp-modal-field { margin-bottom: 1rem; }
-  .mp-modal-label { display: block; font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 0.4rem; }
-  .mp-modal-input {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    background: var(--color-input-bg);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    color: var(--color-text);
-    font-size: 0.95rem;
-    font-family: inherit;
-    outline: none;
-    transition: all 0.2s;
-  }
-  .mp-modal-input::placeholder { color: var(--color-text-muted); }
-  .mp-modal-input:focus { border-color: var(--color-accent); box-shadow: 0 0 0 3px rgba(0,196,140,0.15); }
-  .mp-modal-input option { background: var(--color-card-solid); color: var(--color-text); }
 
   /* Unlocked view */
   .mp-unlocked { padding: 2rem 1.5rem; max-width: 500px; margin: 0 auto; }
@@ -1567,66 +1564,71 @@ const mpStyles = `
     background: transparent;
     border: none;
     color: var(--color-text-muted);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
     transition: color 0.2s;
-    font-family: inherit;
+    font-family: var(--font-mono);
   }
-  .mp-back-btn:hover { color: var(--color-text); }
+  .mp-back-btn:hover { color: var(--color-signal-blue); }
 
   .mp-unlocked-card {
     background: var(--color-card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--color-border);
-    border-radius: 24px;
+    border-radius: 8px;
     overflow: hidden;
-    animation: cardIn 0.4s ease-out;
+    animation: cardIn 0.3s ease-out;
   }
 
   .mp-unlocked-header {
     padding: 2rem;
     text-align: center;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .mp-unlocked-logo {
-    width: 64px;
-    height: 64px;
-    border-radius: 16px;
+    width: 54px;
+    height: 54px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(125,125,125,0.12);
+    background: var(--color-input-bg);
     margin: 0 auto;
     overflow: hidden;
+    font-family: var(--font-mono);
   }
 
-  .mp-unlocked-body { padding: 2rem; }
+  .mp-unlocked-body { padding: 1.75rem; }
 
   .mp-points-display {
     text-align: center;
-    padding: 1.5rem;
+    padding: 1.25rem;
     background: var(--color-input-bg);
-    border-radius: 16px;
-    margin-bottom: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
   }
 
   .mp-points-number {
     font-size: 3rem;
-    font-weight: 800;
-    color: var(--color-accent);
+    font-weight: 300;
+    font-family: var(--font-display);
+    letter-spacing: -1.03px;
+    color: var(--color-text);
   }
 
   .mp-qr-container { text-align: center; }
 
   .mp-qr-box {
-    background: var(--color-input-bg);
-    border-radius: 16px;
-    padding: 1.5rem;
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 1.25rem;
     display: inline-block;
   }
 `;

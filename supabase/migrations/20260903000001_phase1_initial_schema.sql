@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS public.customers (
     business_id UUID NOT NULL REFERENCES public.businesses(id) ON DELETE CASCADE,
     name TEXT NOT NULL,
     phone_number TEXT NOT NULL,
-    qr_token UUID NOT NULL DEFAULT gen_random_uuid() UNIQUE,
+    qr_token TEXT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -137,7 +137,7 @@ CREATE TRIGGER tr_redemption_rates_updated_at
 CREATE INDEX IF NOT EXISTS idx_points_ledger_business_customer
     ON public.points_ledger (business_id, customer_id);
 
--- Mandatory: qr_token (unique) on customers
+-- Mandatory: qr_token (unique TEXT, 9-char alphanumeric Crockford Base32) on customers
 CREATE UNIQUE INDEX IF NOT EXISTS idx_customers_qr_token
     ON public.customers (qr_token);
 

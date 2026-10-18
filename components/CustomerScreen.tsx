@@ -238,43 +238,32 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
 
   return (
     <div 
-      className="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors duration-300 relative overflow-hidden"
-      style={{
-        backgroundColor: customBg,
-        color: 'var(--color-text)',
-        fontFamily: `${customFont}, sans-serif`,
-        ['--color-accent' as any]: customAccent,
-      }}
+      className="min-h-screen flex flex-col items-center justify-between p-4 sm:p-6 transition-colors duration-300 relative overflow-hidden page-bg"
       data-layout-variant={layoutVariant}
     >
-      {/* Ambient background glows */}
-      <div style={{
-        position: 'absolute',
-        width: '500px',
-        height: '500px',
-        background: 'radial-gradient(circle, rgba(108,99,255,0.07) 0%, transparent 70%)',
-        top: '-150px',
-        right: '-150px',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute',
-        width: '400px',
-        height: '400px',
-        background: 'radial-gradient(circle, rgba(78,205,196,0.05) 0%, transparent 70%)',
-        bottom: '-50px',
-        left: '-100px',
-        pointerEvents: 'none',
-      }} />
+      {/* Ameba Atmospheric Background Glow */}
+      <div 
+        style={{
+          position: 'absolute',
+          width: '640px',
+          height: '640px',
+          background: 'radial-gradient(circle, rgba(4, 40, 203, 0.18) 0%, rgba(6, 16, 90, 0.06) 50%, transparent 70%)',
+          top: '-120px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          pointerEvents: 'none',
+        }} 
+      />
 
       {/* Mobile-First Container (~375px - 414px) */}
       <div className={`w-full max-w-sm flex flex-col flex-1 ${layoutVariant === 'qr-top' ? 'justify-start gap-4' : 'justify-between'} py-2 relative z-10`}>
         
         {/* =========================================================================
-            1. TOP BAR (أعلى الشاشة):
-               - أيقونة حساب (يسار)
-               - اسم المكان (display_name من Branding وليس Pointat)
-               - أيقونة تبديل light/dark mode (يمين)
+            1. TOP BAR:
+               - Account button (8px radius)
+               - My Places button (8px radius, font-mono)
+               - Business display name (font-mono, tracking)
+               - Language & Theme toggles (8px radius)
            ========================================================================= */}
         <header className="flex items-center justify-between w-full pt-2 pb-4">
           <div className="flex items-center gap-2">
@@ -282,40 +271,29 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
               href={`/account?token=${customer.qr_token}`}
               id="account-btn"
               aria-label={t('customer.userAccount')}
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-transform active:scale-95 shadow-sm"
-              style={{
-                backgroundColor: 'var(--color-card-bg)',
-                color: 'var(--color-accent)',
-                border: '1px solid var(--color-border)',
-              }}
+              className="w-9 h-9 rounded-[8px] flex items-center justify-center transition-all active:scale-95 border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] hover:border-[var(--color-signal-blue)]"
             >
-              <User className="w-5 h-5" />
+              <User size={18} weight="light" />
             </Link>
 
             <Link
               href="/my-places"
               id="customer-my-places-btn"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shadow-xs border transition-transform active:scale-95"
-              style={{
-                backgroundColor: 'var(--color-card-bg)',
-                borderColor: 'var(--color-border)',
-                color: 'var(--color-text)',
-              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-xs font-mono uppercase tracking-[0.05em] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] hover:border-[var(--color-signal-blue)] transition-all active:scale-95"
             >
-              {isRtl ? <ArrowRight size={14} weight="light" /> : <ArrowLeft size={14} weight="light" />}
+              {isRtl ? <ArrowRight size={13} weight="light" /> : <ArrowLeft size={13} weight="light" />}
               <span className="hidden sm:inline">{t('customer.myPlacesBtn')}</span>
             </Link>
           </div>
 
           <div className="text-center">
             <span 
-              className="text-xs font-semibold tracking-wider uppercase block"
-              style={{ color: 'var(--color-accent)' }}
+              className="text-xs font-mono uppercase tracking-[0.08em] text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)] block font-medium"
               id="customer-screen-business-name"
             >
               {businessDisplayName}
             </span>
-            <span className="text-sm font-medium opacity-90">
+            <span className="text-sm font-normal opacity-90 text-[var(--color-text)]">
               {t('customer.greeting', { name: customer.name })}
             </span>
           </div>
@@ -327,31 +305,26 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
         </header>
 
         {/* =========================================================================
-            2. MIDDLE (المنتصف):
-               - QR/Barcode كبير وواضح مع إمكانية التبديل
-               - عدد النقاط تحته مباشرة
+            2. MIDDLE: Ameba Floating Product Card (8px radius, hairline border, no drop shadow)
            ========================================================================= */}
-        <main className="flex flex-col items-center my-auto py-6">
-          {/* Card Container */}
+        <main className="flex flex-col items-center my-auto py-4">
+          {/* Card Container: 8px radius, hairline border, flat surface */}
           <div 
-            className="w-full glass-card p-6 flex flex-col items-center transition-transform"
+            className="w-full rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 flex flex-col items-center transition-all"
           >
-            {/* Format Toggle: QR Code vs Barcode */}
+            {/* Format Toggle: QR Code vs Barcode (4-6px radii, font-mono) */}
             <div 
-              className="flex items-center gap-1.5 p-1 rounded-2xl mb-4 border shadow-xs"
-              style={{
-                backgroundColor: 'var(--color-input-bg)',
-                borderColor: 'var(--color-border)',
-              }}
+              className="flex items-center gap-1 p-1 rounded-[6px] mb-4 border border-[var(--color-border)] bg-[var(--color-input-bg)]"
             >
               <button
                 type="button"
                 id="toggle-qr-mode"
                 onClick={() => handleFormatChange('qr')}
-                className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                  codeFormat === 'qr' ? 'shadow-xs' : 'opacity-60 hover:opacity-100'
+                className={`py-1.5 px-3 rounded-[4px] text-xs font-mono uppercase tracking-[0.05em] transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  codeFormat === 'qr' 
+                    ? 'bg-[var(--color-signal-blue)] text-white font-medium' 
+                    : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
                 }`}
-                style={codeFormat === 'qr' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
               >
                 <QrCode size={14} weight="light" className="shrink-0" />
                 <span>{t('customer.qrCodeTab')}</span>
@@ -361,97 +334,90 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                 type="button"
                 id="toggle-barcode-mode"
                 onClick={() => handleFormatChange('barcode')}
-                className={`py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                  codeFormat === 'barcode' ? 'shadow-xs' : 'opacity-60 hover:opacity-100'
+                className={`py-1.5 px-3 rounded-[4px] text-xs font-mono uppercase tracking-[0.05em] transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  codeFormat === 'barcode' 
+                    ? 'bg-[var(--color-signal-blue)] text-white font-medium' 
+                    : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
                 }`}
-                style={codeFormat === 'barcode' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' } : {}}
               >
                 <Barcode size={14} weight="light" className="shrink-0" />
                 <span>{t('customer.barcodeTab')}</span>
               </button>
             </div>
 
-            {/* Code Display Container */}
+            {/* Code Display Container: 6px radius, hairline border, pure white paper fill */}
             {codeFormat === 'qr' ? (
               <div 
-                className="p-3.5 rounded-2xl shadow-inner flex items-center justify-center transition-all bg-white"
-                style={{ border: '2px dashed var(--color-border)' }}
+                className="p-3.5 rounded-[6px] border border-[var(--color-border)] flex items-center justify-center bg-white"
               >
                 <QRCodeSVG
                   value={scanUrl || customer.qr_token}
                   size={220}
                   level="L"
                   includeMargin={true}
-                  fgColor="#000000"
+                  fgColor="#00052e"
                   bgColor="#FFFFFF"
                 />
               </div>
             ) : (
               <div 
-                className="p-3.5 rounded-2xl shadow-inner flex flex-col items-center justify-center transition-all bg-white w-full overflow-hidden"
-                style={{ border: '2px dashed var(--color-border)' }}
+                className="p-3.5 rounded-[6px] border border-[var(--color-border)] flex flex-col items-center justify-center bg-white w-full overflow-hidden"
               >
                 <svg ref={barcodeRef} className="max-w-full h-auto" />
               </div>
             )}
 
-            {/* Phase 26.3: Formatted Quick Code with 1-Tap Copy */}
-            <div className="flex flex-col items-center gap-1 mt-3.5" dir="ltr">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border bg-black/5 dark:bg-white/5" style={{ borderColor: 'var(--color-border)' }}>
-                <ShieldCheck size={16} weight="light" className="shrink-0" style={{ color: 'var(--color-accent)' }} />
-                <span className="font-mono font-bold tracking-[0.18em] text-sm" id="customer-short-code">
+            {/* Formatted Quick Code with 1-Tap Copy: 4px radius, IBM Plex Mono with wide tracking */}
+            <div className="flex flex-col items-center gap-1.5 mt-4" dir="ltr">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)]">
+                <span className="w-2 h-2 rounded-full bg-[var(--color-signal-blue)] dark:bg-[var(--color-arc-cyan)] shrink-0" />
+                <span className="font-mono font-medium tracking-[0.18em] text-sm text-[var(--color-text)]" id="customer-short-code">
                   {formattedCode}
                 </span>
                 <button
                   type="button"
                   onClick={handleCopyCode}
-                  className="p-1 rounded-md opacity-70 hover:opacity-100 hover:bg-black/10 dark:hover:bg-white/10 transition-all cursor-pointer"
+                  className="p-1 rounded-[4px] opacity-70 hover:opacity-100 hover:bg-black/10 dark:hover:bg-white/10 transition-all cursor-pointer"
                   title={t('customer.copyCode')}
                 >
                   {copiedCode ? (
-                    <Check size={14} weight="light" className="text-emerald-500" />
+                    <Check size={14} weight="light" className="text-emerald-400" />
                   ) : (
                     <Copy size={14} weight="light" />
                   )}
                 </button>
               </div>
-              <span className="text-[11px] opacity-60 font-medium text-center">
+              <span className="text-[11px] font-mono uppercase tracking-[0.05em] text-[var(--color-text-muted)] text-center">
                 {t('customer.scanPrompt')}
               </span>
             </div>
 
-            {/* Points Count DIRECTLY BELOW the QR Code (إلزامي في RULES.md) */}
-            <div className="mt-6 text-center w-full pt-4 border-t" style={{ borderColor: 'var(--color-separator)' }}>
-              {/* 17.4: Membership Tier Badge */}
+            {/* Points Count: Ameba Editorial Display — Inter weight 300, negative tracking */}
+            <div className="mt-5 text-center w-full pt-4 border-t border-[var(--color-separator)]">
+              {/* Membership Tier Badge: 4px radius, font-mono */}
               {customer.tier?.currentTier && (
                 <div className="flex items-center justify-center mb-2.5">
                   <div
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold shadow-xs border transition-transform hover:scale-105"
-                    style={{
-                      backgroundColor: 'var(--color-input-bg)',
-                      borderColor: 'var(--color-accent)',
-                      color: 'var(--color-accent)',
-                    }}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[4px] text-[11px] font-mono uppercase tracking-[0.08em] border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)] font-medium"
                     id="customer-tier-badge"
                   >
-                    <Medal size={16} weight="light" className="shrink-0" />
+                    <Medal size={14} weight="light" className="shrink-0" />
                     <span>{customer.tier.currentTier.name}</span>
                   </div>
                 </div>
               )}
 
-              <span className="text-xs font-medium uppercase tracking-widest block opacity-70 mb-1">
+              <span className="text-[11px] font-mono uppercase tracking-[0.083em] text-[var(--color-text-muted)] block mb-1">
                 {t('customer.pointsLabel')}
               </span>
               <div className="flex items-baseline justify-center gap-2">
                 <span 
-                  className="text-5xl font-black tracking-tight"
-                  style={{ color: 'var(--color-accent)' }}
+                  className="text-5xl sm:text-6xl font-light tracking-[-1.12px] leading-tight text-[var(--color-text)]"
                   id="customer-points-balance"
                 >
                   {customer.points_balance.toLocaleString()}
                 </span>
-                <span className="text-sm font-semibold opacity-80">
+                <span className="text-xs font-mono uppercase tracking-[0.08em] text-[var(--color-text-muted)]">
                   {t('customer.pointsUnit')}
                 </span>
               </div>
@@ -459,26 +425,21 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
               {/* Points monetary value: shows how much the balance is worth in currency */}
               {customer.rates && customer.points_balance > 0 && (
                 <div
-                  className="mt-1.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold"
-                  style={{
-                    backgroundColor: 'rgba(var(--color-accent-rgb, 108,99,255), 0.1)',
-                    color: 'var(--color-accent)',
-                    border: '1px solid rgba(var(--color-accent-rgb, 108,99,255), 0.2)',
-                  }}
+                  className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[4px] text-[11px] font-mono border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text-muted)]"
                   id="customer-points-value"
                 >
                   <span>≈</span>
-                  <span className="font-mono font-bold">
+                  <span className="font-mono font-medium text-[var(--color-text)]">
                     {(customer.points_balance * customer.rates.currency_per_point).toFixed(2)}
                   </span>
                   <span>{t('common.currencyUnit')}</span>
                 </div>
               )}
 
-              {/* Earn rate hint — shows business-specific earn rate */}
+              {/* Earn rate hint */}
               {customer.rates && (
                 <div
-                  className="mt-2 text-[11px] opacity-55 font-medium"
+                  className="mt-1.5 text-[11px] font-mono text-[var(--color-text-muted)]"
                   id="customer-earn-rate-hint"
                 >
                   {isRtl
@@ -488,43 +449,35 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                 </div>
               )}
 
-
-              {/* 17.4: Progress towards next tier */}
+              {/* Progress towards next tier: hairline bar */}
               {customer.tier?.nextTier && (
-                <div className="mt-3.5 pt-3 border-t px-2" style={{ borderColor: 'var(--color-border)' }}>
-                  <div className="flex items-center justify-between text-[11px] opacity-70 mb-1.5">
-                    <span className="font-medium">
+                <div className="mt-3.5 pt-3 border-t border-[var(--color-border)] px-1">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-[var(--color-text-muted)] mb-1.5">
+                    <span>
                       {t('customer.nextTierProgress', { 
                         points: customer.tier.pointsToNextTier, 
                         tier: customer.tier.nextTier.name 
                       })}
                     </span>
-                    <span className="font-bold font-mono">{customer.tier.progressPercent}%</span>
+                    <span className="font-medium text-[var(--color-text)]">{customer.tier.progressPercent}%</span>
                   </div>
                   <div 
-                    className="w-full h-1.5 rounded-full overflow-hidden" 
-                    style={{ backgroundColor: 'var(--color-border)' }}
+                    className="w-full h-1 rounded-[2px] overflow-hidden bg-[var(--color-border)]" 
                   >
                     <div
-                      className="h-full rounded-full transition-all duration-500"
+                      className="h-full rounded-[2px] transition-all duration-500 bg-[var(--color-signal-blue)]"
                       style={{
                         width: `${customer.tier.progressPercent}%`,
-                        backgroundColor: 'var(--color-accent)',
                       }}
                     />
                   </div>
                 </div>
               )}
 
-              {/* 14.4: Notice for expiring points within 30 days */}
+              {/* Notice for expiring points within 30 days: 4px radius, IBM Plex Mono */}
               {Boolean(customer.expiring_points_30d && customer.expiring_points_30d > 0) && (
                 <div 
-                  className="mt-3.5 w-full p-2.5 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold text-center"
-                  style={{
-                    backgroundColor: 'rgba(239, 68, 68, 0.08)',
-                    borderColor: 'rgba(239, 68, 68, 0.25)',
-                    color: 'var(--color-error-text)'
-                  }}
+                  className="mt-3.5 w-full p-2.5 rounded-[4px] border border-red-500/30 bg-red-500/10 text-red-400 flex items-center justify-center gap-2 text-xs font-mono text-center"
                   id="expiring-points-alert"
                 >
                   <Clock size={14} weight="light" className="shrink-0" />
@@ -532,33 +485,23 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                 </div>
               )}
 
-              {/* 24.7: Smart AI Recommendation Banner (Gemini API) */}
+              {/* AI Recommendation Banner: 6px radius, hairline border */}
               {aiRecommendation && (
                 <div 
-                  className="mt-3.5 w-full p-3 rounded-2xl border flex items-start gap-2.5 text-xs text-center justify-center transition-all"
-                  style={{ 
-                    backgroundColor: 'var(--color-input-bg)', 
-                    borderColor: 'var(--color-accent)',
-                    color: 'var(--color-text)'
-                  }}
+                  className="mt-3.5 w-full p-3 rounded-[6px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-start gap-2.5 text-xs text-center justify-center transition-all"
                   id="ai-recommendation-banner"
                 >
-                  <Sparkle size={16} weight="light" className="shrink-0 mt-0.5" style={{ color: 'var(--color-accent)' }} />
-                  <p className="leading-relaxed font-medium">{aiRecommendation}</p>
+                  <Sparkle size={15} weight="light" className="shrink-0 mt-0.5 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
+                  <p className="leading-relaxed font-normal text-[var(--color-text)]">{aiRecommendation}</p>
                 </div>
               )}
 
-              {/* 18.2: Quick View Transaction History Button */}
-              <div className="mt-3.5 flex justify-center">
+              {/* Quick View Transaction History Button: 6px radius, font-mono */}
+              <div className="mt-4 flex justify-center">
                 <button
                   id="view-history-card-btn"
                   onClick={openHistoryModal}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-transform active:scale-95 border shadow-2xs"
-                  style={{
-                    backgroundColor: 'var(--color-input-bg)',
-                    borderColor: 'var(--color-border)',
-                    color: 'var(--color-accent)',
-                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] text-xs font-mono uppercase tracking-[0.05em] transition-all active:scale-95 border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] hover:border-[var(--color-signal-blue)] cursor-pointer"
                 >
                   <ClockCounterClockwise size={14} weight="light" />
                   <span>{t('customer.viewHistory')}</span>
@@ -568,21 +511,19 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
           </div>
         </main>
 
-        <footer className="w-full pt-4 pb-2">
+        {/* =========================================================================
+            3. FOOTER ACTIONS: 8px radius, hairline borders, font-mono uppercase
+           ========================================================================= */}
+        <footer className="w-full pt-3 pb-2">
           <div className={`flex items-center gap-2 ${layoutVariant === 'horizontal-offers' ? 'overflow-x-auto pb-1 no-scrollbar' : ''}`} id="customer-screen-footer-actions">
             {/* Special Offers */}
             {customer.features?.offers !== false && (
               <button
                 id="special-offers-btn"
                 onClick={() => openOffersModal('special')}
-                className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl transition-all active:scale-95 shadow-xs font-medium text-xs text-center"
-                style={{
-                  backgroundColor: 'var(--color-card-bg)',
-                  color: 'var(--color-text)',
-                  border: '1px solid var(--color-border)',
-                }}
+                className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] hover:border-[var(--color-signal-blue)] transition-all active:scale-95 font-mono text-xs uppercase tracking-[0.05em] cursor-pointer"
               >
-                <Sparkle size={16} weight="light" className="shrink-0" style={{ color: 'var(--color-accent)' }} />
+                <Sparkle size={15} weight="light" className="shrink-0 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
                 <span className="truncate">{t('customer.specialOffers')}</span>
               </button>
             )}
@@ -592,14 +533,9 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
               <button
                 id="daily-offers-btn"
                 onClick={() => openOffersModal('daily')}
-                className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl transition-all active:scale-95 shadow-xs font-medium text-xs text-center"
-                style={{
-                  backgroundColor: 'var(--color-card-bg)',
-                  color: 'var(--color-text)',
-                  border: '1px solid var(--color-border)',
-                }}
+                className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] hover:border-[var(--color-signal-blue)] transition-all active:scale-95 font-mono text-xs uppercase tracking-[0.05em] cursor-pointer"
               >
-                <Calendar size={16} weight="light" className="shrink-0" style={{ color: 'var(--color-accent)' }} />
+                <Calendar size={15} weight="light" className="shrink-0 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
                 <span className="truncate">{t('customer.dailyOffers')}</span>
               </button>
             )}
@@ -608,14 +544,9 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
             <button
               id="history-btn"
               onClick={openHistoryModal}
-              className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl transition-all active:scale-95 shadow-xs font-medium text-xs text-center"
-              style={{
-                backgroundColor: 'var(--color-card-bg)',
-                color: 'var(--color-text)',
-                border: '1px solid var(--color-border)',
-              }}
+              className="flex-1 flex flex-col sm:flex-row items-center justify-center gap-1.5 py-2.5 px-2 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] hover:border-[var(--color-signal-blue)] transition-all active:scale-95 font-mono text-xs uppercase tracking-[0.05em] cursor-pointer"
             >
-              <ClockCounterClockwise size={16} weight="light" className="shrink-0" style={{ color: 'var(--color-accent)' }} />
+              <ClockCounterClockwise size={15} weight="light" className="shrink-0 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
               <span className="truncate">{t('customer.transactionHistory')}</span>
             </button>
           </div>
@@ -633,21 +564,20 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
           onClick={() => setActiveModal(null)}
         >
           <div 
-            className="w-full max-w-sm rounded-t-3xl sm:rounded-3xl p-6 border shadow-2xl animate-in slide-in-from-bottom-5 duration-200"
-            style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+            className="w-full max-w-sm rounded-[8px] p-6 border border-[var(--color-border)] bg-[var(--color-card-bg)] animate-in slide-in-from-bottom-2 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-4 border-b mb-4" style={{ borderColor: 'var(--color-separator)' }}>
+            <div className="flex items-center justify-between pb-3.5 border-b border-[var(--color-separator)] mb-4">
               <div className="flex items-center gap-2">
                 {activeModal === 'special' ? (
-                  <Sparkle size={20} weight="light" style={{ color: 'var(--color-accent)' }} />
+                  <Sparkle size={18} weight="light" className="text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
                 ) : activeModal === 'daily' ? (
-                  <Calendar size={20} weight="light" style={{ color: 'var(--color-accent)' }} />
+                  <Calendar size={18} weight="light" className="text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
                 ) : (
-                  <ClockCounterClockwise size={20} weight="light" style={{ color: 'var(--color-accent)' }} />
+                  <ClockCounterClockwise size={18} weight="light" className="text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
                 )}
-                <h3 className="text-base font-bold">
+                <h3 className="text-sm font-medium text-[var(--color-text)]">
                   {activeModal === 'special' 
                     ? t('customer.exclusiveSpecialOffers') 
                     : activeModal === 'daily'
@@ -658,25 +588,24 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
               <button
                 onClick={() => setActiveModal(null)}
                 aria-label={t('common.close')}
-                className="w-8 h-8 rounded-full flex items-center justify-center border transition-transform active:scale-95"
-                style={{ borderColor: 'var(--color-border)' }}
+                className="w-7 h-7 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] hover:border-[var(--color-signal-blue)] text-[var(--color-text)] transition-colors cursor-pointer"
               >
-                <X size={16} weight="light" />
+                <X size={15} weight="light" />
               </button>
             </div>
 
             {/* Modal Content */}
             {activeModal === 'history' ? (
-              <div className="flex flex-col gap-2.5 max-h-80 overflow-y-auto" id="transactions-list-container">
+              <div className="flex flex-col gap-2 max-h-80 overflow-y-auto" id="transactions-list-container">
                 {isLoadingHistory ? (
                   <div className="py-8 flex flex-col items-center justify-center opacity-70">
-                    <ArrowsClockwise size={24} weight="light" className="animate-spin mb-2" />
-                    <span className="text-xs">{t('customer.loadingHistory')}</span>
+                    <ArrowsClockwise size={22} weight="light" className="animate-spin mb-2" />
+                    <span className="text-xs font-mono text-[var(--color-text-muted)]">{t('customer.loadingHistory')}</span>
                   </div>
                 ) : transactionsList.length === 0 ? (
                   <div className="py-8 text-center opacity-60 flex flex-col items-center" id="empty-transactions-message">
-                    <ClockCounterClockwise size={32} weight="light" className="mb-2 opacity-40" />
-                    <p className="text-xs font-medium">
+                    <ClockCounterClockwise size={28} weight="light" className="mb-2 opacity-40" />
+                    <p className="text-xs font-mono text-[var(--color-text-muted)]">
                       {t('customer.noTransactions')}
                     </p>
                   </div>
@@ -690,12 +619,11 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                     return (
                       <div
                         key={tx.id}
-                        className="p-3 rounded-2xl border flex items-center justify-between gap-3 transition-all"
-                        style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)' }}
+                        className="p-3 rounded-[6px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-between gap-3 transition-all"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
                           <div
-                            className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 border"
+                            className="w-7 h-7 rounded-[4px] flex items-center justify-center shrink-0 border"
                             style={{
                               backgroundColor: isPositive
                                 ? 'var(--color-success-bg)'
@@ -715,18 +643,18 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                             }}
                           >
                             {isPositive ? (
-                              <ArrowDownLeft size={16} weight="light" />
+                              <ArrowDownLeft size={14} weight="light" />
                             ) : isExpired ? (
-                              <Clock size={16} weight="light" />
+                              <Clock size={14} weight="light" />
                             ) : isReferral ? (
-                              <Gift size={16} weight="light" />
+                              <Gift size={14} weight="light" />
                             ) : (
-                              <ArrowUpRight size={16} weight="light" />
+                              <ArrowUpRight size={14} weight="light" />
                             )}
                           </div>
 
                           <div className="flex flex-col min-w-0">
-                            <span className="text-xs font-bold truncate">
+                            <span className="text-xs font-medium truncate text-[var(--color-text)]">
                               {isRedeemed
                                 ? t('customer.typeRedeemed')
                                 : isExpired
@@ -736,11 +664,11 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                                 : t('customer.typeEarned')}
                             </span>
                             {tx.item_name && (
-                              <span className="text-[11px] opacity-75 truncate" style={{ color: 'var(--color-accent)' }}>
+                              <span className="text-[11px] font-mono truncate text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]">
                                 {t('customer.redeemedItem', { item: tx.item_name })}
                               </span>
                             )}
-                            <span className="text-[10px] opacity-55 font-mono">
+                            <span className="text-[10px] opacity-60 font-mono text-[var(--color-text-muted)]">
                               {new Date(tx.created_at).toLocaleDateString(undefined, {
                                 year: 'numeric',
                                 month: 'short',
@@ -750,13 +678,13 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                               })}
                             </span>
                             {tx.branch_name && (
-                              <span className="text-[10px] opacity-50 truncate">
+                              <span className="text-[10px] opacity-50 truncate font-mono text-[var(--color-text-muted)]">
                                 {tx.branch_name}
                               </span>
                             )}
                             {tx.type === 'earned' && tx.expires_at && (
                               <span
-                                className="text-[10px] font-medium"
+                                className="text-[10px] font-mono"
                                 style={{ color: new Date(tx.expires_at) < new Date() ? 'var(--color-error-text)' : 'var(--color-warning-text)' }}
                               >
                                 {t('customer.expiresOn', {
@@ -772,7 +700,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                         </div>
 
                         <div
-                          className="shrink-0 font-bold font-mono text-xs px-2.5 py-0.5 rounded-full border"
+                          className="shrink-0 font-medium font-mono text-xs px-2 py-0.5 rounded-[4px] border"
                           style={{
                             backgroundColor: isPositive ? 'var(--color-success-bg)' : 'var(--color-error-bg)',
                             borderColor: isPositive ? 'var(--color-success-border)' : 'var(--color-error-border)',
@@ -787,16 +715,16 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                 )}
               </div>
             ) : (
-              <div className="flex flex-col gap-3 max-h-72 overflow-y-auto">
+              <div className="flex flex-col gap-2.5 max-h-72 overflow-y-auto">
                 {isLoadingOffers ? (
                   <div className="py-8 flex flex-col items-center justify-center opacity-70">
-                    <ArrowsClockwise size={24} weight="light" className="animate-spin mb-2" />
-                    <span className="text-xs">{t('customer.loadingOffers')}</span>
+                    <ArrowsClockwise size={22} weight="light" className="animate-spin mb-2" />
+                    <span className="text-xs font-mono text-[var(--color-text-muted)]">{t('customer.loadingOffers')}</span>
                   </div>
                 ) : offersList.length === 0 ? (
                   <div className="py-8 text-center opacity-60 flex flex-col items-center">
-                    <Tag size={32} weight="light" className="mb-2 opacity-40" />
-                    <p className="text-xs font-medium">
+                    <Tag size={28} weight="light" className="mb-2 opacity-40" />
+                    <p className="text-xs font-mono text-[var(--color-text-muted)]">
                       {activeModal === 'special' 
                         ? t('customer.noSpecialOffers') 
                         : t('customer.noDailyOffers')}
@@ -806,11 +734,10 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                   offersList.map((offer) => (
                     <div 
                       key={offer.id}
-                      className="p-4 rounded-2xl border flex flex-col gap-1.5 transition-all overflow-hidden"
-                      style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)' }}
+                      className="p-3.5 rounded-[6px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex flex-col gap-1.5 transition-all overflow-hidden"
                     >
                       {offer.image_url ? (
-                        <div className="w-full h-32 rounded-xl overflow-hidden mb-1.5 relative border" style={{ borderColor: 'var(--color-border)' }}>
+                        <div className="w-full h-32 rounded-[4px] overflow-hidden mb-1 relative border border-[var(--color-border)]">
                           <img 
                             src={offer.image_url} 
                             alt={offer.title} 
@@ -819,25 +746,24 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
                         </div>
                       ) : (
                         <div 
-                          className="w-full h-16 rounded-xl mb-1 flex items-center justify-center border border-dashed"
-                          style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+                          className="w-full h-14 rounded-[4px] mb-1 flex items-center justify-center border border-dashed border-[var(--color-border)] bg-[var(--color-card-bg)]"
                         >
-                          <div className="flex items-center gap-2 text-xs font-semibold" style={{ color: 'var(--color-accent)' }}>
-                            <Tag size={16} weight="light" />
+                          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-[0.05em] text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]">
+                            <Tag size={14} weight="light" />
                             <span>{offer.type === 'special' ? t('customer.specialBadge') : t('customer.dailyBadge')}</span>
                           </div>
                         </div>
                       )}
 
                       <div className="flex items-center justify-between">
-                        <h4 className="text-xs font-bold" style={{ color: 'var(--color-accent)' }}>
+                        <h4 className="text-xs font-medium text-[var(--color-text)]">
                           {offer.title}
                         </h4>
-                        <span className="text-[10px] opacity-60 font-mono">
+                        <span className="text-[10px] opacity-60 font-mono text-[var(--color-text-muted)]">
                           {t('customer.until', { date: offer.end_date })}
                         </span>
                       </div>
-                      <p className="text-xs opacity-85 leading-relaxed">
+                      <p className="text-xs opacity-80 leading-relaxed text-[var(--color-text)]">
                         {offer.description}
                       </p>
                     </div>
@@ -846,7 +772,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
               </div>
             )}
 
-            <div className="mt-4 pt-3 border-t text-center" style={{ borderColor: 'var(--color-separator)' }}>
+            <div className="mt-4 pt-3 border-t border-[var(--color-separator)] text-center">
               <button
                 onClick={() => setActiveModal(null)}
                 className="ios-btn-primary w-full"
@@ -861,7 +787,7 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
       {/* PWA Install Banner */}
       {showInstallBanner && (
         <div
-          className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between gap-3 px-4 py-3 rounded-2xl shadow-2xl border glass-card"
+          className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between gap-3 px-4 py-3 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)]"
           style={{
             maxWidth: '400px',
             margin: '0 auto',
@@ -870,24 +796,24 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
           <div className="flex items-center gap-2.5">
             <span className="text-xl">📲</span>
             <div>
-              <p className="text-xs font-bold">{isRtl ? 'أضف للشاشة الرئيسية' : 'Add to Home Screen'}</p>
-              <p className="text-[11px] opacity-60">{isRtl ? 'وصول أسرع لنقاطك' : 'Quick access to your points'}</p>
+              <p className="text-xs font-mono font-medium text-[var(--color-text)]">{isRtl ? 'أضف للشاشة الرئيسية' : 'Add to Home Screen'}</p>
+              <p className="text-[11px] font-mono text-[var(--color-text-muted)]">{isRtl ? 'وصول أسرع لنقاطك' : 'Quick access to your points'}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 font-mono">
             <button
               onClick={handleInstallApp}
               id="pwa-install-btn"
-              className="ios-btn-primary py-1.5 px-3 text-xs"
+              className="h-8 px-3 rounded-[8px] text-xs uppercase font-semibold text-white bg-[var(--color-accent)] hover:opacity-95 transition-opacity"
             >
               {isRtl ? 'تثبيت' : 'Install'}
             </button>
             <button
               onClick={dismissInstallBanner}
               id="pwa-dismiss-btn"
-              className="p-1.5 rounded-lg opacity-60 hover:opacity-100 transition-all"
+              className="w-7 h-7 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
             >
-              <X size={16} weight="light" />
+              <X size={14} weight="light" />
             </button>
           </div>
         </div>

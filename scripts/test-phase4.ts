@@ -23,16 +23,18 @@ async function runPhase4Tests() {
   try {
     // 1. Setup test business, branch, menu items, and rates
     console.log('1️⃣ Setting up test business & menu items...');
-    const { data: biz } = await adminClient
+    const { data: biz, error: bizErr } = await adminClient
       .from('businesses')
       .insert({ name: 'Roastery & Cafe', subdomain: `cashier-test-${Date.now()}` })
       .select().single();
+    if (bizErr) throw new Error(`Failed to create test business: ${bizErr.message}`);
     testBizId = biz.id;
 
-    const { data: branch } = await adminClient
+    const { data: branch, error: branchErr } = await adminClient
       .from('branches')
       .insert({ business_id: testBizId, name: 'Main Branch' })
       .select().single();
+    if (branchErr) throw new Error(`Failed to create test branch: ${branchErr.message}`);
     testBranchId = branch.id;
 
     // Set redemption rates: 1 EGP = 1 pt, 1 pt = 0.10 EGP (so a 50 EGP item costs 500 pts)
@@ -45,7 +47,7 @@ async function runPhase4Tests() {
       });
 
     // Add menu items
-    const { data: latte } = await adminClient
+    const { data: latte, error: latteErr } = await adminClient
       .from('menu_items')
       .insert({
         business_id: testBizId,
@@ -54,6 +56,7 @@ async function runPhase4Tests() {
         price: 50.0,
       })
       .select().single();
+    if (latteErr) throw new Error(`Failed to create menu item: ${latteErr.message}`);
 
     // 2. Create customer
     const customer = await createCustomer({

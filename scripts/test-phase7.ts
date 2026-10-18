@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
+import { generateQrToken } from '../lib/customer';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
@@ -26,14 +27,16 @@ async function runPhase7Tests() {
       .select().single();
     testBizId = biz.id;
 
-    const { data: customer } = await adminClient
+    const { data: customer, error: custErr } = await adminClient
       .from('customers')
       .insert({
         business_id: testBizId,
         name: 'Original Customer Name',
         phone_number: '+201011112222',
+        qr_token: generateQrToken(),
       })
       .select().single();
+    if (!customer || custErr) throw new Error(`Failed to create test customer: ${custErr?.message}`);
 
     console.log(`   Customer created: [${customer.id}] ${customer.name} (Phone: ${customer.phone_number})`);
 

@@ -20,7 +20,7 @@ export default function LanguageSwitcher() {
   if (!mounted) {
     return (
       <div
-        className="h-10 px-3 rounded-full flex items-center justify-center opacity-0"
+        className="h-9 px-3 rounded-[8px] flex items-center justify-center opacity-0"
         aria-hidden="true"
       />
     );
@@ -33,15 +33,15 @@ export default function LanguageSwitcher() {
       type="button"
       aria-label={locale === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
       title={locale === 'ar' ? 'English' : 'العربية'}
-      className="h-10 px-3.5 rounded-full flex items-center gap-1.5 text-xs font-semibold transition-transform active:scale-95 hover:opacity-80 shadow-xs cursor-pointer border"
+      className="h-9 px-3 rounded-[8px] flex items-center gap-1.5 text-xs font-mono uppercase tracking-[0.05em] transition-all active:scale-95 hover:border-[var(--color-signal-blue)] cursor-pointer"
       style={{
-        backgroundColor: 'var(--color-input-bg)',
+        backgroundColor: 'var(--color-card-bg)',
         color: 'var(--color-text)',
-        borderColor: 'var(--color-border)',
+        border: '1px solid var(--color-border)',
       }}
     >
-      <Translate size={18} weight="light" className="shrink-0" />
-      <span className="font-semibold select-none">{locale === 'ar' ? 'EN' : 'عربي'}</span>
+      <Translate size={16} weight="light" className="shrink-0" />
+      <span className="font-mono font-medium select-none">{locale === 'ar' ? 'EN' : 'عربي'}</span>
     </button>
   );
 }

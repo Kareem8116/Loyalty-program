@@ -642,7 +642,7 @@ export default function SuperAdminDashboard() {
         position: 'absolute',
         width: '600px',
         height: '600px',
-        background: 'radial-gradient(circle, rgba(108,99,255,0.09) 0%, transparent 70%)',
+        background: 'radial-gradient(circle at 50% 20%, rgba(4,40,203,0.18) 0%, rgba(52,252,255,0.04) 35%, transparent 70%)',
         top: '-200px',
         right: '-200px',
         pointerEvents: 'none',
@@ -651,7 +651,7 @@ export default function SuperAdminDashboard() {
         position: 'absolute',
         width: '450px',
         height: '450px',
-        background: 'radial-gradient(circle, rgba(78,205,196,0.06) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(4,40,203,0.10) 0%, transparent 70%)',
         bottom: '-120px',
         left: '-120px',
         pointerEvents: 'none',
@@ -659,15 +659,14 @@ export default function SuperAdminDashboard() {
 
       {/* Header */}
       <header
-        className="sticky top-0 z-30 flex items-center justify-between p-4 border-b shadow-lg backdrop-blur-xl relative"
-        style={{ backgroundColor: 'rgba(16, 14, 28, 0.8)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
+        className="sticky top-0 z-30 flex items-center justify-between p-4 border-b border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] transition-colors relative"
+        style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
       >
         <div className="flex items-center gap-3">
           <div
-            className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg"
+            className="w-9 h-9 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]"
             style={{
-              background: 'linear-gradient(135deg, #6C63FF, #4ECDC4)',
-              color: '#fff',
+              
             }}
           >
             <Shield weight="light" className="w-5 h-5" />
@@ -689,14 +688,14 @@ export default function SuperAdminDashboard() {
             id="super-admin-profile-btn"
             title={t('accountDeletion.profileTitle')}
             aria-label={t('accountDeletion.profileTitle')}
-            className="w-9 h-9 rounded-full flex items-center justify-center border transition-all hover:opacity-80 active:scale-95 cursor-pointer"
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] transition-all hover:opacity-80 active:scale-95 cursor-pointer"
             style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}
           >
             <User weight="light" className="w-4 h-4" />
           </button>
           <button
             onClick={handleLogout}
-            className="w-9 h-9 rounded-full flex items-center justify-center border transition-colors hover:opacity-80 cursor-pointer"
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] transition-colors hover:opacity-80 cursor-pointer"
             style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}
             aria-label={t('superAdmin.logout')}
           >
@@ -709,7 +708,7 @@ export default function SuperAdminDashboard() {
         {/* Alert Messages */}
         {errorMsg && (
           <div
-            className="p-3 rounded-xl border text-xs flex items-center gap-2 mb-4"
+            className="p-3 rounded-[4px] border text-xs flex items-center gap-2 mb-4"
             style={{
               backgroundColor: 'var(--color-error-bg)',
               color: 'var(--color-error-text)',
@@ -723,7 +722,7 @@ export default function SuperAdminDashboard() {
         )}
         {successMsg && (
           <div
-            className="p-3 rounded-xl border text-xs flex items-center gap-2 mb-4"
+            className="p-3 rounded-[4px] border text-xs flex items-center gap-2 mb-4"
             style={{
               backgroundColor: 'var(--color-success-bg)',
               color: 'var(--color-success-text)',
@@ -738,16 +737,14 @@ export default function SuperAdminDashboard() {
 
         {/* Navigation Tabs (Businesses vs Users) */}
         <div
-          className="flex items-center p-1 rounded-2xl border mb-5 backdrop-blur-xl shadow-xs"
+          className="flex items-center p-1 rounded-[6px] border border-[var(--color-border)] bg-[var(--color-input-bg)] mb-5"
           style={{ backgroundColor: 'rgba(16, 14, 28, 0.7)', borderColor: 'rgba(255, 255, 255, 0.08)' }}
         >
           <button
             type="button"
             onClick={() => setActiveTab('businesses')}
             id="tab-businesses-btn"
-            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-              activeTab === 'businesses' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-            }`}
+            className={`flex-1 py-2 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer ${activeTab === 'businesses' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
             style={
               activeTab === 'businesses'
                 ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }
@@ -757,7 +754,7 @@ export default function SuperAdminDashboard() {
             <Buildings weight="light" className="w-4 h-4" />
             <span>{t('superAdmin.tabBusinesses')}</span>
             <span
-              className="text-[10px] px-2 py-0.5 rounded-full"
+              className="text-[10px] px-2 py-0.5 rounded-[4px]"
               style={{
                 backgroundColor: activeTab === 'businesses' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.1)',
               }}
@@ -773,9 +770,7 @@ export default function SuperAdminDashboard() {
               fetchUsers();
             }}
             id="tab-users-btn"
-            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-              activeTab === 'users' ? 'shadow-sm' : 'opacity-70 hover:opacity-100'
-            }`}
+            className={`flex-1 py-2 rounded-[4px] font-mono text-xs uppercase font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer ${activeTab === 'users' ? 'bg-[var(--color-accent)] text-white shadow-none' : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'}`}
             style={
               activeTab === 'users'
                 ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }
@@ -785,7 +780,7 @@ export default function SuperAdminDashboard() {
             <Users weight="light" className="w-4 h-4" />
             <span>{t('superAdmin.tabUsers')}</span>
             <span
-              className="text-[10px] px-2 py-0.5 rounded-full"
+              className="text-[10px] px-2 py-0.5 rounded-[4px]"
               style={{
                 backgroundColor: activeTab === 'users' ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.1)',
               }}
@@ -800,7 +795,7 @@ export default function SuperAdminDashboard() {
           <div className="animate-in fade-in duration-150">
             {/* Create Business Section */}
             <div
-              className="rounded-2xl border mb-6 overflow-hidden"
+              className="rounded-[8px] border mb-6 overflow-hidden"
               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             >
           <button
@@ -831,7 +826,7 @@ export default function SuperAdminDashboard() {
                   value={formName}
                   onChange={(e) => handleNameChange(e.target.value)}
                   placeholder={t('superAdmin.businessNamePlaceholder')}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
                 {formName.trim() !== '' && !validateName(formName).isValid && (
@@ -852,7 +847,7 @@ export default function SuperAdminDashboard() {
                     value={formSubdomain}
                     onChange={(e) => setFormSubdomain(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                     placeholder={t('superAdmin.subdomainPlaceholder')}
-                    className={`w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden ${isRtl ? 'pr-9' : 'pl-9'}`}
+                    className={`w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden ${isRtl ? 'pr-9' : 'pl-9'}`}
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                   <Globe weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
@@ -868,7 +863,7 @@ export default function SuperAdminDashboard() {
                   value={formBranchName}
                   onChange={(e) => setFormBranchName(e.target.value)}
                   placeholder={t('superAdmin.branchNamePlaceholder')}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
               </div>
@@ -883,7 +878,7 @@ export default function SuperAdminDashboard() {
                   value={formOwnerEmail}
                   onChange={(e) => setFormOwnerEmail(e.target.value)}
                   placeholder={t('superAdmin.ownerEmailPlaceholder')}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
                 {formOwnerEmail.trim() !== '' && !validateEmail(formOwnerEmail).isValid && (
@@ -904,7 +899,7 @@ export default function SuperAdminDashboard() {
                   value={formOwnerPassword}
                   onChange={(e) => setFormOwnerPassword(e.target.value)}
                   placeholder={t('superAdmin.ownerPasswordPlaceholder')}
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
                 {formOwnerPassword !== '' && !validatePassword(formOwnerPassword).isValid && (
@@ -927,7 +922,7 @@ export default function SuperAdminDashboard() {
                   value={formOwnerPhone}
                   onChange={(e) => setFormOwnerPhone(e.target.value)}
                   placeholder="01000000000"
-                  className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                  className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                   style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                 />
                 {formOwnerPhone.trim() !== '' && !validateEgyptianPhone(formOwnerPhone).isValid && (
@@ -940,7 +935,7 @@ export default function SuperAdminDashboard() {
               <button
                 type="submit"
                 disabled={isCreating}
-                className="w-full py-3 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3 rounded-[4px] text-xs font-bold transition-transform active:scale-95  mt-1 flex items-center justify-center gap-2 disabled:opacity-50"
                 style={{
                   background: 'linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))',
                   color: 'var(--color-btn-text)',
@@ -964,7 +959,7 @@ export default function SuperAdminDashboard() {
           </div>
         ) : businesses.length === 0 ? (
           <div
-            className="text-center py-12 rounded-2xl border"
+            className="text-center py-12 rounded-[8px] border"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <Buildings weight="light" className="w-10 h-10 mx-auto mb-3 opacity-30" />
@@ -975,7 +970,7 @@ export default function SuperAdminDashboard() {
             {businesses.map((biz) => (
               <div
                 key={biz.id}
-                className="rounded-2xl border p-4 transition-all"
+                className="rounded-[8px] border p-4 transition-all"
                 style={{
                   backgroundColor: 'var(--color-card-bg)',
                   borderColor: 'var(--color-border)',
@@ -996,7 +991,7 @@ export default function SuperAdminDashboard() {
 
                   {/* Status Badge */}
                   <span
-                    className="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap"
+                    className="px-2.5 py-1 rounded-[4px] text-[10px] font-bold whitespace-nowrap"
                     style={{
                       backgroundColor: biz.is_active ? 'var(--color-success-bg)' : 'var(--color-error-bg)',
                       color: biz.is_active ? 'var(--color-success-text)' : 'var(--color-error-text)',
@@ -1009,7 +1004,7 @@ export default function SuperAdminDashboard() {
 
                 {/* Stats Row */}
                 <div
-                  className="flex items-center gap-4 text-[11px] mb-3 py-2 px-3 rounded-xl"
+                  className="flex items-center gap-4 text-[11px] mb-3 py-2 px-3 rounded-[4px]"
                   style={{ backgroundColor: 'var(--color-bg)' }}
                 >
                   <div className="flex items-center gap-1">
@@ -1039,7 +1034,7 @@ export default function SuperAdminDashboard() {
                   <button
                     type="button"
                     onClick={() => openFeaturesModal(biz)}
-                    className="py-2 px-2 rounded-xl text-[10px] font-semibold border flex items-center justify-center gap-1 transition-all hover:opacity-80 active:scale-[0.98]"
+                    className="py-2 px-2 rounded-[4px] text-[10px] font-semibold border flex items-center justify-center gap-1 transition-all hover:opacity-80 active:scale-[0.98]"
                     style={{
                       borderColor: 'var(--color-border)',
                       backgroundColor: 'var(--color-bg)',
@@ -1053,7 +1048,7 @@ export default function SuperAdminDashboard() {
                   <button
                     type="button"
                     onClick={() => openBrandingModal(biz)}
-                    className="py-2 px-2 rounded-xl text-[10px] font-semibold border flex items-center justify-center gap-1 transition-all hover:opacity-80 active:scale-[0.98]"
+                    className="py-2 px-2 rounded-[4px] text-[10px] font-semibold border flex items-center justify-center gap-1 transition-all hover:opacity-80 active:scale-[0.98]"
                     style={{
                       borderColor: 'var(--color-border)',
                       backgroundColor: 'var(--color-bg)',
@@ -1068,7 +1063,7 @@ export default function SuperAdminDashboard() {
                   <button
                     onClick={() => setConfirmToggle(biz)}
                     disabled={togglingId === biz.id}
-                    className="py-2 px-2 rounded-xl text-[10px] font-semibold border flex items-center justify-center gap-1 transition-all hover:opacity-80 active:scale-[0.98] disabled:opacity-50"
+                    className="py-2 px-2 rounded-[4px] text-[10px] font-semibold border flex items-center justify-center gap-1 transition-all hover:opacity-80 active:scale-[0.98] disabled:opacity-50"
                     style={{
                       borderColor: biz.is_active ? 'var(--color-error-border)' : 'var(--color-success-border)',
                       color: biz.is_active ? 'var(--color-error-text)' : 'var(--color-success-text)',
@@ -1100,7 +1095,7 @@ export default function SuperAdminDashboard() {
         {/* User Statistics Counter Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           <div
-            className="p-3.5 rounded-2xl border flex flex-col justify-between"
+            className="p-3.5 rounded-[8px] border flex flex-col justify-between"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <span className="text-[11px] opacity-60 font-medium">{t('superAdmin.tabUsers')}</span>
@@ -1111,7 +1106,7 @@ export default function SuperAdminDashboard() {
           </div>
 
           <div
-            className="p-3.5 rounded-2xl border flex flex-col justify-between"
+            className="p-3.5 rounded-[8px] border flex flex-col justify-between"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <span className="text-[11px] opacity-60 font-medium">{t('superAdmin.roleOwner')}</span>
@@ -1124,7 +1119,7 @@ export default function SuperAdminDashboard() {
           </div>
 
           <div
-            className="p-3.5 rounded-2xl border flex flex-col justify-between"
+            className="p-3.5 rounded-[8px] border flex flex-col justify-between"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <span className="text-[11px] opacity-60 font-medium">{t('superAdmin.roleCashier')}</span>
@@ -1137,7 +1132,7 @@ export default function SuperAdminDashboard() {
           </div>
 
           <div
-            className="p-3.5 rounded-2xl border flex flex-col justify-between"
+            className="p-3.5 rounded-[8px] border flex flex-col justify-between"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <span className="text-[11px] opacity-60 font-medium">{t('superAdmin.roleCustomer')}</span>
@@ -1152,7 +1147,7 @@ export default function SuperAdminDashboard() {
 
         {/* Search, Filter & Refresh Bar */}
         <div
-          className="p-3 rounded-2xl border flex flex-wrap items-center gap-2"
+          className="p-3 rounded-[8px] border flex flex-wrap items-center gap-2"
           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
         >
           {/* Search Input */}
@@ -1163,7 +1158,7 @@ export default function SuperAdminDashboard() {
               value={userSearchQuery}
               onChange={(e) => setUserSearchQuery(e.target.value)}
               placeholder={t('superAdmin.searchUserPlaceholder')}
-              className="w-full ps-9 pe-3 py-2 rounded-xl text-xs border bg-transparent transition-colors focus:outline-none"
+              className="w-full ps-9 pe-3 py-2 rounded-[4px] text-xs border bg-transparent transition-colors focus:outline-none"
               style={{ borderColor: 'var(--color-border)' }}
             />
             {userSearchQuery && (
@@ -1182,7 +1177,7 @@ export default function SuperAdminDashboard() {
             <select
               value={userRoleFilter}
               onChange={(e) => setUserRoleFilter(e.target.value)}
-              className="py-2 px-3 rounded-xl border text-xs bg-transparent transition-colors focus:outline-none cursor-pointer"
+              className="py-2 px-3 rounded-[4px] border text-xs bg-transparent transition-colors focus:outline-none cursor-pointer"
               style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)' }}
             >
               <option value="all">{t('superAdmin.allRoles')}</option>
@@ -1200,7 +1195,7 @@ export default function SuperAdminDashboard() {
             onClick={fetchUsers}
             disabled={isLoadingUsers}
             title={t('common.loading')}
-            className="p-2 rounded-xl border transition-all hover:opacity-80 active:scale-95 disabled:opacity-50 cursor-pointer"
+            className="p-2 rounded-[4px] border transition-all hover:opacity-80 active:scale-95 disabled:opacity-50 cursor-pointer"
             style={{ borderColor: 'var(--color-border)' }}
           >
             <CircleNotch weight="light" className={`w-4 h-4 ${isLoadingUsers ? 'animate-spin' : ''}`} />
@@ -1214,7 +1209,7 @@ export default function SuperAdminDashboard() {
           </div>
         ) : filteredUsers.length === 0 ? (
           <div
-            className="text-center py-12 rounded-2xl border"
+            className="text-center py-12 rounded-[8px] border"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <Users weight="light" className="w-10 h-10 mx-auto mb-3 opacity-30" />
@@ -1227,7 +1222,7 @@ export default function SuperAdminDashboard() {
               return (
                 <div
                   key={u.id}
-                  className="rounded-2xl border p-4 transition-all"
+                  className="rounded-[8px] border p-4 transition-all"
                   style={{
                     backgroundColor: 'var(--color-card-bg)',
                     borderColor: 'var(--color-border)',
@@ -1237,7 +1232,7 @@ export default function SuperAdminDashboard() {
                     {/* User Info & Email */}
                     <div className="flex items-start gap-2.5 flex-1 min-w-0">
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-xs"
+                        className="w-9 h-9 rounded-[4px] flex items-center justify-center shrink-0 "
                         style={{
                           background: isSuper
                             ? 'linear-gradient(135deg, #8B5CF6, #EC4899)'
@@ -1279,7 +1274,7 @@ export default function SuperAdminDashboard() {
                     <div>
                       {isSuper ? (
                         <span
-                          className="px-2.5 py-1 rounded-xl text-[10px] font-bold border flex items-center gap-1 opacity-70"
+                          className="px-2.5 py-1 rounded-[4px] text-[10px] font-bold border flex items-center gap-1 opacity-70"
                           style={{
                             borderColor: 'rgba(139, 92, 246, 0.3)',
                             backgroundColor: 'rgba(139, 92, 246, 0.1)',
@@ -1296,7 +1291,7 @@ export default function SuperAdminDashboard() {
                             setUserToDelete(u);
                             setDeleteUserError(null);
                           }}
-                          className="px-3 py-1.5 rounded-xl text-xs font-semibold border flex items-center gap-1.5 transition-all text-rose-500 hover:bg-rose-500/10 active:scale-95 cursor-pointer"
+                          className="px-3 py-1.5 rounded-[4px] text-xs font-semibold border flex items-center gap-1.5 transition-all text-rose-500 hover:bg-rose-500/10 active:scale-95 cursor-pointer"
                           style={{ borderColor: 'rgba(239, 68, 68, 0.3)' }}
                           title={t('common.delete')}
                         >
@@ -1410,14 +1405,14 @@ export default function SuperAdminDashboard() {
       }}
     >
       <div
-        className="rounded-3xl p-6 border shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-150 flex flex-col gap-4"
+        className="rounded-[8px] p-6 border  max-w-md w-full animate-in zoom-in-95 duration-150 flex flex-col gap-4"
         style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
         <div className="flex items-center gap-3">
           <div
-            className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+            className="w-12 h-12 rounded-[8px] flex items-center justify-center shrink-0"
             style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
           >
             <Warning weight="light" className="w-6 h-6" />
@@ -1437,7 +1432,7 @@ export default function SuperAdminDashboard() {
               setDeleteUserError(null);
             }}
             disabled={isDeletingUser}
-            className="w-8 h-8 rounded-full flex items-center justify-center border transition-opacity hover:opacity-80"
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center border transition-opacity hover:opacity-80"
             style={{ borderColor: 'var(--color-border)' }}
           >
             <X weight="light" className="w-4 h-4" />
@@ -1446,7 +1441,7 @@ export default function SuperAdminDashboard() {
 
         {/* Warning Message */}
         <div
-          className="p-3.5 rounded-2xl border text-xs leading-relaxed"
+          className="p-3.5 rounded-[8px] border text-xs leading-relaxed"
           style={{
             backgroundColor: 'rgba(239, 68, 68, 0.08)',
             borderColor: 'rgba(239, 68, 68, 0.25)',
@@ -1465,7 +1460,7 @@ export default function SuperAdminDashboard() {
 
         {/* User Details Summary */}
         <div
-          className="p-3 rounded-xl border text-xs space-y-1.5"
+          className="p-3 rounded-[4px] border text-xs space-y-1.5"
           style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', borderColor: 'var(--color-border)' }}
         >
           <div className="flex items-center justify-between">
@@ -1493,7 +1488,7 @@ export default function SuperAdminDashboard() {
         {/* Error Feedback */}
         {deleteUserError && (
           <div
-            className="p-3 rounded-xl border text-xs flex items-center gap-2"
+            className="p-3 rounded-[4px] border text-xs flex items-center gap-2"
             style={{
               backgroundColor: 'var(--color-error-bg)',
               borderColor: 'var(--color-error-border)',
@@ -1514,7 +1509,7 @@ export default function SuperAdminDashboard() {
               setDeleteUserError(null);
             }}
             disabled={isDeletingUser}
-            className="flex-1 py-2.5 rounded-xl border text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
+            className="flex-1 py-2.5 rounded-[4px] border text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
             style={{ borderColor: 'var(--color-border)' }}
           >
             {t('common.cancel')}
@@ -1525,7 +1520,7 @@ export default function SuperAdminDashboard() {
             onClick={handleConfirmDeleteUser}
             id="confirm-delete-user-btn"
             disabled={isDeletingUser}
-            className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="flex-1 py-2.5 rounded-[4px] text-xs font-bold text-white transition-all  flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             style={{ backgroundColor: '#EF4444' }}
           >
             {isDeletingUser ? (
@@ -1553,13 +1548,13 @@ export default function SuperAdminDashboard() {
           onClick={() => setConfirmToggle(null)}
         >
           <div
-            className="rounded-2xl p-5 border shadow-lg max-w-sm w-full"
+            className="rounded-[8px] p-5 border  max-w-sm w-full"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center mb-4">
               <div
-                className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center"
+                className="w-12 h-12 mx-auto mb-3 rounded-[4px] flex items-center justify-center"
                 style={{
                   backgroundColor: confirmToggle.is_active ? 'var(--color-error-bg)' : 'var(--color-success-bg)',
                   color: confirmToggle.is_active ? 'var(--color-error-text)' : 'var(--color-success-text)',
@@ -1576,7 +1571,7 @@ export default function SuperAdminDashboard() {
             <div className="flex gap-2">
               <button
                 onClick={() => setConfirmToggle(null)}
-                className="flex-1 py-2.5 rounded-xl text-xs font-semibold border transition-colors hover:opacity-80"
+                className="flex-1 py-2.5 rounded-[4px] text-xs font-semibold border transition-colors hover:opacity-80"
                 style={{ borderColor: 'var(--color-border)' }}
               >
                 {t('common.cancel')}
@@ -1584,7 +1579,7 @@ export default function SuperAdminDashboard() {
               <button
                 onClick={() => handleToggle(confirmToggle)}
                 disabled={togglingId === confirmToggle.id}
-                className="flex-1 py-2.5 rounded-xl text-xs font-bold transition-transform active:scale-95 flex items-center justify-center gap-1 disabled:opacity-50"
+                className="flex-1 py-2.5 rounded-[4px] text-xs font-bold transition-transform active:scale-95 flex items-center justify-center gap-1 disabled:opacity-50"
                 style={{
                   backgroundColor: confirmToggle.is_active ? 'var(--color-error-text)' : 'var(--color-success-text)',
                   color: 'var(--color-card-bg)',
@@ -1606,7 +1601,7 @@ export default function SuperAdminDashboard() {
           onClick={() => setSelectedBizForFeatures(null)}
         >
           <div
-            className="rounded-3xl p-6 border shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto flex flex-col gap-4 animate-in zoom-in-95 duration-150"
+            className="rounded-[8px] p-6 border  max-w-md w-full max-h-[90vh] overflow-y-auto flex flex-col gap-4 animate-in zoom-in-95 duration-150"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -1624,7 +1619,7 @@ export default function SuperAdminDashboard() {
               <button
                 type="button"
                 onClick={() => setSelectedBizForFeatures(null)}
-                className="w-8 h-8 rounded-full flex items-center justify-center border transition-opacity hover:opacity-80"
+                className="w-8 h-8 rounded-[4px] flex items-center justify-center border transition-opacity hover:opacity-80"
                 style={{ borderColor: 'var(--color-border)' }}
               >
                 <X weight="light" className="w-4 h-4" />
@@ -1634,7 +1629,7 @@ export default function SuperAdminDashboard() {
             {/* Feedback Alert */}
             {featuresFeedback && (
               <div
-                className="p-3 rounded-xl border text-xs flex items-center gap-2"
+                className="p-3 rounded-[4px] border text-xs flex items-center gap-2"
                 style={{
                   backgroundColor: featuresFeedback.type === 'success' ? 'var(--color-success-bg)' : 'var(--color-error-bg)',
                   color: featuresFeedback.type === 'success' ? 'var(--color-success-text)' : 'var(--color-error-text)',
@@ -1660,7 +1655,7 @@ export default function SuperAdminDashboard() {
                     id="enable-all-features-btn"
                     onClick={() => handleBulkFeatures('enable_all')}
                     disabled={isSavingFeatures}
-                    className="flex-1 py-2 px-3 rounded-xl border text-xs font-bold transition-transform active:scale-95 flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    className="flex-1 py-2 px-3 rounded-[4px] border text-xs font-bold transition-transform active:scale-95 flex items-center justify-center gap-1.5 disabled:opacity-50"
                     style={{
                       backgroundColor: 'var(--color-bg)',
                       borderColor: 'var(--color-accent)',
@@ -1675,7 +1670,7 @@ export default function SuperAdminDashboard() {
                     id="disable-all-features-btn"
                     onClick={() => handleBulkFeatures('disable_all')}
                     disabled={isSavingFeatures}
-                    className="flex-1 py-2 px-3 rounded-xl border text-xs font-bold transition-transform active:scale-95 flex items-center justify-center gap-1.5 disabled:opacity-50"
+                    className="flex-1 py-2 px-3 rounded-[4px] border text-xs font-bold transition-transform active:scale-95 flex items-center justify-center gap-1.5 disabled:opacity-50"
                     style={{
                       backgroundColor: 'var(--color-bg)',
                       borderColor: 'var(--color-border)',
@@ -1689,7 +1684,7 @@ export default function SuperAdminDashboard() {
 
                 {/* 1. Notifications Feature Card (Highlighted) */}
                 <div
-                  className="p-4 rounded-2xl border transition-colors"
+                  className="p-4 rounded-[8px] border transition-colors"
                   style={{
                     backgroundColor: featuresMap['notifications'] ? 'var(--color-bg)' : 'var(--color-card-bg)',
                     borderColor: featuresMap['notifications'] ? 'var(--color-accent)' : 'var(--color-border)',
@@ -1698,7 +1693,7 @@ export default function SuperAdminDashboard() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center shadow-xs"
+                        className="w-8 h-8 rounded-[4px] flex items-center justify-center "
                         style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                       >
                         <Bell weight="light" className="w-4 h-4" />
@@ -1712,12 +1707,12 @@ export default function SuperAdminDashboard() {
                     <button
                       type="button"
                       onClick={() => handleToggleFeature('notifications')}
-                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
                         featuresMap['notifications'] ? 'bg-[var(--color-accent)]' : 'bg-gray-300 dark:bg-gray-700'
                       }`}
                     >
                       <span
-                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-[4px] bg-white  ring-0 transition duration-200 ease-in-out ${
                           featuresMap['notifications'] ? (isRtl ? '-translate-x-5' : 'translate-x-5') : 'translate-x-0'
                         }`}
                       />
@@ -1732,7 +1727,7 @@ export default function SuperAdminDashboard() {
                         <select
                           value={notifProvider}
                           onChange={(e) => setNotifProvider(e.target.value)}
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         >
                           <option value="whatsapp">{t('features.whatsappCloud')}</option>
@@ -1750,7 +1745,7 @@ export default function SuperAdminDashboard() {
                               value={notifPhoneId}
                               onChange={(e) => setNotifPhoneId(e.target.value)}
                               placeholder={t('features.phoneNumberIdPlaceholder')}
-                              className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden font-mono"
+                              className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden font-mono"
                               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                             />
                           </div>
@@ -1763,7 +1758,7 @@ export default function SuperAdminDashboard() {
                               value={notifToken}
                               onChange={(e) => setNotifToken(e.target.value)}
                               placeholder={t('features.accessTokenPlaceholder')}
-                              className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden font-mono"
+                              className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden font-mono"
                               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                             />
                           </div>
@@ -1775,7 +1770,7 @@ export default function SuperAdminDashboard() {
 
                 {/* 1.5 SMS Notifications Feature Card (Phase 30) */}
                 <div
-                  className="p-4 rounded-2xl border transition-colors"
+                  className="p-4 rounded-[8px] border transition-colors"
                   style={{
                     backgroundColor: featuresMap['sms_notifications'] ? 'var(--color-bg)' : 'var(--color-card-bg)',
                     borderColor: featuresMap['sms_notifications'] ? 'var(--color-accent)' : 'var(--color-border)',
@@ -1784,7 +1779,7 @@ export default function SuperAdminDashboard() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center shadow-xs"
+                        className="w-8 h-8 rounded-[4px] flex items-center justify-center "
                         style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                       >
                         <ChatText weight="light" className="w-4 h-4" />
@@ -1798,12 +1793,12 @@ export default function SuperAdminDashboard() {
                     <button
                       type="button"
                       onClick={() => handleToggleFeature('sms_notifications')}
-                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
                         featuresMap['sms_notifications'] ? 'bg-[var(--color-accent)]' : 'bg-gray-300 dark:bg-gray-700'
                       }`}
                     >
                       <span
-                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-[4px] bg-white  ring-0 transition duration-200 ease-in-out ${
                           featuresMap['sms_notifications'] ? (isRtl ? '-translate-x-5' : 'translate-x-5') : 'translate-x-0'
                         }`}
                       />
@@ -1818,7 +1813,7 @@ export default function SuperAdminDashboard() {
                         <select
                           value={smsProvider}
                           onChange={(e) => setSmsProvider(e.target.value as any)}
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         >
                           <option value="mock">{isRtl ? 'بيئة تجريبية مجانية (Mock Sandbox)' : 'Mock Sandbox (Free)'}</option>
@@ -1836,7 +1831,7 @@ export default function SuperAdminDashboard() {
                               value={smsAccountSid}
                               onChange={(e) => setSmsAccountSid(e.target.value)}
                               placeholder="ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-                              className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden font-mono"
+                              className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden font-mono"
                               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                             />
                           </div>
@@ -1849,7 +1844,7 @@ export default function SuperAdminDashboard() {
                               value={smsAuthToken}
                               onChange={(e) => setSmsAuthToken(e.target.value)}
                               placeholder="••••••••••••••••••••••••••••••••"
-                              className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden font-mono"
+                              className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden font-mono"
                               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                             />
                           </div>
@@ -1862,7 +1857,7 @@ export default function SuperAdminDashboard() {
                               value={smsSenderId}
                               onChange={(e) => setSmsSenderId(e.target.value)}
                               placeholder="+1234567890 or POINTAT"
-                              className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden font-mono"
+                              className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden font-mono"
                               style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                             />
                           </div>
@@ -1874,7 +1869,7 @@ export default function SuperAdminDashboard() {
 
                 {/* 2. AI Recommendations Feature Card (Phase 24.3) */}
                 <div
-                  className="p-4 rounded-2xl border transition-colors"
+                  className="p-4 rounded-[8px] border transition-colors"
                   style={{
                     backgroundColor: featuresMap['ai_recommendations'] ? 'var(--color-bg)' : 'var(--color-card-bg)',
                     borderColor: featuresMap['ai_recommendations'] ? 'var(--color-accent)' : 'var(--color-border)',
@@ -1883,7 +1878,7 @@ export default function SuperAdminDashboard() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center shadow-xs"
+                        className="w-8 h-8 rounded-[4px] flex items-center justify-center "
                         style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                       >
                         <Sparkle weight="light" className="w-4 h-4" />
@@ -1897,12 +1892,12 @@ export default function SuperAdminDashboard() {
                     <button
                       type="button"
                       onClick={() => handleToggleFeature('ai_recommendations')}
-                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
                         featuresMap['ai_recommendations'] ? 'bg-[var(--color-accent)]' : 'bg-gray-300 dark:bg-gray-700'
                       }`}
                     >
                       <span
-                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                        className={`pointer-events-none inline-block h-5 w-5 transform rounded-[4px] bg-white  ring-0 transition duration-200 ease-in-out ${
                           featuresMap['ai_recommendations'] ? (isRtl ? '-translate-x-5' : 'translate-x-5') : 'translate-x-0'
                         }`}
                       />
@@ -1920,7 +1915,7 @@ export default function SuperAdminDashboard() {
                           value={geminiApiKey}
                           onChange={(e) => setGeminiApiKey(e.target.value)}
                           placeholder={t('features.geminiApiKeyPlaceholder')}
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden font-mono"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden font-mono"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         />
                       </div>
@@ -1930,7 +1925,7 @@ export default function SuperAdminDashboard() {
                         <select
                           value={aiModel}
                           onChange={(e) => setAiModel(e.target.value)}
-                          className="w-full py-2 px-3 rounded-xl text-xs border focus:outline-hidden"
+                          className="w-full py-2 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                           style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
                         >
                           <option value="gemini-1.5-flash">{t('features.geminiFlash')}</option>
@@ -1951,7 +1946,7 @@ export default function SuperAdminDashboard() {
                       return (
                         <div
                           key={feat.key}
-                          className="p-3 rounded-xl border flex items-center justify-between transition-colors"
+                          className="p-3 rounded-[4px] border flex items-center justify-between transition-colors"
                           style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                         >
                           <div className="min-w-0 pr-2">
@@ -1962,12 +1957,12 @@ export default function SuperAdminDashboard() {
                           <button
                             type="button"
                             onClick={() => handleToggleFeature(feat.key)}
-                            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-[4px] border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
                               isEnabled ? 'bg-[var(--color-accent)]' : 'bg-gray-300 dark:bg-gray-700'
                             }`}
                           >
                             <span
-                              className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
+                              className={`pointer-events-none inline-block h-4 w-4 transform rounded-[4px] bg-white  ring-0 transition duration-200 ease-in-out ${
                                 isEnabled ? (isRtl ? '-translate-x-4' : 'translate-x-4') : 'translate-x-0'
                               }`}
                             />
@@ -1982,7 +1977,7 @@ export default function SuperAdminDashboard() {
                   type="button"
                   onClick={handleSaveFeatures}
                   disabled={isSavingFeatures}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  className="w-full py-2.5 px-4 rounded-[4px] text-xs font-bold transition-transform active:scale-95  mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
                   style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                 >
                   {isSavingFeatures ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk weight="light" className="w-3.5 h-3.5" />}
@@ -1998,7 +1993,7 @@ export default function SuperAdminDashboard() {
       {selectedBizForBranding && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
           <div
-            className="w-full max-w-md rounded-3xl p-5 border shadow-2xl relative max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-md rounded-[8px] p-5 border  relative max-h-[90vh] overflow-y-auto"
             style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
           >
             <div className="flex items-center justify-between pb-3 mb-4 border-b" style={{ borderColor: 'var(--color-border)' }}>
@@ -2011,7 +2006,7 @@ export default function SuperAdminDashboard() {
               </div>
               <button
                 onClick={() => setSelectedBizForBranding(null)}
-                className="w-8 h-8 rounded-full flex items-center justify-center border transition-colors hover:opacity-75"
+                className="w-8 h-8 rounded-[4px] flex items-center justify-center border transition-colors hover:opacity-75"
                 style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
               >
                 <X weight="light" className="w-4 h-4" />
@@ -2020,7 +2015,7 @@ export default function SuperAdminDashboard() {
 
             {brandingFeedback && (
               <div
-                className="mb-4 p-3 rounded-xl border text-xs font-semibold flex items-center gap-2"
+                className="mb-4 p-3 rounded-[4px] border text-xs font-semibold flex items-center gap-2"
                 style={{
                   backgroundColor:
                     brandingFeedback.type === 'success'
@@ -2063,7 +2058,7 @@ export default function SuperAdminDashboard() {
                     value={brandingDisplayName}
                     onChange={(e) => setBrandingDisplayName(e.target.value)}
                     placeholder={selectedBizForBranding.name}
-                    className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   />
                 </div>
@@ -2086,7 +2081,7 @@ export default function SuperAdminDashboard() {
                         type="text"
                         value={brandingPrimaryColor}
                         onChange={(e) => setBrandingPrimaryColor(e.target.value)}
-                        className="flex-1 py-1.5 px-2 rounded-xl text-xs border font-mono"
+                        className="flex-1 py-1.5 px-2 rounded-[4px] text-xs border font-mono"
                         style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                       />
                     </div>
@@ -2108,7 +2103,7 @@ export default function SuperAdminDashboard() {
                         type="text"
                         value={brandingAccentColor}
                         onChange={(e) => setBrandingAccentColor(e.target.value)}
-                        className="flex-1 py-1.5 px-2 rounded-xl text-xs border font-mono"
+                        className="flex-1 py-1.5 px-2 rounded-[4px] text-xs border font-mono"
                         style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                       />
                     </div>
@@ -2124,7 +2119,7 @@ export default function SuperAdminDashboard() {
 
                   if (pCheck.passesAA && aCheck.passesAA) {
                     return (
-                      <div className="p-2.5 rounded-xl border text-xs flex items-center gap-2" style={{ backgroundColor: 'rgba(34, 197, 94, 0.08)', borderColor: 'rgba(34, 197, 94, 0.25)', color: '#16A34A' }}>
+                      <div className="p-2.5 rounded-[4px] border text-xs flex items-center gap-2" style={{ backgroundColor: 'rgba(34, 197, 94, 0.08)', borderColor: 'rgba(34, 197, 94, 0.25)', color: '#16A34A' }}>
                         <CheckCircle weight="light" className="w-4 h-4 shrink-0" />
                         <span>{isRtl ? 'الألوان تحقق معايير التباين وسهولة القراءة (WCAG AA Pass)' : 'Colors pass accessibility contrast standards (WCAG AA Pass)'}</span>
                       </div>
@@ -2132,7 +2127,7 @@ export default function SuperAdminDashboard() {
                   }
 
                   return (
-                    <div className="p-3 rounded-xl border text-xs flex flex-col gap-2" style={{ backgroundColor: 'rgba(234, 88, 12, 0.08)', borderColor: 'rgba(234, 88, 12, 0.3)', color: '#C2410C' }}>
+                    <div className="p-3 rounded-[4px] border text-xs flex flex-col gap-2" style={{ backgroundColor: 'rgba(234, 88, 12, 0.08)', borderColor: 'rgba(234, 88, 12, 0.3)', color: '#C2410C' }}>
                       <div className="flex items-center gap-1.5 font-bold">
                         <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                         <span>{isRtl ? 'تنبيه سهولة القراءة والتباين (WCAG AA)' : 'Accessibility Contrast Warning (WCAG AA)'}</span>
@@ -2177,7 +2172,7 @@ export default function SuperAdminDashboard() {
                   <select
                     value={brandingFontFamily}
                     onChange={(e) => setBrandingFontFamily(e.target.value)}
-                    className="w-full py-2.5 px-3 rounded-xl text-xs border focus:outline-hidden"
+                    className="w-full py-2.5 px-3 rounded-[4px] text-xs border focus:outline-hidden"
                     style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
                   >
                     <option value="Inter">Inter (Clean Modern)</option>
@@ -2202,7 +2197,7 @@ export default function SuperAdminDashboard() {
                         key={v.id}
                         type="button"
                         onClick={() => setBrandingLayoutVariant(v.id as any)}
-                        className={`p-2.5 rounded-xl border text-[11px] font-bold text-center transition-all ${
+                        className={`p-2.5 rounded-[4px] border text-[11px] font-bold text-center transition-all ${
                           brandingLayoutVariant === v.id ? 'ring-2' : 'opacity-70'
                         }`}
                         style={{
@@ -2219,7 +2214,7 @@ export default function SuperAdminDashboard() {
 
                 {/* Live Preview Card */}
                 <div
-                  className="p-3.5 rounded-2xl border text-center transition-all mt-1"
+                  className="p-3.5 rounded-[8px] border text-center transition-all mt-1"
                   style={{
                     backgroundColor: brandingPrimaryColor,
                     borderColor: 'var(--color-border)',
@@ -2232,7 +2227,7 @@ export default function SuperAdminDashboard() {
                   <span className="text-xs font-semibold opacity-90 block mt-0.5">
                     {isRtl ? 'معاينة تجربة العميل' : 'Customer Experience Preview'}
                   </span>
-                  <div className="mt-2 inline-block px-3 py-1 rounded-full text-[10px] font-bold shadow-xs" style={{ backgroundColor: brandingAccentColor, color: '#FFFFFF' }}>
+                  <div className="mt-2 inline-block px-3 py-1 rounded-[4px] text-[10px] font-bold " style={{ backgroundColor: brandingAccentColor, color: '#FFFFFF' }}>
                     {isRtl ? 'قالب: ' : 'Layout: '}{brandingLayoutVariant}
                   </div>
                 </div>
@@ -2242,7 +2237,7 @@ export default function SuperAdminDashboard() {
                   type="button"
                   onClick={handleSaveBranding}
                   disabled={isSavingBranding}
-                  className="w-full py-3 rounded-xl text-xs font-bold transition-transform active:scale-95 shadow-sm mt-2 flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  className="w-full py-3 rounded-[4px] text-xs font-bold transition-transform active:scale-95  mt-2 flex items-center justify-center gap-1.5 disabled:opacity-50"
                   style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)' }}
                 >
                   {isSavingBranding ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk weight="light" className="w-3.5 h-3.5" />}
@@ -2268,11 +2263,11 @@ export default function SuperAdminDashboard() {
         }}
         extraInfo={
           <div className="grid grid-cols-2 gap-2 text-center text-xs mt-1">
-            <div className="p-3 rounded-xl border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+            <div className="p-3 rounded-[4px] border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
               <span className="text-[10px] opacity-60 block mb-0.5">{isRtl ? 'المتاجر المسجلة' : 'Businesses'}</span>
               <strong className="text-sm font-bold">{businesses.length}</strong>
             </div>
-            <div className="p-3 rounded-xl border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+            <div className="p-3 rounded-[4px] border" style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
               <span className="text-[10px] opacity-60 block mb-0.5">{isRtl ? 'الفروع الإجمالية' : 'Total Branches'}</span>
               <strong className="text-sm font-bold">
                 {businesses.reduce((acc, b) => acc + (b.branch_count || 0), 0)}
@@ -2282,7 +2277,7 @@ export default function SuperAdminDashboard() {
         }
         dangerZone={
           <div
-            className="p-4 rounded-2xl border"
+            className="p-4 rounded-[8px] border"
             style={{
               backgroundColor: 'rgba(239, 68, 68, 0.05)',
               borderColor: 'rgba(239, 68, 68, 0.25)',
@@ -2308,7 +2303,7 @@ export default function SuperAdminDashboard() {
                 setDeleteSuperAdminError(null);
               }}
               id="super-admin-open-delete-btn"
-              className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-2.5 px-3 rounded-[4px] text-xs font-bold text-white transition-transform active:scale-95  flex items-center justify-center gap-2 cursor-pointer"
               style={{ backgroundColor: '#EF4444' }}
             >
               <Trash weight="light" className="w-3.5 h-3.5" />
@@ -2328,7 +2323,7 @@ export default function SuperAdminDashboard() {
           }}
         >
           <div
-            className="w-full max-w-lg rounded-3xl p-6 border-2 shadow-2xl animate-in zoom-in-95 duration-150"
+            className="w-full max-w-lg rounded-[8px] p-6 border-2  animate-in zoom-in-95 duration-150"
             style={{
               backgroundColor: 'var(--color-card-bg)',
               borderColor: '#EF4444',
@@ -2340,7 +2335,7 @@ export default function SuperAdminDashboard() {
             {/* Warning Icon & Title */}
             <div className="text-center mb-4">
               <div
-                className="w-14 h-14 mx-auto mb-3 rounded-2xl flex items-center justify-center animate-pulse"
+                className="w-14 h-14 mx-auto mb-3 rounded-[8px] flex items-center justify-center animate-pulse"
                 style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
               >
                 <Warning weight="light" className="w-8 h-8" />
@@ -2356,7 +2351,7 @@ export default function SuperAdminDashboard() {
             {/* Error Message */}
             {deleteSuperAdminError && (
               <div
-                className="p-3 mb-4 rounded-xl border text-xs text-rose-400 flex items-center gap-2"
+                className="p-3 mb-4 rounded-[4px] border text-xs text-rose-400 flex items-center gap-2"
                 style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
               >
                 <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
@@ -2366,7 +2361,7 @@ export default function SuperAdminDashboard() {
 
             {/* Heightened Confirmations: Step 1 - Acknowledgement Checkboxes */}
             <div
-              className="p-3.5 mb-4 rounded-2xl border space-y-2.5 text-xs"
+              className="p-3.5 mb-4 rounded-[8px] border space-y-2.5 text-xs"
               style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
             >
               <span className="text-[10px] font-bold uppercase tracking-wider block opacity-70 mb-1">
@@ -2406,7 +2401,7 @@ export default function SuperAdminDashboard() {
 
             {/* Heightened Confirmations: Step 2 - Exact Phrase Typing */}
             <div
-              className="p-3.5 mb-5 rounded-2xl border text-xs"
+              className="p-3.5 mb-5 rounded-[8px] border text-xs"
               style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
             >
               <span className="text-[10px] font-bold uppercase tracking-wider block opacity-70 mb-1">
@@ -2418,7 +2413,7 @@ export default function SuperAdminDashboard() {
                   {t('accountDeletion.superAdminPhrasePrompt')}
                 </span>
                 <div
-                  className="p-2 rounded-xl border font-mono text-xs font-bold text-center select-all"
+                  className="p-2 rounded-[4px] border font-mono text-xs font-bold text-center select-all"
                   style={{
                     backgroundColor: 'rgba(239, 68, 68, 0.08)',
                     borderColor: 'rgba(239, 68, 68, 0.3)',
@@ -2435,7 +2430,7 @@ export default function SuperAdminDashboard() {
                 onChange={(e) => setTypedConfirmationPhrase(e.target.value)}
                 placeholder={isRtl ? 'اكتب العبارة هنا بالضبط...' : 'Type the exact phrase here...'}
                 id="super-admin-confirmation-phrase-input"
-                className="w-full p-2.5 rounded-xl border text-xs font-medium transition-all focus:outline-none focus:ring-2"
+                className="w-full p-2.5 rounded-[4px] border text-xs font-medium transition-all focus:outline-none focus:ring-2"
                 style={{
                   backgroundColor: 'var(--color-card-bg)',
                   borderColor:
@@ -2474,7 +2469,7 @@ export default function SuperAdminDashboard() {
                 type="button"
                 onClick={() => setShowSuperAdminDeleteModal(false)}
                 disabled={isDeletingSuperAdmin}
-                className="flex-1 py-2.5 rounded-xl border text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
+                className="flex-1 py-2.5 rounded-[4px] border text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
                 style={{ borderColor: 'var(--color-border)' }}
               >
                 {t('accountDeletion.cancelButton')}
@@ -2491,7 +2486,7 @@ export default function SuperAdminDashboard() {
                     typedConfirmationPhrase.trim() !== 'DELETE SUPER ADMIN ACCOUNT') ||
                   isDeletingSuperAdmin
                 }
-                className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 py-2.5 rounded-[4px] text-xs font-bold text-white transition-all  flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                 style={{
                   backgroundColor: '#EF4444',
                 }}

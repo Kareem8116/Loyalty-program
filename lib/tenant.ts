@@ -61,9 +61,11 @@ export async function resolveBusinessBySubdomain(
   // 2. Check L2 Upstash Redis distributed cache
   const redisKey = getRedisKey(normalizedSub);
   try {
-    const cachedL2 = await redis.get<TenantBusiness | { notFound: true }>(redisKey);
-    if (cachedL2) {
-      const business = 'notFound' in cachedL2 ? null : cachedL2;
+    const cachedRaw = await redis.get<string>(redisKey);
+    if (cachedRaw) {
+      // Parse the JSON string stored by our standardized setex
+      const parsed = typeof cachedRaw === 'string' ? JSON.parse(cachedRaw) : cachedRaw;
+      const business: TenantBusiness | null = 'notFound' in parsed ? null : parsed;
       // Populate L1 cache
       tenantL1Cache.set(normalizedSub, {
         business,
@@ -107,10 +109,11 @@ export async function resolveBusinessBySubdomain(
     // 5. Save to L2 Upstash Redis distributed cache (TTL = 5 minutes)
     try {
       if (business) {
-        await redis.setex(redisKey, REDIS_CACHE_TTL_SECONDS, business);
+        // Store as JSON string for consistent serialization
+        await redis.setex(redisKey, REDIS_CACHE_TTL_SECONDS, JSON.stringify(business));
       } else {
         // Negative cache for 60s to prevent DB hammering on nonexistent subdomains
-        await redis.setex(redisKey, 60, { notFound: true });
+        await redis.setex(redisKey, 60, JSON.stringify({ notFound: true }));
       }
     } catch (redisSetErr) {
       console.warn('[tenant] Redis setex error:', redisSetErr);

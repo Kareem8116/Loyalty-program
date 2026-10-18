@@ -1,241 +1,378 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 /* ==============================================================================
-   Central CSS Design System — Dual-Mode iOS Style:
-   - Light Mode: "Airy Dream" (Soft Pink/Lavender/Blue gradient + Frosted Glass + Black Accents)
-   - Dark Mode:  "iOS True Black" (#000000 + Dark Gray Cards #1C1C1E + Mint Green Accent #00C48C)
-   - Font: Inter
+   Ameba Design System -- "Midnight Control Room"
+   Theme: Dark-first, Electric Blue Pulse, Hairline Borders
+   Inspired by: DESIGN.md
    ============================================================================== */
 
-:root, html.light {
-  color-scheme: light;
-  --color-bg-gradient: linear-gradient(135deg, #FFE4F0 0%, #EDE4FA 45%, #D4E8FF 100%);
-  --color-bg: #FAF7F2;
-  --color-bg-alt: #F4EFEB;
-  --page-bg-gradient: linear-gradient(135deg, #FFE4F0 0%, #EDE4FA 45%, #D4E8FF 100%);
+:root {
+  /* === Ameba Color Tokens === */
+  --color-midnight-ink: #00052e;
+  --color-signal-blue: #0428cb;
+  --color-arc-cyan: #34fcff;
+  --color-halo-violet: #afb4db;
+  --color-carbon: #222222;
+  --color-slate-body: #4f5166;
+  --color-fog: #6b6b83;
+  --color-mist: #8185a0;
+  --color-silver-border: #dbdcdf;
+  --color-paper: #ffffff;
 
-  --color-card-bg: rgba(255, 255, 255, 0.72);
-  --color-card-solid: #FFFFFF;
-  --color-border: rgba(255, 255, 255, 0.6);
-  --color-border-hover: rgba(28, 28, 30, 0.3);
-  --color-separator: rgba(0, 0, 0, 0.08);
+  /* === Typography Families === */
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --color-text: #1C1C1E;
-  --color-text-muted: #8E8E93;
-  --color-text-secondary: #6D6D72;
+  /* === Typography Scale === */
+  --text-micro: 11px;
+  --leading-micro: 1.82;
+  --tracking-micro: 0.077em;
+  --text-caption: 14px;
+  --leading-caption: 1.5;
+  --text-body-sm: 16px;
+  --leading-body-sm: 1.54;
+  --text-body: 18px;
+  --leading-body: 1.57;
+  --text-subheading: 27px;
+  --leading-subheading: 1.41;
+  --tracking-subheading: -0.41px;
+  --text-heading-sm: 35px;
+  --leading-heading-sm: 1.38;
+  --tracking-heading-sm: -0.49px;
+  --text-heading: 40px;
+  --leading-heading: 1.3;
+  --tracking-heading: -0.6px;
+  --text-heading-lg: 54px;
+  --leading-heading-lg: 1.3;
+  --tracking-heading-lg: -1.03px;
+  --text-display: 59px;
+  --leading-display: 1.26;
+  --tracking-display: -1.12px;
 
-  --color-accent: #1C1C1E;
-  --color-accent-hover: #3A3A3C;
-  --color-accent-text: #FFFFFF;
-  --color-btn-text: #FFFFFF;
+  /* === Font Weights === */
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
 
-  --color-secondary: #9B8DC8;
-  --color-secondary-hover: #8878B8;
+  /* === Spacing === */
+  --spacing-4: 4px;
+  --spacing-10: 10px;
+  --spacing-15: 15px;
+  --spacing-16: 16px;
+  --spacing-20: 20px;
+  --spacing-21: 21px;
+  --spacing-23: 23px;
+  --spacing-24: 24px;
+  --spacing-26: 26px;
+  --spacing-30: 30px;
+  --spacing-40: 40px;
+  --spacing-43: 43px;
+  --spacing-80: 80px;
+  --spacing-100: 100px;
+  --spacing-120: 120px;
+  --spacing-196: 196px;
 
-  --color-header-bg: rgba(255, 255, 255, 0.65);
-  --color-input-bg: rgba(255, 255, 255, 0.85);
-  --color-list-item-bg: rgba(255, 255, 255, 0.82);
-  --color-page-header-text: #1C1C1E;
+  /* === Layout === */
+  --page-max-width: 1200px;
+  --section-gap: 80px;
+  --card-padding: 20px;
+  --element-gap: 10px;
 
-  --color-toggle-on: #1C1C1E;
-  --color-toggle-off: #D1D1D6;
+  /* === Border Radii === */
+  --radius-tags: 4px;
+  --radius-images: 4px;
+  --radius-cards: 8px;
+  --radius-buttons: 8px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
 
-  --color-success-bg: rgba(52, 199, 89, 0.12);
-  --color-success-text: #34C759;
-  --color-success-border: rgba(52, 199, 89, 0.25);
-
-  --color-error-bg: rgba(255, 59, 48, 0.12);
-  --color-error-text: #FF3B30;
-  --color-error-border: rgba(255, 59, 48, 0.25);
-
-  --color-warning-text: #FF9500;
-  --color-badge-special-bg: rgba(255, 149, 0, 0.12);
-  --color-badge-special-text: #FF9500;
-  --color-badge-special-border: rgba(255, 149, 0, 0.25);
-
-  --color-badge-daily-bg: rgba(155, 141, 200, 0.15);
-  --color-badge-daily-text: #7868A8;
-  --color-badge-daily-border: rgba(155, 141, 200, 0.25);
-
-  --color-overlay-bg: rgba(0, 0, 0, 0.4);
-  --color-qr-bg: #FFFFFF;
-  --color-qr-fg: #1C1C1E;
-
-  --background: var(--color-bg-gradient);
-  --foreground: var(--color-text);
+  /* === Surfaces === */
+  --surface-midnight-canvas: #00052e;
+  --surface-violet-wash: #06105a;
+  --surface-frosted-panel: #00052e;
+  --surface-product-paper: #ffffff;
 }
 
+/* ==============================================================================
+   Dark (default) Mode Tokens
+   ============================================================================== */
+
+:root,
 html.dark {
   color-scheme: dark;
-  --color-bg-gradient: #000000;
-  --color-bg: #000000;
-  --color-bg-alt: #1C1C1E;
-  --page-bg-gradient: #000000;
 
-  --color-card-bg: #1C1C1E;
-  --color-card-solid: #2C2C2E;
-  --color-border: #38383A;
-  --color-border-hover: rgba(0, 196, 140, 0.4);
-  --color-separator: rgba(255, 255, 255, 0.08);
+  --color-bg: var(--color-midnight-ink);
+  --color-bg-alt: #06105a;
+  --color-bg-gradient: radial-gradient(ellipse 90% 70% at 50% 40%, #06105a 0%, #00052e 65%, #00052e 100%);
+  --page-bg-gradient: radial-gradient(ellipse 90% 70% at 50% 40%, #06105a 0%, #00052e 65%, #00052e 100%);
 
-  --color-text: #FFFFFF;
-  --color-text-muted: #8E8E93;
-  --color-text-secondary: #AEAEB2;
+  --color-card-bg: #00052e;
+  --color-card-solid: #010840;
+  --color-border: #4f5166;
+  --color-border-hover: var(--color-signal-blue);
+  --color-separator: rgba(79, 81, 102, 0.35);
 
-  --color-accent: #00C48C;
-  --color-accent-hover: #00A878;
-  --color-accent-text: #000000;
-  --color-btn-text: #000000;
+  --color-text: #ffffff;
+  --color-text-muted: var(--color-fog);
+  --color-text-secondary: var(--color-mist);
 
-  --color-secondary: #30B0C7;
-  --color-secondary-hover: #2698AC;
+  --color-accent: var(--color-signal-blue);
+  --color-accent-hover: #0535e8;
+  --color-accent-text: #ffffff;
+  --color-btn-text: #ffffff;
 
-  --color-header-bg: #1C1C1E;
-  --color-input-bg: #2C2C2E;
-  --color-list-item-bg: #1C1C1E;
-  --color-page-header-text: #FFFFFF;
+  --color-secondary: var(--color-halo-violet);
+  --color-secondary-hover: #9398c4;
 
-  --color-toggle-on: #00C48C;
-  --color-toggle-off: #39393B;
+  --color-header-bg: rgba(0, 5, 46, 0.88);
+  --color-input-bg: rgba(4, 8, 58, 0.85);
+  --color-list-item-bg: rgba(0, 5, 46, 0.7);
+  --color-page-header-text: #ffffff;
 
-  --color-success-bg: rgba(0, 196, 140, 0.15);
-  --color-success-text: #00C48C;
-  --color-success-border: rgba(0, 196, 140, 0.3);
+  --color-toggle-on: var(--color-signal-blue);
+  --color-toggle-off: #2a2d52;
 
-  --color-error-bg: rgba(255, 69, 58, 0.15);
-  --color-error-text: #FF453A;
-  --color-error-border: rgba(255, 69, 58, 0.3);
+  --color-success-bg: rgba(52, 252, 255, 0.08);
+  --color-success-text: var(--color-arc-cyan);
+  --color-success-border: rgba(52, 252, 255, 0.25);
 
-  --color-warning-text: #FFD60A;
-  --color-badge-special-bg: rgba(255, 214, 10, 0.15);
-  --color-badge-special-text: #FFD60A;
-  --color-badge-special-border: rgba(255, 214, 10, 0.3);
+  --color-error-bg: rgba(255, 70, 70, 0.12);
+  --color-error-text: #ff6b6b;
+  --color-error-border: rgba(255, 70, 70, 0.3);
 
-  --color-badge-daily-bg: rgba(48, 176, 199, 0.15);
-  --color-badge-daily-text: #30B0C7;
-  --color-badge-daily-border: rgba(48, 176, 199, 0.3);
+  --color-warning-text: #ffd60a;
+  --color-badge-special-bg: rgba(255, 214, 10, 0.1);
+  --color-badge-special-text: #ffd60a;
+  --color-badge-special-border: rgba(255, 214, 10, 0.25);
 
-  --color-overlay-bg: rgba(0, 0, 0, 0.75);
-  --color-qr-bg: #FFFFFF;
-  --color-qr-fg: #000000;
+  --color-badge-daily-bg: rgba(175, 180, 219, 0.12);
+  --color-badge-daily-text: var(--color-halo-violet);
+  --color-badge-daily-border: rgba(175, 180, 219, 0.25);
 
-  --background: #000000;
-  --foreground: var(--color-text);
+  --color-overlay-bg: rgba(0, 2, 20, 0.82);
+  --color-qr-bg: #ffffff;
+  --color-qr-fg: #00052e;
+
+  --background: var(--color-midnight-ink);
+  --foreground: #ffffff;
+}
+
+/* ==============================================================================
+   Light Mode Tokens
+   ============================================================================== */
+
+html.light {
+  color-scheme: light;
+
+  --color-bg: #f5f6ff;
+  --color-bg-alt: #eef0ff;
+  --color-bg-gradient: linear-gradient(135deg, #eef0ff 0%, #f0eefa 50%, #e8effe 100%);
+  --page-bg-gradient: linear-gradient(135deg, #eef0ff 0%, #f0eefa 50%, #e8effe 100%);
+
+  --color-card-bg: rgba(255, 255, 255, 0.92);
+  --color-card-solid: #ffffff;
+  --color-border: var(--color-silver-border);
+  --color-border-hover: var(--color-signal-blue);
+  --color-separator: rgba(0, 5, 46, 0.08);
+
+  --color-text: var(--color-midnight-ink);
+  --color-text-muted: var(--color-fog);
+  --color-text-secondary: var(--color-slate-body);
+
+  --color-accent: var(--color-signal-blue);
+  --color-accent-hover: #0535e8;
+  --color-accent-text: #ffffff;
+  --color-btn-text: #ffffff;
+
+  --color-secondary: var(--color-halo-violet);
+  --color-secondary-hover: #9398c4;
+
+  --color-header-bg: rgba(255, 255, 255, 0.88);
+  --color-input-bg: rgba(255, 255, 255, 0.95);
+  --color-list-item-bg: rgba(255, 255, 255, 0.85);
+  --color-page-header-text: var(--color-midnight-ink);
+
+  --color-toggle-on: var(--color-signal-blue);
+  --color-toggle-off: var(--color-silver-border);
+
+  --color-success-bg: rgba(4, 40, 203, 0.06);
+  --color-success-text: var(--color-signal-blue);
+  --color-success-border: rgba(4, 40, 203, 0.18);
+
+  --color-error-bg: rgba(220, 38, 38, 0.07);
+  --color-error-text: #dc2626;
+  --color-error-border: rgba(220, 38, 38, 0.2);
+
+  --color-warning-text: #d97706;
+  --color-badge-special-bg: rgba(217, 119, 6, 0.08);
+  --color-badge-special-text: #d97706;
+  --color-badge-special-border: rgba(217, 119, 6, 0.2);
+
+  --color-badge-daily-bg: rgba(79, 81, 102, 0.08);
+  --color-badge-daily-text: var(--color-slate-body);
+  --color-badge-daily-border: rgba(79, 81, 102, 0.2);
+
+  --color-overlay-bg: rgba(0, 5, 46, 0.45);
+  --color-qr-bg: #ffffff;
+  --color-qr-fg: #00052e;
+
+  --background: var(--color-bg);
+  --foreground: var(--color-midnight-ink);
+}
+
+/* ==============================================================================
+   Base Styles
+   ============================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body);
+  font-weight: 400;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ==============================================================================
-   iOS Clean & Minimal Utility Classes
+   Page Backgrounds
    ============================================================================== */
 
-/* Page Background Wrapper */
 .page-bg {
   min-height: 100vh;
-  background: var(--color-bg-gradient);
+  background: var(--page-bg-gradient);
   color: var(--color-text);
   position: relative;
 }
 
-/* Frosted Glass Card */
+.page-dark-obsidian {
+  min-height: 100vh;
+  background: var(--page-bg-gradient) !important;
+  color: var(--color-text) !important;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ==============================================================================
+   Ameba Panel -- 1px hairline border, 8px radius, no shadow
+   ============================================================================== */
+
 .glass-card {
   background: var(--color-card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--color-border);
-  border-radius: 20px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-cards);
   color: var(--color-text);
-  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 html.dark .glass-card {
+  background: var(--color-midnight-ink);
+  border-color: var(--color-slate-body);
   box-shadow: none;
-  border-color: var(--color-border);
 }
 
-/* Backward compatibility for .glass-panel */
+html.light .glass-card {
+  background: var(--color-card-bg);
+  border-color: var(--color-silver-border);
+  box-shadow: 0 2px 16px rgba(4, 40, 203, 0.06);
+}
+
 .glass-panel {
   background: var(--color-card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--color-border);
-  border-radius: 20px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-cards);
   color: var(--color-text);
-  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
+
 html.dark .glass-panel {
+  background: var(--color-midnight-ink);
+  border-color: var(--color-slate-body);
   box-shadow: none;
 }
 
-/* iOS Grouped List */
+html.light .glass-panel {
+  background: var(--color-card-bg);
+  box-shadow: 0 2px 16px rgba(4, 40, 203, 0.06);
+}
+
+/* ==============================================================================
+   iOS Grouped List
+   ============================================================================== */
+
 .ios-list-group {
   background: var(--color-list-item-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
+  border-radius: var(--radius-cards);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
 }
+
 html.dark .ios-list-group {
   box-shadow: none;
 }
 
-/* iOS List Row */
 .ios-list-row {
   display: flex;
   align-items: center;
   padding: 14px 16px;
   min-height: 52px;
   gap: 12px;
-  border-bottom: 0.5px solid var(--color-separator);
+  border-bottom: 1px solid var(--color-separator);
   transition: background 0.15s ease;
 }
+
 .ios-list-row:last-child {
   border-bottom: none;
 }
+
 .ios-list-row:active {
-  background: rgba(125, 125, 125, 0.08);
+  background: rgba(4, 40, 203, 0.06);
 }
 
-/* iOS Icon Container */
 .ios-icon-wrap {
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-/* iOS Section Header */
 .ios-section-header {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--text-micro);
+  font-weight: 400;
+  font-family: var(--font-mono);
+  letter-spacing: var(--tracking-micro);
+  text-transform: uppercase;
   color: var(--color-text-muted);
   padding: 20px 16px 8px;
-  letter-spacing: 0.02em;
 }
 
-/* iOS Primary Button */
+/* ==============================================================================
+   Primary CTA Button -- Signal Blue (#0428cb) filled
+   ============================================================================== */
+
 .ios-btn-primary {
-  background: var(--color-accent);
-  color: var(--color-accent-text);
-  border-radius: 14px;
-  font-weight: 600;
-  font-size: 15px;
+  background: var(--color-signal-blue);
+  color: #ffffff;
+  border-radius: var(--radius-buttons);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--text-caption);
+  font-family: var(--font-body);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   padding: 14px 20px;
   display: inline-flex;
   align-items: center;
@@ -243,28 +380,60 @@ html.dark .ios-list-group {
   gap: 8px;
   border: none;
   cursor: pointer;
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  transition: opacity 0.15s ease, transform 0.1s ease, background-color 0.15s ease;
 }
+
 .ios-btn-primary:hover:not(:disabled) {
-  opacity: 0.92;
+  background: var(--color-accent-hover);
+  opacity: 1;
 }
+
 .ios-btn-primary:active:not(:disabled) {
-  opacity: 0.82;
-  transform: scale(0.98);
+  opacity: 0.88;
+  transform: scale(0.99);
 }
+
 .ios-btn-primary:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* iOS Secondary Button */
+.btn-gradient {
+  background: var(--color-signal-blue);
+  color: #ffffff !important;
+  font-weight: var(--font-weight-regular);
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-buttons);
+  transition: all 0.15s ease;
+}
+
+.btn-gradient:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+.btn-gradient:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-gradient * {
+  color: #ffffff !important;
+}
+
+/* ==============================================================================
+   Ghost / Secondary Button
+   ============================================================================== */
+
 .ios-btn-secondary {
   background: transparent;
   color: var(--color-text);
-  border: 1.5px solid var(--color-border);
-  border-radius: 14px;
-  font-weight: 600;
-  font-size: 15px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-buttons);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--text-caption);
+  font-family: var(--font-body);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   padding: 13px 20px;
   display: inline-flex;
   align-items: center;
@@ -273,119 +442,245 @@ html.dark .ios-list-group {
   cursor: pointer;
   transition: all 0.15s ease;
 }
+
 .ios-btn-secondary:hover:not(:disabled) {
-  background: rgba(125, 125, 125, 0.08);
-}
-.ios-btn-secondary:active:not(:disabled) {
-  transform: scale(0.98);
+  border-color: var(--color-signal-blue);
+  color: var(--color-signal-blue);
 }
 
-/* iOS Input Field */
+.ios-btn-secondary:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+/* ==============================================================================
+   Input -- hairline border, 4px radius (tags/images), Signal Blue focus
+   ============================================================================== */
+
 .ios-input {
   background: var(--color-input-bg);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   padding: 13px 16px;
   color: var(--color-text);
-  font-size: 15px;
-  font-family: inherit;
+  font-size: var(--text-body-sm);
+  font-family: var(--font-body);
   width: 100%;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  backdrop-filter: blur(10px);
-}
-.ios-input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(0, 196, 140, 0.18);
-}
-html.light .ios-input:focus {
-  box-shadow: 0 0 0 3px rgba(28, 28, 30, 0.12);
-}
-.ios-input::placeholder {
-  color: var(--color-text-muted);
 }
 
-/* Backward compatibility for .glass-input */
+.ios-input:focus {
+  outline: none;
+  border-color: var(--color-signal-blue);
+  box-shadow: 0 0 0 3px rgba(4, 40, 203, 0.15);
+}
+
+.ios-input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
 .glass-input {
   background: var(--color-input-bg);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   color: var(--color-text);
   padding: 12px 16px;
   transition: all 0.2s ease;
 }
+
 .glass-input:focus {
-  border-color: var(--color-accent);
+  border-color: var(--color-signal-blue);
   outline: none;
+  box-shadow: 0 0 0 3px rgba(4, 40, 203, 0.15);
 }
+
 .glass-input::placeholder {
   color: var(--color-text-muted);
 }
 
-/* Backward compatibility for .btn-gradient */
-.btn-gradient {
-  background: var(--color-accent);
-  color: var(--color-accent-text) !important;
-  font-weight: 600;
-  border-radius: 14px;
-  transition: all 0.15s ease;
-}
-.btn-gradient:hover:not(:disabled) {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
-.btn-gradient:active:not(:disabled) {
-  transform: translateY(0);
-}
-.btn-gradient * {
-  color: var(--color-accent-text) !important;
-}
+/* ==============================================================================
+   Navigation Bar
+   ============================================================================== */
 
-/* Page Header & Nav */
 .page-header {
   background: var(--color-header-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 0.5px solid var(--color-separator);
-  padding: 14px 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-separator);
+  padding: 20px;
   color: var(--color-page-header-text);
-  transition: background-color 0.25s ease, border-color 0.25s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
 .nav-glass {
   background: var(--color-header-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 0.5px solid var(--color-separator);
-  transition: background-color 0.25s ease, border-color 0.25s ease;
-}
-
-/* iOS Bottom Tab Bar */
-.ios-tab-bar {
-  background: var(--color-card-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-top: 0.5px solid var(--color-separator);
-  border-radius: 24px 24px 0 0;
-}
-
-/* Page Dark Obsidian backwards compatibility */
-.page-dark-obsidian {
-  min-height: 100vh;
-  background: var(--page-bg-gradient) !important;
-  color: var(--color-text) !important;
-  position: relative;
-  overflow: hidden;
-  transition: background 0.25s ease, color 0.25s ease;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--color-separator);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 /* ==============================================================================
-   Automatic Theme Overrides
+   Bottom Tab Bar
+   ============================================================================== */
+
+.ios-tab-bar {
+  background: var(--color-header-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--color-separator);
+}
+
+/* ==============================================================================
+   Status Tags -- IBM Plex Mono, 4px radius, wide tracking
+   ============================================================================== */
+
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-tags);
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 400;
+  letter-spacing: 0.083em;
+  text-transform: uppercase;
+  line-height: 1.82;
+}
+
+.status-tag-success {
+  background: rgba(52, 252, 255, 0.08);
+  color: var(--color-arc-cyan);
+  border: 1px solid rgba(52, 252, 255, 0.2);
+}
+
+html.light .status-tag-success {
+  background: rgba(4, 40, 203, 0.06);
+  color: var(--color-signal-blue);
+  border: 1px solid rgba(4, 40, 203, 0.15);
+}
+
+.status-tag-error {
+  background: rgba(255, 70, 70, 0.1);
+  color: #ff6b6b;
+  border: 1px solid rgba(255, 70, 70, 0.25);
+}
+
+html.light .status-tag-error {
+  background: rgba(220, 38, 38, 0.07);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.status-tag-neutral {
+  background: rgba(107, 107, 131, 0.12);
+  color: var(--color-fog);
+  border: 1px solid rgba(107, 107, 131, 0.25);
+}
+
+/* ==============================================================================
+   Eyebrow / Label
+   ============================================================================== */
+
+.eyebrow-label {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-signal-blue);
+  line-height: 1.3;
+}
+
+html.dark .eyebrow-label {
+  color: var(--color-arc-cyan);
+}
+
+/* ==============================================================================
+   Mono Data Label
+   ============================================================================== */
+
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  font-weight: 400;
+  letter-spacing: 0.083em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  line-height: var(--leading-micro);
+}
+
+/* ==============================================================================
+   Status Dot
+   ============================================================================== */
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-arc-cyan);
+  flex-shrink: 0;
+}
+
+html.light .status-dot {
+  background: var(--color-signal-blue);
+}
+
+.status-dot-amber {
+  background: #ffd60a;
+}
+
+/* ==============================================================================
+   Heading Utilities
+   ============================================================================== */
+
+.heading-display {
+  font-family: var(--font-display);
+  font-size: var(--text-display);
+  font-weight: var(--font-weight-light);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--color-text);
+}
+
+.heading-lg {
+  font-family: var(--font-display);
+  font-size: var(--text-heading-lg);
+  font-weight: var(--font-weight-light);
+  line-height: var(--leading-heading-lg);
+  letter-spacing: var(--tracking-heading-lg);
+  color: var(--color-text);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: var(--text-heading);
+  font-weight: var(--font-weight-light);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-text);
+}
+
+/* ==============================================================================
+   Text Role Utilities
+   ============================================================================== */
+
+.text-primary { color: var(--color-text); }
+.text-muted { color: var(--color-text-muted); }
+.text-secondary-color { color: var(--color-text-secondary); }
+.text-accent { color: var(--color-signal-blue); }
+
+/* ==============================================================================
+   Light Mode Overrides
    ============================================================================== */
 
 html.light [style*="#06050e"],
 html.light [style*="#070612"],
 html.light [style*="#0e0d1f"],
-html.light [style*="#080714"] {
+html.light [style*="#080714"],
+html.light [style*="#00052e"] {
   background: var(--page-bg-gradient) !important;
   color: var(--color-text) !important;
 }
@@ -395,22 +690,21 @@ html.light [style*="rgba(16,14,28"] {
   background-color: var(--color-card-bg) !important;
   border-color: var(--color-border) !important;
   color: var(--color-text) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 html.light .text-white:not([data-keep-white]):not([data-keep-white] *):not(.ios-btn-primary):not(.ios-btn-primary *) {
-  color: #1C1C1E !important;
+  color: var(--color-midnight-ink) !important;
 }
 
 html.light .text-slate-100,
 html.light .text-slate-200 {
-  color: #1C1C1E !important;
+  color: var(--color-midnight-ink) !important;
 }
 
 html.light .text-slate-300 {
-  color: #3A3A3C !important;
+  color: var(--color-slate-body) !important;
 }
 
 html.light .text-slate-400 {
-  color: #8E8E93 !important;
+  color: var(--color-fog) !important;
 }

@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as dotenv from 'dotenv';
 import { recordPointsTransaction } from '../lib/cashier';
 import { redis } from '../lib/redis';
+import { generateQrToken } from '../lib/customer';
 
 dotenv.config({ path: path.join(process.cwd(), '.env.local') });
 
@@ -36,7 +37,8 @@ async function main() {
     const { data: newCust, error } = await adminClient.from('customers').insert({
       business_id: business.id,
       name: 'Load Test Customer',
-      phone_number: '0000000000',
+      phone_number: '01099990000',
+      qr_token: generateQrToken(),
     }).select('id').single();
     if (error) throw error;
     customer = newCust;

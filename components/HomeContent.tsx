@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { 
   Star, User, Phone, Gift, 
   Check, WarningCircle, CircleNotch, Eye, EyeSlash,
-  MagnifyingGlass, ArrowRight, CaretDown, CaretUp 
+  MagnifyingGlass, ArrowRight, CaretDown, CaretUp, Storefront
 } from '@phosphor-icons/react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -216,8 +216,8 @@ export default function HomeContent({
       {/* Top Bar Navigation */}
       <header className="flex items-center justify-between w-full max-w-md pt-2 pb-4 relative z-10">
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
-          <span className="text-sm font-black tracking-wider uppercase opacity-80" style={{ color: 'var(--color-text)' }}>
+          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
+          <span className="text-xs font-mono font-medium tracking-wider uppercase text-[var(--color-text)]">
             Pointat
           </span>
         </div>
@@ -229,58 +229,57 @@ export default function HomeContent({
 
       {/* Main Authentication Card */}
       <div className="max-w-md w-full flex flex-col my-auto py-6 relative z-10">
-        <div className="glass-card w-full p-6 sm:p-8 text-center transition-all">
+        <div className="w-full rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 sm:p-8 text-center transition-all">
           {/* Brand Icon Header */}
           <div 
-            className="w-14 h-14 mx-auto mb-3 rounded-2xl flex items-center justify-center shadow-md transition-transform"
-            style={{ 
-              backgroundColor: 'var(--color-accent)', 
-              color: 'var(--color-accent-text)',
-            }}
+            className="w-12 h-12 mx-auto mb-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)] transition-transform"
           >
-            <Star size={28} weight="fill" />
+          {tenantBusiness ? (
+            <Storefront size={24} weight="light" />
+          ) : (
+            <Star size={24} weight="light" />
+          )}
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-black tracking-tight mb-1" style={{ color: 'var(--color-text)' }}>
-            {tenantBusiness ? tenantBusiness.name : 'Pointat'}
+          <h1 className="text-xl sm:text-2xl font-light tracking-[-0.6px] mb-1 text-[var(--color-text)]">
+            {tenantBusiness
+              ? t('home.tenantWelcome', { name: tenantBusiness.name })
+              : 'Pointat'}
           </h1>
-          <p className="text-xs mb-5 opacity-60">
+          <p className="text-xs mb-5 text-[var(--color-text-muted)]">
             {activeTab === 'login'
               ? (locale === 'ar' ? 'سجل دخولك برقم الموبايل للوصول إلى نقاطك وبطاقاتك' : 'Sign in with your phone number to access your points')
               : (locale === 'ar' ? 'أنشئ حسابك الجديد برقم الموبايل وابدأ بجمع المكافآت' : 'Create your account with your mobile number to earn rewards')}
           </p>
 
-          {/* Segmented Mode Switcher (iOS style segmented tab) */}
+          {/* Segmented Mode Switcher */}
           <div 
-            className="grid grid-cols-2 p-1 rounded-2xl border mb-6"
-            style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)' }}
+            className="grid grid-cols-2 p-1 rounded-[6px] border border-[var(--color-border)] bg-[var(--color-input-bg)] mb-6"
           >
             <button
               type="button"
               id="tab-login"
               onClick={() => { setActiveTab('login'); setLoginError(null); }}
-              className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`py-1.5 rounded-[4px] text-xs font-mono uppercase font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 activeTab === 'login' 
-                  ? 'shadow-xs' 
-                  : 'opacity-60 hover:opacity-100'
+                  ? 'bg-[var(--color-accent)] text-white shadow-xs' 
+                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
               }`}
-              style={activeTab === 'login' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' } : { color: 'var(--color-text)' }}
             >
-              <User size={16} weight="light" />
+              <User size={15} weight="light" />
               <span>{t('home.loginTab')}</span>
             </button>
             <button
               type="button"
               id="tab-signup"
               onClick={() => { setActiveTab('signup'); setSignupError(null); }}
-              className={`py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`py-1.5 rounded-[4px] text-xs font-mono uppercase font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 activeTab === 'signup' 
-                  ? 'shadow-xs' 
-                  : 'opacity-60 hover:opacity-100'
+                  ? 'bg-[var(--color-accent)] text-white shadow-xs' 
+                  : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
               }`}
-              style={activeTab === 'signup' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' } : { color: 'var(--color-text)' }}
             >
-              <Star size={16} weight="light" />
+              <Star size={15} weight="light" />
               <span>{t('home.signupTab')}</span>
             </button>
           </div>
@@ -290,21 +289,21 @@ export default function HomeContent({
             <form onSubmit={handleLogin} className={`flex flex-col gap-3.5 ${isRtl ? 'text-right' : 'text-left'}`}>
               {loginError && (
                 <div 
-                  className="p-3 rounded-xl text-xs font-medium flex items-center gap-2 border"
+                  className="p-3 rounded-[4px] text-xs font-mono flex items-center gap-2 border"
                   style={{
                     backgroundColor: 'var(--color-error-bg)',
                     borderColor: 'var(--color-error-border)',
                     color: 'var(--color-error-text)'
                   }}
                 >
-                  <WarningCircle size={18} weight="light" className="shrink-0" />
+                  <WarningCircle size={16} weight="light" className="shrink-0" />
                   <span>{loginError}</span>
                 </div>
               )}
 
               {/* Mobile Number */}
               <div>
-                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="login-phone-input">
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5" htmlFor="login-phone-input">
                   {locale === 'ar' ? 'رقم الموبايل' : 'Phone Number'}
                 </label>
                 <div className="relative flex items-center">
@@ -317,12 +316,12 @@ export default function HomeContent({
                     value={loginPhone}
                     onChange={(e) => setLoginPhone(e.target.value)}
                     dir="ltr"
-                    className="ios-input font-mono pe-10"
+                    className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                   />
-                  <Phone size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                  <Phone size={16} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
                 </div>
                 {loginPhone && !validateEgyptianPhone(loginPhone).isValid && (
-                  <p className="text-[11px] text-red-500 mt-1 font-medium">
+                  <p className="text-[11px] text-red-500 mt-1 font-mono">
                     {t(`validation.${validateEgyptianPhone(loginPhone).errorKey}`) || 'رقم التليفون لازم يبدأ بـ 01 ويتكون من 11 رقماً'}
                   </p>
                 )}
@@ -331,13 +330,12 @@ export default function HomeContent({
               {/* Password with Eye Toggle */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs opacity-75 font-semibold" htmlFor="login-password-input">
+                  <label className="text-[11px] font-mono uppercase tracking-wider text-[var(--color-text-muted)]" htmlFor="login-password-input">
                     {locale === 'ar' ? 'كلمة المرور' : 'Password'}
                   </label>
                   <Link 
                     href="/forgot-password"
-                    className="text-[11px] font-medium opacity-80 hover:opacity-100"
-                    style={{ color: 'var(--color-text)' }}
+                    className="text-[11px] font-mono text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
                   >
                     {t('customerLogin.forgotPassword')}
                   </Link>
@@ -350,7 +348,7 @@ export default function HomeContent({
                     placeholder="••••••••"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="ios-input pe-10"
+                    className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                   />
                   <button
                     type="button"
@@ -359,7 +357,7 @@ export default function HomeContent({
                     className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity cursor-pointer`}
                     aria-label="Toggle password visibility"
                   >
-                    {showLoginPassword ? <EyeSlash size={18} weight="light" /> : <Eye size={18} weight="light" />}
+                    {showLoginPassword ? <EyeSlash size={16} weight="light" /> : <Eye size={16} weight="light" />}
                   </button>
                 </div>
               </div>
@@ -369,28 +367,27 @@ export default function HomeContent({
                 type="submit"
                 id="login-submit-btn"
                 disabled={isLoggingIn || !loginPhone.trim() || !loginPassword}
-                className="ios-btn-primary w-full mt-2"
+                className="w-full h-10 rounded-[8px] font-mono text-xs uppercase tracking-wider font-semibold text-white bg-[var(--color-accent)] hover:opacity-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-2 transition-opacity"
               >
                 {isLoggingIn ? (
                   <>
-                    <CircleNotch size={18} weight="light" className="animate-spin" />
+                    <CircleNotch size={16} weight="light" className="animate-spin" />
                     <span>{t('home.signingIn')}</span>
                   </>
                 ) : (
                   <>
                     <span>{t('home.loginTab')}</span>
-                    <ArrowRight size={18} weight="light" className={isRtl ? 'rotate-180' : ''} />
+                    <ArrowRight size={16} weight="light" className={isRtl ? 'rotate-180' : ''} />
                   </>
                 )}
               </button>
 
-              <div className="text-center pt-2 text-xs">
-                <span className="opacity-60">{t('home.newCustomerPrompt')} </span>
+              <div className="text-center pt-2 text-xs font-mono text-[var(--color-text-muted)]">
+                <span>{t('home.newCustomerPrompt')} </span>
                 <button
                   type="button"
                   onClick={() => { setActiveTab('signup'); setSignupError(null); }}
-                  className="font-bold underline cursor-pointer"
-                  style={{ color: 'var(--color-text)' }}
+                  className="font-medium underline cursor-pointer text-[var(--color-text)] hover:text-[var(--color-accent)]"
                 >
                   {t('home.createAccountNow')}
                 </button>
@@ -403,7 +400,7 @@ export default function HomeContent({
             <form onSubmit={handleSignup} className={`flex flex-col gap-3.5 ${isRtl ? 'text-right' : 'text-left'}`}>
               {signupError && (
                 <div 
-                  className="p-3 rounded-xl text-xs font-medium flex flex-col gap-2 border"
+                  className="p-3 rounded-[4px] text-xs font-mono flex flex-col gap-2 border"
                   style={{
                     backgroundColor: 'var(--color-error-bg)',
                     borderColor: 'var(--color-error-border)',
@@ -411,13 +408,13 @@ export default function HomeContent({
                   }}
                 >
                   <div className="flex items-center gap-2">
-                    <WarningCircle size={18} weight="light" className="shrink-0" />
+                    <WarningCircle size={16} weight="light" className="shrink-0" />
                     <span>{signupError}</span>
                   </div>
                   {existingQrToken && (
                     <Link
                       href={`/card/${existingQrToken}`}
-                      className="text-xs font-bold underline mt-1"
+                      className="text-xs font-medium underline mt-1"
                     >
                       {locale === 'ar' ? 'عرض بطاقتي المسجلة مسبقاً ←' : 'View my registered card →'}
                     </Link>
@@ -427,21 +424,21 @@ export default function HomeContent({
 
               {signupSuccess && (
                 <div 
-                  className="p-3 rounded-xl text-xs font-medium flex items-center gap-2 border"
+                  className="p-3 rounded-[4px] text-xs font-mono flex items-center gap-2 border"
                   style={{
                     backgroundColor: 'var(--color-success-bg)',
                     borderColor: 'var(--color-success-border)',
                     color: 'var(--color-success-text)'
                   }}
                 >
-                  <Check size={18} weight="light" className="shrink-0" />
+                  <Check size={16} weight="light" className="shrink-0" />
                   <span>{t('signup.successRedirect')}</span>
                 </div>
               )}
 
               {/* Full Name */}
               <div>
-                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-name-input">
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5" htmlFor="signup-name-input">
                   {t('signup.nameLabel')}
                 </label>
                 <div className="relative flex items-center">
@@ -452,12 +449,12 @@ export default function HomeContent({
                     placeholder={t('signup.namePlaceholder')}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="ios-input pe-10"
+                    className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                   />
-                  <User size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                  <User size={16} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
                 </div>
                 {name && !validateName(name).isValid && (
-                  <p className="text-[11px] text-red-500 mt-1 font-medium">
+                  <p className="text-[11px] text-red-500 mt-1 font-mono">
                     {t(`validation.${validateName(name).errorKey}`)}
                   </p>
                 )}
@@ -465,7 +462,7 @@ export default function HomeContent({
 
               {/* Phone Number */}
               <div>
-                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-phone-input">
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5" htmlFor="signup-phone-input">
                   {t('home.phoneHint')}
                 </label>
                 <div className="relative flex items-center">
@@ -478,12 +475,12 @@ export default function HomeContent({
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     dir="ltr"
-                    className="ios-input font-mono pe-10"
+                    className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                   />
-                  <Phone size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                  <Phone size={16} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
                 </div>
                 {phoneNumber && !validateEgyptianPhone(phoneNumber).isValid && (
-                  <p className="text-[11px] text-red-500 mt-1 font-medium">
+                  <p className="text-[11px] text-red-500 mt-1 font-mono">
                     {t(`validation.${validateEgyptianPhone(phoneNumber).errorKey}`)}
                   </p>
                 )}
@@ -491,7 +488,7 @@ export default function HomeContent({
 
               {/* Password (MANDATORY) with Eye Toggle */}
               <div>
-                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-password-input">
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5" htmlFor="signup-password-input">
                   {locale === 'ar' ? 'كلمة المرور (8 خانات على الأقل - حرف ورقم)' : 'Password (min 8 characters - letter & number)'}
                 </label>
                 <div className="relative flex items-center">
@@ -503,7 +500,7 @@ export default function HomeContent({
                     placeholder="••••••••"
                     value={signupPassword}
                     onChange={(e) => setSignupPassword(e.target.value)}
-                    className="ios-input pe-10"
+                    className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                   />
                   <button
                     type="button"
@@ -512,11 +509,11 @@ export default function HomeContent({
                     className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity cursor-pointer`}
                     aria-label="Toggle password visibility"
                   >
-                    {showSignupPassword ? <EyeSlash size={18} weight="light" /> : <Eye size={18} weight="light" />}
+                    {showSignupPassword ? <EyeSlash size={16} weight="light" /> : <Eye size={16} weight="light" />}
                   </button>
                 </div>
                 {signupPassword && !validatePassword(signupPassword).isValid && (
-                  <p className="text-[11px] text-red-500 mt-1 font-medium">
+                  <p className="text-[11px] text-red-500 mt-1 font-mono">
                     {t(`validation.${validatePassword(signupPassword).errorKey}`) || 'يجب ألا تقل كلمة المرور عن 8 خانات وتحتوي على حرف ورقم'}
                   </p>
                 )}
@@ -524,7 +521,7 @@ export default function HomeContent({
 
               {/* Confirm Password with Eye Toggle */}
               <div>
-                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-confirm-password-input">
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5" htmlFor="signup-confirm-password-input">
                   {locale === 'ar' ? 'تأكيد كلمة المرور' : 'Confirm Password'}
                 </label>
                 <div className="relative flex items-center">
@@ -536,7 +533,7 @@ export default function HomeContent({
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="ios-input pe-10"
+                    className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                   />
                   <button
                     type="button"
@@ -545,11 +542,11 @@ export default function HomeContent({
                     className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity cursor-pointer`}
                     aria-label="Toggle confirm password visibility"
                   >
-                    {showConfirmPassword ? <EyeSlash size={18} weight="light" /> : <Eye size={18} weight="light" />}
+                    {showConfirmPassword ? <EyeSlash size={16} weight="light" /> : <Eye size={16} weight="light" />}
                   </button>
                 </div>
                 {confirmPassword && signupPassword !== confirmPassword && (
-                  <p className="text-[11px] text-red-500 mt-1 font-medium">
+                  <p className="text-[11px] text-red-500 mt-1 font-mono">
                     {t('validation.passwords_not_matching') || 'كلمتا المرور غير متطابقتين'}
                   </p>
                 )}
@@ -557,7 +554,7 @@ export default function HomeContent({
 
               {/* Referral Code (Optional) */}
               <div>
-                <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-referral-input">
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-[var(--color-text-muted)] mb-1.5" htmlFor="signup-referral-input">
                   {t('signup.referralCodeLabel')}
                 </label>
                 <div className="relative flex items-center">
@@ -567,28 +564,27 @@ export default function HomeContent({
                     placeholder={t('signup.referralCodePlaceholder')}
                     value={referralCode}
                     onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                    className="ios-input uppercase font-mono pe-10"
+                    className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs uppercase border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                   />
-                  <Gift size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                  <Gift size={16} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
                 </div>
               </div>
 
               {/* Mandatory Consent Checkbox */}
               <div 
-                className="p-3 rounded-2xl border flex items-start gap-2.5"
-                style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)' }}
+                className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-start gap-2.5"
               >
                 <input
                   type="checkbox"
                   id="signup-consent-checkbox"
                   checked={consentGiven}
                   onChange={(e) => setConsentGiven(e.target.checked)}
-                  className="mt-1 w-4 h-4 rounded cursor-pointer shrink-0"
+                  className="mt-1 w-4 h-4 rounded-[2px] cursor-pointer shrink-0"
                   style={{ accentColor: 'var(--color-accent)' }}
                 />
                 <label 
                   htmlFor="signup-consent-checkbox" 
-                  className="text-[11px] opacity-80 leading-relaxed cursor-pointer select-none"
+                  className="text-[11px] text-[var(--color-text-muted)] leading-relaxed cursor-pointer select-none"
                 >
                   {t('home.consentCheckbox')}
                 </label>
@@ -599,28 +595,27 @@ export default function HomeContent({
                 type="submit"
                 id="signup-submit-btn"
                 disabled={isSigningUp || !name.trim() || !phoneNumber.trim() || !signupPassword || !confirmPassword || !consentGiven}
-                className="ios-btn-primary w-full mt-1"
+                className="w-full h-10 rounded-[8px] font-mono text-xs uppercase tracking-wider font-semibold text-white bg-[var(--color-accent)] hover:opacity-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-1 transition-opacity"
               >
                 {isSigningUp ? (
                   <>
-                    <CircleNotch size={18} weight="light" className="animate-spin" />
+                    <CircleNotch size={16} weight="light" className="animate-spin" />
                     <span>{t('home.creatingAccount')}</span>
                   </>
                 ) : (
                   <>
                     <span>{t('home.createAccountBtn')}</span>
-                    <ArrowRight size={18} weight="light" className={isRtl ? 'rotate-180' : ''} />
+                    <ArrowRight size={16} weight="light" className={isRtl ? 'rotate-180' : ''} />
                   </>
                 )}
               </button>
 
-              <div className="text-center pt-2 text-xs">
-                <span className="opacity-60">{t('home.alreadyCustomerPrompt')} </span>
+              <div className="text-center pt-2 text-xs font-mono text-[var(--color-text-muted)]">
+                <span>{t('home.alreadyCustomerPrompt')} </span>
                 <button
                   type="button"
                   onClick={() => { setActiveTab('login'); setLoginError(null); }}
-                  className="font-bold underline cursor-pointer"
-                  style={{ color: 'var(--color-text)' }}
+                  className="font-medium underline cursor-pointer text-[var(--color-text)] hover:text-[var(--color-accent)]"
                 >
                   {t('home.signInNow')}
                 </button>
@@ -629,11 +624,11 @@ export default function HomeContent({
           )}
 
           {/* Collapsible Direct Card Lookup (9-character code) */}
-          <div className="mt-6 pt-4 border-t" style={{ borderColor: 'var(--color-separator)' }}>
+          <div className="mt-6 pt-4 border-t border-[var(--color-separator)]">
             <button
               type="button"
               onClick={() => setShowLookup(!showLookup)}
-              className="text-[11px] opacity-60 hover:opacity-100 transition-opacity flex items-center justify-center gap-1 mx-auto cursor-pointer"
+              className="text-[11px] font-mono text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors flex items-center justify-center gap-1 mx-auto cursor-pointer"
             >
               <span>{t('home.haveQuickCode')}</span>
               {showLookup ? <CaretUp size={14} weight="light" /> : <CaretDown size={14} weight="light" />}
@@ -649,14 +644,14 @@ export default function HomeContent({
                       onChange={(e) => setLookupCode(e.target.value.toUpperCase())}
                       placeholder={t('home.quickCodePlaceholder')}
                       dir={isRtl ? 'rtl' : 'ltr'}
-                      className={`ios-input uppercase ${lookupCode ? 'font-mono' : ''}`}
+                      className={`w-full h-10 px-3 pe-8 rounded-[4px] font-mono text-xs uppercase border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]`}
                     />
                     <MagnifyingGlass size={16} weight="light" className={`absolute top-1/2 -translate-y-1/2 opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
                   </div>
                   <button
                     type="submit"
                     disabled={!lookupCode.trim()}
-                    className="ios-btn-primary py-2.5 px-3.5 text-xs shrink-0"
+                    className="h-10 px-3.5 rounded-[4px] font-mono text-xs uppercase tracking-wider font-semibold text-white bg-[var(--color-accent)] hover:opacity-95 disabled:opacity-50 shrink-0 transition-opacity"
                   >
                     {t('home.viewCardBtn')}
                   </button>

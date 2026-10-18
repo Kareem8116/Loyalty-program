@@ -144,21 +144,14 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
     <div className="w-full flex flex-col items-center">
       {/* Scanner Mode Toggle Tabs */}
       <div 
-        className="w-full max-w-xs flex items-center p-1 rounded-2xl mb-4 border shadow-xs"
-        style={{
-          backgroundColor: 'var(--color-card-bg)',
-          borderColor: 'var(--color-border)',
-        }}
+        className="w-full max-w-xs flex items-center p-1 rounded-[6px] mb-4 border border-[var(--color-border)] bg-[var(--color-card-bg)]"
       >
         <button
           type="button"
           onClick={() => handleModeChange('external')}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all"
-          style={{
-            backgroundColor: scannerMode === 'external' ? 'var(--color-accent)' : 'transparent',
-            color: scannerMode === 'external' ? 'var(--color-btn-text)' : 'var(--color-text)',
-            opacity: scannerMode === 'external' ? 1 : 0.7,
-          }}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-[4px] text-[11px] font-mono uppercase tracking-wider transition-colors cursor-pointer ${
+            scannerMode === 'external' ? 'bg-[var(--color-accent)] text-white font-semibold' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+          }`}
         >
           <Barcode weight="light" className="w-4 h-4" />
           <span>{t('qrScanner.modeExternal')}</span>
@@ -167,12 +160,9 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
         <button
           type="button"
           onClick={() => handleModeChange('camera')}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold transition-all"
-          style={{
-            backgroundColor: scannerMode === 'camera' ? 'var(--color-accent)' : 'transparent',
-            color: scannerMode === 'camera' ? 'var(--color-btn-text)' : 'var(--color-text)',
-            opacity: scannerMode === 'camera' ? 1 : 0.7,
-          }}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-[4px] text-[11px] font-mono uppercase tracking-wider transition-colors cursor-pointer ${
+            scannerMode === 'camera' ? 'bg-[var(--color-accent)] text-white font-semibold' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
+          }`}
         >
           <Camera weight="light" className="w-4 h-4" />
           <span>{t('qrScanner.modeCamera')}</span>
@@ -182,44 +172,30 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
       {/* External Hardware Scanner Mode (USB / Bluetooth HID) */}
       {scannerMode === 'external' && (
         <div 
-          className="glass-card w-full rounded-3xl p-6 flex flex-col items-center justify-center relative overflow-hidden min-h-[300px]"
-          style={{
-            backgroundColor: 'var(--color-card-bg)',
-            borderColor: 'var(--color-border)',
-          }}
+          className="w-full rounded-[8px] p-6 flex flex-col items-center justify-center relative overflow-hidden min-h-[300px] border border-[var(--color-border)] bg-[var(--color-card-bg)]"
         >
           {/* Status Indicator Badge */}
           <div 
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-5 shadow-xs border"
-            style={{
-              backgroundColor: 'var(--color-bg)',
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-accent)',
-            }}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] text-[10px] font-mono uppercase tracking-wider mb-5 border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-accent)]"
           >
-            <span className="w-2 h-2 rounded-full animate-ping" style={{ backgroundColor: 'var(--color-accent)' }} />
+            <span className="w-2 h-2 rounded-[2px] animate-pulse bg-[var(--color-accent)]" />
             <span>{t('qrScanner.externalReady')}</span>
-            <span className="text-[10px] opacity-60">|</span>
-            <span className="text-[10px] opacity-75">{t('qrScanner.fastScanBadge')}</span>
+            <span className="opacity-40">|</span>
+            <span className="opacity-75">{t('qrScanner.fastScanBadge')}</span>
           </div>
 
           {/* Scanner Visual Crosshair Icon */}
           <div 
-            className="w-24 h-24 rounded-3xl flex items-center justify-center mb-4 border-2 border-dashed relative shadow-inner"
-            style={{
-              borderColor: 'var(--color-accent)',
-              backgroundColor: 'var(--color-bg)',
-            }}
+            className="w-20 h-20 rounded-[8px] flex items-center justify-center mb-4 border border-dashed border-[var(--color-accent)]/50 bg-[var(--color-bg)] relative"
           >
-            <Barcode weight="light" className="w-12 h-12 animate-pulse" style={{ color: 'var(--color-accent)' }} />
+            <Barcode weight="light" className="w-10 h-10 text-[var(--color-accent)] opacity-80" />
             <div 
-              className="w-full h-0.5 animate-pulse absolute top-1/2 -translate-y-1/2 opacity-70"
-              style={{ backgroundColor: 'var(--color-accent)' }}
+              className="w-full h-px animate-pulse absolute top-1/2 -translate-y-1/2 bg-[var(--color-accent)] opacity-80"
             />
           </div>
 
           {/* User Hint */}
-          <p className="text-xs text-center opacity-80 max-w-xs mb-6 px-2 leading-relaxed">
+          <p className="text-xs text-center opacity-75 font-mono max-w-xs mb-6 px-2 leading-relaxed">
             {t('qrScanner.externalHint')}
           </p>
 
@@ -235,12 +211,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={t('qrScanner.externalPlaceholder')}
-                className={`w-full py-3 px-4 rounded-xl text-sm font-mono font-bold tracking-wider text-center border transition-all focus:outline-hidden focus:ring-2 ${isRtl ? 'pr-10' : 'pl-10'}`}
-                style={{
-                  backgroundColor: 'var(--color-bg)',
-                  borderColor: 'var(--color-border)',
-                  color: 'var(--color-text)',
-                }}
+                className={`w-full py-2 px-3 rounded-[4px] text-xs font-mono tracking-wider text-center border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors ${isRtl ? 'pr-9' : 'pl-9'}`}
               />
               <Usb weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
             </div>
@@ -249,11 +220,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
               type="submit"
               id="external-submit-btn"
               disabled={!inputValue.trim() || isLoading}
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-xs"
-              style={{
-                backgroundColor: 'var(--color-accent)',
-                color: 'var(--color-btn-text)',
-              }}
+              className="w-full py-2.5 px-4 rounded-[8px] text-xs font-medium uppercase tracking-wider transition-all active:scale-[0.99] disabled:opacity-40 flex items-center justify-center gap-1.5 bg-[var(--color-accent)] text-white hover:brightness-110 cursor-pointer"
             >
               <MagnifyingGlass weight="light" className="w-3.5 h-3.5" />
               <span>{isLoading ? t('common.loading') : t('qrScanner.externalSubmit')}</span>
@@ -263,14 +230,10 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
           {/* Loading Overlay */}
           {isLoading && (
             <div 
-              className="absolute inset-0 backdrop-blur-xs flex flex-col items-center justify-center z-10"
-              style={{
-                backgroundColor: 'var(--color-overlay-bg)',
-                color: 'var(--color-btn-text)',
-              }}
+              className="absolute inset-0 bg-[var(--color-overlay-bg)] flex flex-col items-center justify-center z-10 text-[var(--color-btn-text)]"
             >
-              <CircleNotch weight="light" className="w-8 h-8 animate-spin mb-2" />
-              <span className="text-xs font-medium">{t('common.loading')}</span>
+              <CircleNotch weight="light" className="w-6 h-6 animate-spin mb-2" />
+              <span className="text-xs font-mono">{t('common.loading')}</span>
             </div>
           )}
         </div>
@@ -280,31 +243,21 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
       {scannerMode === 'camera' && (
         <div className="w-full flex flex-col items-center">
           <div 
-            className="glass-card w-full rounded-3xl p-4 flex flex-col items-center justify-center relative overflow-hidden min-h-[280px]"
-            style={{
-              backgroundColor: 'var(--color-card-bg)',
-              borderColor: 'var(--color-border)',
-            }}
+            className="w-full rounded-[8px] p-4 flex flex-col items-center justify-center relative overflow-hidden min-h-[280px] border border-[var(--color-border)] bg-[var(--color-card-bg)]"
           >
-            <div id="qr-reader" className="w-full max-w-xs overflow-hidden rounded-2xl" />
+            <div id="qr-reader" className="w-full max-w-xs overflow-hidden rounded-[4px]" />
 
             {!cameraError && (
               <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center p-8">
                 <div 
-                  className="w-full h-full rounded-2xl border-2 border-dashed relative overflow-hidden"
-                  style={{ borderColor: 'var(--color-accent)' }}
+                  className="w-full h-full rounded-[4px] border border-dashed border-[var(--color-accent)] relative overflow-hidden"
                 >
                   <div 
-                    className="w-full h-0.5 animate-pulse absolute top-1/2 -translate-y-1/2"
-                    style={{ backgroundColor: 'var(--color-accent)' }}
+                    className="w-full h-px animate-pulse absolute top-1/2 -translate-y-1/2 bg-[var(--color-accent)]"
                   />
                 </div>
                 <span 
-                  className="text-[11px] font-semibold mt-3 px-3 py-1 rounded-full backdrop-blur-sm shadow-xs"
-                  style={{
-                    backgroundColor: 'var(--color-overlay-bg)',
-                    color: 'var(--color-btn-text)',
-                  }}
+                  className="text-[10px] font-mono uppercase tracking-wider mt-3 px-2.5 py-1 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)]"
                 >
                   {t('qrScanner.scannerHeading')}
                 </span>
@@ -313,9 +266,9 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
 
             {cameraError && (
               <div className="p-6 text-center flex flex-col items-center">
-                <WarningCircle weight="light" className="w-10 h-10 mb-2 opacity-70" style={{ color: 'var(--color-accent)' }} />
-                <p className="text-xs opacity-80 mb-3">{cameraError}</p>
-                <span className="text-xs font-semibold" style={{ color: 'var(--color-accent)' }}>
+                <WarningCircle weight="light" className="w-8 h-8 mb-2 opacity-75 text-[var(--color-accent)]" />
+                <p className="text-xs font-mono opacity-80 mb-3">{cameraError}</p>
+                <span className="text-xs font-mono uppercase tracking-wider text-[var(--color-accent)]">
                   {t('qrScanner.manualLabel')}
                 </span>
               </div>
@@ -323,14 +276,10 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
 
             {isLoading && (
               <div 
-                className="absolute inset-0 backdrop-blur-xs flex flex-col items-center justify-center z-10"
-                style={{
-                  backgroundColor: 'var(--color-overlay-bg)',
-                  color: 'var(--color-btn-text)',
-                }}
+                className="absolute inset-0 bg-[var(--color-overlay-bg)] flex flex-col items-center justify-center z-10 text-[var(--color-btn-text)]"
               >
-                <CircleNotch weight="light" className="w-8 h-8 animate-spin mb-2" />
-                <span className="text-xs font-medium">{t('common.loading')}</span>
+                <CircleNotch weight="light" className="w-6 h-6 animate-spin mb-2" />
+                <span className="text-xs font-mono">{t('common.loading')}</span>
               </div>
             )}
           </div>
@@ -345,12 +294,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder={t('qrScanner.placeholder')}
-                  className={`w-full py-2.5 px-3 rounded-xl text-xs border transition-all focus:outline-hidden focus:ring-1 ${isRtl ? 'pr-9' : 'pl-9'}`}
-                  style={{
-                    backgroundColor: 'var(--color-card-bg)',
-                    borderColor: 'var(--color-border)',
-                    color: 'var(--color-text)',
-                  }}
+                  className={`w-full py-2 px-3 rounded-[4px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors ${isRtl ? 'pr-9' : 'pl-9'}`}
                 />
                 <Usb weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 ${isRtl ? 'right-3' : 'left-3'}`} />
               </div>
@@ -358,11 +302,7 @@ export default function QrScanner({ onScan, onScanSuccess, isLoading }: QrScanne
                 type="submit"
                 id="manual-submit-btn"
                 disabled={!inputValue.trim() || isLoading}
-                className="py-2.5 px-4 rounded-xl text-xs font-bold transition-all active:scale-95 disabled:opacity-50 shrink-0"
-                style={{
-                  backgroundColor: 'var(--color-accent)',
-                  color: 'var(--color-btn-text)',
-                }}
+                className="py-2 px-4 rounded-[8px] text-xs font-mono uppercase tracking-wider transition-all active:scale-[0.99] disabled:opacity-40 shrink-0 bg-[var(--color-accent)] text-white hover:brightness-110 cursor-pointer"
               >
                 {t('common.search')}
               </button>

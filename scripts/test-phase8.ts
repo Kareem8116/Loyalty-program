@@ -39,14 +39,18 @@ function readFileContent(relativePath: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Test 1: middleware.ts structure
+// Test 1: proxy.ts structure (was middleware.ts — renamed in Next.js 16)
 // ---------------------------------------------------------------------------
 function testMiddleware() {
-  console.log('\n=== Test 1: middleware.ts Structure ===');
+  console.log('\n=== Test 1: proxy.ts Structure ===');
 
-  check('middleware.ts exists', fileExists('middleware.ts'));
+  // Next.js 16 renamed middleware.ts to proxy.ts
+  const proxyExists = fileExists('proxy.ts');
+  const legacyExists = fileExists('middleware.ts');
+  check('proxy.ts (or legacy middleware.ts) exists', proxyExists || legacyExists);
 
-  const content = readFileContent('middleware.ts');
+  const filename = proxyExists ? 'proxy.ts' : 'middleware.ts';
+  const content = readFileContent(filename);
   check('exports middleware function', content.includes('export function middleware'));
   check('exports config matcher', content.includes('export const config'));
   check('reads Host header', content.includes("request.headers.get('host')") || content.includes('request.headers.get("host")'));
@@ -176,12 +180,14 @@ async function testDataIsolation() {
 
   if (bizList.length < 2) {
     const tempSubdomain = `iso-test-${Date.now()}`;
-    const { data: tempBiz } = await adminClient
+    const { data: tempBiz, error: tempBizErr } = await adminClient
       .from('businesses')
       .insert({ name: 'Isolation Test Biz', subdomain: tempSubdomain, is_active: true })
       .select()
       .single();
-    if (tempBiz) {
+    if (tempBizErr || !tempBiz) {
+      console.warn('Could not create temp isolation biz:', tempBizErr?.message);
+    } else {
       tempBizId = tempBiz.id;
       bizList.push(tempBiz);
     }
@@ -320,11 +326,12 @@ function testCookieScoping() {
   check('SECURE_TENANT_COOKIE_OPTIONS has sameSite: strict', cookiesContent.includes("sameSite: 'strict'"));
   check('SECURE_TENANT_COOKIE_OPTIONS has httpOnly: true', cookiesContent.includes('httpOnly: true'));
 
-  const middlewareContent = readFileContent('middleware.ts');
-  check('middleware.ts enforces domain: undefined', middlewareContent.includes('domain: undefined'));
-  check('middleware.ts enforces sameSite: strict', middlewareContent.includes("sameSite: 'strict'"));
-  check('middleware.ts enforces httpOnly: true', middlewareContent.includes('httpOnly: true'));
-  check('middleware.ts does NOT hardcode parent domain', !middlewareContent.includes("domain: '.pointat.net'"));
+  const proxyFilename = fileExists('proxy.ts') ? 'proxy.ts' : 'middleware.ts';
+  const middlewareContent = readFileContent(proxyFilename);
+  check('proxy.ts enforces domain: undefined', middlewareContent.includes('domain: undefined'));
+  check('proxy.ts enforces sameSite: strict', middlewareContent.includes("sameSite: 'strict'"));
+  check('proxy.ts enforces httpOnly: true', middlewareContent.includes('httpOnly: true'));
+  check('proxy.ts does NOT hardcode parent domain', !middlewareContent.includes("domain: '.pointat.net'"));
 }
 
 // ---------------------------------------------------------------------------
@@ -344,12 +351,16 @@ async function testSubdomainRedisCache() {
     // Check Redis key exists
     try {
       const redisKey = `tenant:subdomain:demo-coffee`;
-      const cached = await redis.get<any>(redisKey);
+      const cachedRaw = await redis.get<string>(redisKey);
+      // After JSON serialization fix, cached value is a JSON string
+      const cached = cachedRaw
+        ? (typeof cachedRaw === 'string' ? JSON.parse(cachedRaw) : cachedRaw)
+        : null;
       check('Redis key tenant:subdomain:demo-coffee exists in Redis', !!cached && cached.id === biz.id);
 
       // Invalidate cache
       await invalidateTenantCache('demo-coffee');
-      const cachedAfterDel = await redis.get<any>(redisKey);
+      const cachedAfterDel = await redis.get<string>(redisKey);
       check('Redis key invalidated after invalidateTenantCache', cachedAfterDel === null);
 
       // Re-populate for normal operation

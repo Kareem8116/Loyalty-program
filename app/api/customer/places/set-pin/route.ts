@@ -96,6 +96,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ 
       success: true, 
+      // Returns appliedToAll: true when all places updated, appliedToAll: false when single place updated
       appliedToAll: Boolean(applyToAllPlaces),
       customer: {
         qrToken: customer?.qr_token || null

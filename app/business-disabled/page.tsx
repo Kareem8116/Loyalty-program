@@ -7,91 +7,36 @@ export const metadata = {
 
 export default function BusinessDisabledPage() {
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2rem',
-        background: 'var(--color-bg, #FAF7F2)',
-        fontFamily: 'Inter, sans-serif',
-        textAlign: 'center',
-        gap: '1.5rem',
-      }}
-    >
-      {/* Icon */}
-      <div
-        style={{
-          width: '72px',
-          height: '72px',
-          borderRadius: '50%',
-          background: 'rgba(176,137,104,0.12)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '2rem',
-        }}
-      >
-        🔒
-      </div>
-
-      {/* Heading */}
-      <div>
-        <h1
-          style={{
-            fontSize: '1.5rem',
-            fontWeight: 700,
-            color: 'var(--color-text, #1a1a1a)',
-            margin: 0,
-          }}
+    <main className="page-bg min-h-screen flex flex-col items-center justify-center p-6 text-center">
+      <div className="w-full max-w-sm p-6 sm:p-8 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] flex flex-col items-center gap-4">
+        {/* Icon */}
+        <div
+          className="w-12 h-12 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center text-xl text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]"
         >
-          هذا المكان غير متاح حالياً
-        </h1>
-        <p
-          style={{
-            marginTop: '0.5rem',
-            fontSize: '0.95rem',
-            color: 'var(--color-text, #1a1a1a)',
-            opacity: 0.65,
-            maxWidth: '360px',
-          }}
+          🔒
+        </div>
+
+        {/* Heading */}
+        <div>
+          <h1 className="text-xl font-light tracking-tight text-[var(--color-text)] mb-2">
+            هذا المكان غير متاح حالياً
+          </h1>
+          <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
+            This business has been temporarily disabled by the platform administrator. Please contact your business owner for more information.
+          </p>
+        </div>
+
+        {/* Divider */}
+        <div className="w-10 h-[1px] bg-[var(--color-border)] my-1" />
+
+        {/* Back Link */}
+        <Link
+          href="/"
+          className="h-10 px-5 rounded-[8px] font-mono text-xs uppercase tracking-wider font-semibold text-white bg-[var(--color-accent)] hover:opacity-95 transition-opacity inline-flex items-center gap-2"
         >
-          This business has been temporarily disabled by the platform administrator. Please contact your business owner for more information.
-        </p>
+          ← الصفحة الرئيسية
+        </Link>
       </div>
-
-      {/* Divider */}
-      <div
-        style={{
-          width: '40px',
-          height: '2px',
-          borderRadius: '2px',
-          background: 'var(--color-accent, #B08968)',
-          opacity: 0.4,
-        }}
-      />
-
-      {/* Back Link */}
-      <Link
-        href="/"
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '0.4rem',
-          padding: '0.65rem 1.4rem',
-          borderRadius: '9999px',
-          background: 'var(--color-accent, #B08968)',
-          color: '#fff',
-          fontWeight: 600,
-          fontSize: '0.875rem',
-          textDecoration: 'none',
-          boxShadow: '0 2px 8px rgba(176,137,104,0.25)',
-        }}
-      >
-        ← الصفحة الرئيسية
-      </Link>
-    </div>
+    </main>
   );
 }

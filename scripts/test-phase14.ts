@@ -86,11 +86,12 @@ async function main() {
     const clientAuth = createClient(SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
       auth: { persistSession: false },
     });
-    const { data: sessionData } = await clientAuth.auth.signInWithPassword({
+    const { data: sessionData, error: signInErr } = await clientAuth.auth.signInWithPassword({
       email: ownerEmail,
       password: ownerPassword,
     });
-    const token = sessionData?.session?.access_token;
+    if (signInErr || !sessionData?.session) throw new Error(`Failed to sign in as owner: ${signInErr?.message}`);
+    const token = sessionData.session.access_token;
     const authHeaders = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
@@ -173,11 +174,14 @@ async function main() {
     assert(balanceAfterCron === 150, '3.4: Balance after cron decreased by 40 (190 - 40 = 150)', `Balance: ${balanceAfterCron}`);
 
     // Verify deduction record in ledger
+    const expiredLedgerId = expiredEntry?.ledgerRecord?.id;
+    if (!expiredLedgerId) throw new Error('expiredEntry.ledgerRecord.id is undefined — recordPointsTransaction failed');
+
     const { data: deductRecord } = await adminClient
       .from('points_ledger')
       .select('id, points_change, reason')
       .eq('customer_id', customer.id)
-      .eq('reason', `expired:${expiredEntry.ledgerRecord.id}`)
+      .eq('reason', `expired:${expiredLedgerId}`)
       .single();
 
     assert(Boolean(deductRecord), '3.5: Specific deduction record created with reason expired:id');

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import PwaRegister from "@/components/PwaRegister";
@@ -7,11 +7,19 @@ import PwaRegister from "@/components/PwaRegister";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#1C1C1E",
+  themeColor: "#00052e",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -49,7 +57,7 @@ export default function RootLayout({
       lang="ar"
       dir="rtl"
       suppressHydrationWarning
-      className={`${inter.variable} font-sans h-full antialiased`}
+      className={`${inter.variable} ${ibmPlexMono.variable} font-sans h-full antialiased`}
     >
       <head>
         {/* Anti-FOUC explicit theme & locale initializer */}

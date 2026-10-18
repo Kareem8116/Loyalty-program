@@ -264,22 +264,19 @@ function AccountContent() {
   return (
     <div className="w-full max-w-sm flex flex-col flex-1 py-2 relative z-10">
       {/* Header */}
-      <header className="page-header flex items-center justify-between w-full pb-4">
+      <header className="page-header flex items-center justify-between w-full pb-3 border-b border-[var(--color-separator)]">
         <Link
           href={backUrl}
           aria-label={t('common.back')}
-          className="w-10 h-10 rounded-full flex items-center justify-center glass-card transition-transform active:scale-95"
-          style={{
-            color: 'var(--color-text)',
-          }}
+          className="w-9 h-9 rounded-[8px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] hover:border-[var(--color-signal-blue)] transition-all active:scale-95"
         >
           {isRtl ? (
-            <ArrowRight weight="light" className="w-5 h-5" />
+            <ArrowRight weight="light" className="w-4 h-4" />
           ) : (
-            <ArrowLeft weight="light" className="w-5 h-5" />
+            <ArrowLeft weight="light" className="w-4 h-4" />
           )}
         </Link>
-        <span className="text-sm font-bold tracking-tight">{t('account.title')}</span>
+        <span className="text-sm font-medium tracking-tight text-[var(--color-text)]">{t('account.title')}</span>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
@@ -289,7 +286,7 @@ function AccountContent() {
       {/* Global Feedback */}
       {feedback && (
         <div 
-          className="mt-4 p-3 rounded-2xl text-xs font-medium flex items-center gap-2 border"
+          className="mt-4 p-3 rounded-[6px] text-xs font-mono flex items-center gap-2 border"
           style={{
             backgroundColor: feedback.type === 'success' ? 'var(--color-success-bg)' : 'var(--color-error-bg)',
             color: feedback.type === 'success' ? 'var(--color-success-text)' : 'var(--color-error-text)',
@@ -307,23 +304,23 @@ function AccountContent() {
 
       {isLoading ? (
         <div className="my-auto py-16 flex flex-col items-center justify-center opacity-70">
-          <CircleNotch weight="light" className="w-8 h-8 animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
-          <span className="text-xs">{t('account.loadingAccount')}</span>
+          <CircleNotch weight="light" className="w-8 h-8 animate-spin mb-2 text-[var(--color-signal-blue)]" />
+          <span className="text-xs font-mono text-[var(--color-text-muted)]">{t('account.loadingAccount')}</span>
         </div>
       ) : (
-        <div className="flex flex-col gap-4 my-auto py-4">
+        <div className="flex flex-col gap-3.5 my-auto py-4">
           
-          {/* User Points Card Summary */}
+          {/* User Points Card Summary: 8px radius, hairline border, Inter weight 300 */}
           {customer && (
-            <div className="glass-card p-5 rounded-3xl flex items-center justify-between">
+            <div className="p-4 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] flex items-center justify-between">
               <div>
-                <span className="text-[11px] opacity-60 block">{t('account.enrolledBusiness')}</span>
-                <span className="text-xs font-bold">{customer.business_name || t('account.defaultBusiness')}</span>
+                <span className="text-[11px] font-mono uppercase tracking-[0.05em] text-[var(--color-text-muted)] block">{t('account.enrolledBusiness')}</span>
+                <span className="text-xs font-semibold text-[var(--color-text)]">{customer.business_name || t('account.defaultBusiness')}</span>
               </div>
               <div className={isRtl ? 'text-left' : 'text-right'}>
-                <span className="text-[11px] opacity-60 block">{t('account.pointsBalance')}</span>
-                <span className="text-lg font-black" style={{ color: 'var(--color-accent)' }}>
-                  {customer.points_balance || 0} {t('account.pointsUnit')}
+                <span className="text-[11px] font-mono uppercase tracking-[0.05em] text-[var(--color-text-muted)] block">{t('account.pointsBalance')}</span>
+                <span className="text-2xl font-light font-display tracking-tight text-[var(--color-text)]">
+                  {customer.points_balance || 0} <span className="text-xs font-mono uppercase text-[var(--color-text-muted)]">{t('account.pointsUnit')}</span>
                 </span>
               </div>
             </div>
@@ -334,14 +331,14 @@ function AccountContent() {
             <Link
               href={`/card/${token}`}
               id="account-view-history-link"
-              className="glass-card p-4 rounded-2xl flex items-center justify-between transition-transform active:scale-98"
+              className="p-3.5 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] flex items-center justify-between transition-all hover:border-[var(--color-signal-blue)] active:scale-98"
               style={{
                 color: 'var(--color-text)',
               }}
             >
               <div className="flex items-center gap-2.5">
-                <ClockCounterClockwise weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
-                <span className="text-xs font-semibold">{t('customer.transactionHistory')}</span>
+                <ClockCounterClockwise weight="light" className="w-4 h-4 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
+                <span className="text-xs font-mono uppercase tracking-[0.05em]">{t('customer.transactionHistory')}</span>
               </div>
               {isRtl ? (
                 <ArrowLeft weight="light" className="w-4 h-4 opacity-50" />
@@ -354,37 +351,31 @@ function AccountContent() {
           {/* 19.5 & 22.8: Referral Code & Sharing Card */}
           {customer?.referral_code && customer?.features?.referral_program !== false && (
             <div 
-              className="glass-card p-5 rounded-3xl flex flex-col gap-3.5"
+              className="p-4 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] flex flex-col gap-3"
               id="referral-card"
             >
               <div className="flex items-center gap-2">
                 <div 
-                  className="w-7 h-7 rounded-full flex items-center justify-center border-[0.5px]"
-                  style={{
-                    backgroundColor: 'rgba(0, 196, 140, 0.1)',
-                    borderColor: 'rgba(0, 196, 140, 0.2)',
-                    color: 'var(--color-accent)',
-                  }}
+                  className="w-6 h-6 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]"
                 >
-                  <Gift weight="light" className="w-4 h-4" />
+                  <Gift weight="light" className="w-3.5 h-3.5" />
                 </div>
-                <h2 className="text-xs font-bold uppercase tracking-wider">
+                <h2 className="text-xs font-mono uppercase tracking-[0.08em] font-medium text-[var(--color-text)]">
                   {t('account.referralTitle')}
                 </h2>
               </div>
 
-              <p className="text-xs opacity-75 leading-relaxed">
+              <p className="text-xs opacity-75 leading-relaxed text-[var(--color-text)]">
                 {t('account.referralDesc')}
               </p>
 
               {/* Referral Code Display Box */}
               <div 
-                className="p-3.5 rounded-2xl border-[0.5px] flex items-center justify-between gap-2"
-                style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-between gap-2"
               >
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[10px] opacity-60 font-medium">{t('account.yourReferralCode')}</span>
-                  <span className="text-base font-black font-mono tracking-wider truncate" style={{ color: 'var(--color-accent)' }}>
+                  <span className="text-[10px] font-mono uppercase text-[var(--color-text-muted)]">{t('account.yourReferralCode')}</span>
+                  <span className="text-sm font-medium font-mono tracking-widest truncate text-[var(--color-text)]">
                     {customer.referral_code}
                   </span>
                 </div>
@@ -396,14 +387,9 @@ function AccountContent() {
                     id="copy-referral-btn"
                     onClick={handleCopyReferral}
                     aria-label={t('account.copyCode')}
-                    className="p-2.5 rounded-xl border-[0.5px] flex items-center gap-1 text-xs font-semibold transition-transform active:scale-95"
-                    style={{
-                      backgroundColor: isCopied ? 'rgba(0, 196, 140, 0.1)' : 'var(--color-card-bg)',
-                      borderColor: isCopied ? '#00C48C' : 'var(--color-border)',
-                      color: isCopied ? '#00C48C' : 'var(--color-text)',
-                    }}
+                    className="p-2 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] hover:border-[var(--color-signal-blue)] flex items-center gap-1 text-xs font-mono uppercase tracking-[0.05em] transition-all active:scale-95 cursor-pointer text-[var(--color-text)]"
                   >
-                    {isCopied ? <Check weight="light" className="w-4 h-4" /> : <Copy weight="light" className="w-4 h-4" />}
+                    {isCopied ? <Check weight="light" className="w-3.5 h-3.5 text-emerald-400" /> : <Copy weight="light" className="w-3.5 h-3.5" />}
                     <span className="hidden sm:inline">{isCopied ? t('account.codeCopied') : t('account.copyCode')}</span>
                   </button>
 
@@ -413,9 +399,9 @@ function AccountContent() {
                     id="share-referral-btn"
                     onClick={handleShareReferral}
                     aria-label={t('account.shareCode')}
-                    className="ios-btn-primary p-2.5 rounded-xl flex items-center gap-1 text-xs font-bold transition-transform active:scale-95"
+                    className="ios-btn-primary py-2 px-3 rounded-[8px] flex items-center gap-1 text-xs font-mono uppercase tracking-[0.05em] transition-transform active:scale-95"
                   >
-                    <ShareNetwork weight="light" className="w-4 h-4" />
+                    <ShareNetwork weight="light" className="w-3.5 h-3.5" />
                     <span>{t('account.shareCode')}</span>
                   </button>
                 </div>
@@ -426,15 +412,15 @@ function AccountContent() {
           {/* Edit Name & Phone Form */}
           <form 
             onSubmit={handleSaveProfile}
-            className="glass-card p-5 rounded-3xl flex flex-col gap-3.5"
+            className="p-4 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] flex flex-col gap-3"
           >
-            <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-              <User weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+            <h2 className="text-xs font-mono uppercase tracking-[0.08em] font-medium text-[var(--color-text)] flex items-center gap-1.5">
+              <User weight="light" className="w-3.5 h-3.5 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
               <span>{t('account.personalInfo')}</span>
             </h2>
 
             <div>
-              <label className="block text-[11px] opacity-70 mb-1 font-medium">{t('account.fullName')}</label>
+              <label className="block text-[11px] font-mono uppercase text-[var(--color-text-muted)] mb-1">{t('account.fullName')}</label>
               <div className="relative">
                 <input
                   type="text"
@@ -446,7 +432,7 @@ function AccountContent() {
                   }}
                   placeholder={t('account.enterName')}
                   required
-                  className={`ios-input w-full ${isRtl ? 'pr-9' : 'pl-9'}`}
+                  className={`ios-input w-full rounded-[4px] ${isRtl ? 'pr-9' : 'pl-9'}`}
                   style={{
                     borderColor: nameTouched && !nameValidation.isValid ? 'var(--color-error-border, #ef4444)' : undefined,
                   }}
@@ -454,7 +440,7 @@ function AccountContent() {
                 <User weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 pointer-events-none ${isRtl ? 'right-3' : 'left-3'}`} />
               </div>
               {nameTouched && !nameValidation.isValid && (
-                <p className="text-[11px] text-red-500 font-medium mt-1 flex items-center gap-1">
+                <p className="text-[11px] text-red-500 font-mono mt-1 flex items-center gap-1">
                   <WarningCircle weight="light" className="w-3.5 h-3.5 shrink-0" />
                   <span>{t(`validation.${nameValidation.errorKey}`)}</span>
                 </p>
@@ -462,7 +448,7 @@ function AccountContent() {
             </div>
 
             <div>
-              <label className="block text-[11px] opacity-70 mb-1 font-medium">{t('account.phone')}</label>
+              <label className="block text-[11px] font-mono uppercase text-[var(--color-text-muted)] mb-1">{t('account.phone')}</label>
               <div className="relative">
                 <input
                   type="tel"
@@ -475,7 +461,7 @@ function AccountContent() {
                     setPhoneTouched(true);
                   }}
                   placeholder="01012345678"
-                  className={`ios-input w-full ${isRtl ? 'pr-9' : 'pl-9'}`}
+                  className={`ios-input w-full rounded-[4px] ${isRtl ? 'pr-9' : 'pl-9'}`}
                   style={{
                     borderColor: phone.trim() !== '' && !phoneValidation.isValid ? 'var(--color-error-border, #ef4444)' : undefined,
                   }}
@@ -483,7 +469,7 @@ function AccountContent() {
                 <Phone weight="light" className={`w-4 h-4 absolute top-1/2 -translate-y-1/2 opacity-40 pointer-events-none ${isRtl ? 'right-3' : 'left-3'}`} />
               </div>
               {phone.trim() !== '' && !phoneValidation.isValid && (
-                <p className="text-[11px] text-red-500 font-medium mt-1 flex items-center gap-1">
+                <p className="text-[11px] text-red-500 font-mono mt-1 flex items-center gap-1">
                   <WarningCircle weight="light" className="w-3.5 h-3.5 shrink-0" />
                   <span>{t(`validation.${phoneValidation.errorKey}`)}</span>
                 </p>
@@ -494,17 +480,17 @@ function AccountContent() {
               type="submit"
               id="save-profile-btn"
               disabled={isSaving || !nameValidation.isValid || (phone.trim() !== '' && !phoneValidation.isValid)}
-              className="ios-btn-primary w-full py-3 px-4 rounded-xl text-xs font-bold transition-all mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
+              className="ios-btn-primary w-full py-2.5 px-4 rounded-[8px] text-xs font-mono uppercase tracking-[0.05em] transition-all mt-1 flex items-center justify-center gap-1.5 disabled:opacity-50"
             >
               {isSaving ? <CircleNotch weight="light" className="w-3.5 h-3.5 animate-spin" /> : <FloppyDisk weight="light" className="w-3.5 h-3.5" />}
               <span>{isSaving ? t('account.saving') : t('account.saveChanges')}</span>
             </button>
           </form>
 
-          {/* Language Selection (عربي / English) */}
-          <div className="glass-card p-5 rounded-3xl flex flex-col gap-3">
-            <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-              <Globe weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+          {/* Language Selection */}
+          <div className="p-4 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] flex flex-col gap-3">
+            <h2 className="text-xs font-mono uppercase tracking-[0.08em] font-medium text-[var(--color-text)] flex items-center gap-1.5">
+              <Globe weight="light" className="w-3.5 h-3.5 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
               <span>{t('account.appLanguage')}</span>
             </h2>
 
@@ -513,10 +499,11 @@ function AccountContent() {
                 type="button"
                 id="lang-ar-btn"
                 onClick={() => handleLanguageChange('ar')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold border-[0.5px] transition-all flex items-center justify-center gap-1.5 ${
-                  locale === 'ar' ? 'shadow-xs' : 'opacity-70 hover:opacity-100'
+                className={`py-2 px-3 rounded-[8px] text-xs font-mono uppercase tracking-[0.05em] border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  locale === 'ar' 
+                    ? 'bg-[var(--color-signal-blue)] text-white border-[var(--color-signal-blue)] font-medium' 
+                    : 'border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] hover:border-[var(--color-signal-blue)]'
                 }`}
-                style={locale === 'ar' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)', borderColor: 'var(--color-accent)' } : { borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)' }}
               >
                 <span>العربية</span>
                 {locale === 'ar' && <Check weight="light" className="w-3.5 h-3.5" />}
@@ -526,10 +513,11 @@ function AccountContent() {
                 type="button"
                 id="lang-en-btn"
                 onClick={() => handleLanguageChange('en')}
-                className={`py-2.5 px-3 rounded-xl text-xs font-bold border-[0.5px] transition-all flex items-center justify-center gap-1.5 ${
-                  locale === 'en' ? 'shadow-xs' : 'opacity-70 hover:opacity-100'
+                className={`py-2 px-3 rounded-[8px] text-xs font-mono uppercase tracking-[0.05em] border transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  locale === 'en' 
+                    ? 'bg-[var(--color-signal-blue)] text-white border-[var(--color-signal-blue)] font-medium' 
+                    : 'border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] hover:border-[var(--color-signal-blue)]'
                 }`}
-                style={locale === 'en' ? { backgroundColor: 'var(--color-accent)', color: 'var(--color-btn-text)', borderColor: 'var(--color-accent)' } : { borderColor: 'var(--color-border)', backgroundColor: 'var(--color-card-bg)' }}
               >
                 <span>English</span>
                 {locale === 'en' && <Check weight="light" className="w-3.5 h-3.5" />}
@@ -537,47 +525,44 @@ function AccountContent() {
             </div>
           </div>
 
-          {/* WhatsApp Notifications Toggle (Phase 16.9) */}
+          {/* Notifications Toggle */}
           {customer?.business_notifications_active && (
-            <div className="glass-card p-5 rounded-3xl flex flex-col gap-3">
+            <div className="p-4 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
+                <h2 className="text-xs font-mono uppercase tracking-[0.08em] font-medium text-[var(--color-text)] flex items-center gap-1.5">
                   {notificationsEnabled ? (
-                    <Bell weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                    <Bell weight="light" className="w-3.5 h-3.5 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
                   ) : (
-                    <BellSlash weight="light" className="w-4 h-4 opacity-50" />
+                    <BellSlash weight="light" className="w-3.5 h-3.5 opacity-50" />
                   )}
                   <span>{t('accountNotifications.title')}</span>
                 </h2>
 
-                {/* iOS Native Pill Switch */}
                 <button
                   type="button"
                   id="toggle-notifications-btn"
                   onClick={handleToggleNotifications}
                   disabled={isUpdatingNotif}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden disabled:opacity-50 ${
-                    notificationsEnabled ? 'bg-[var(--color-accent)]' : 'bg-gray-300 dark:bg-neutral-700'
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-[4px] border border-[var(--color-border)] transition-colors duration-200 ease-in-out disabled:opacity-50 ${
+                    notificationsEnabled ? 'bg-[var(--color-signal-blue)]' : 'bg-gray-700'
                   }`}
                 >
                   <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                      notificationsEnabled ? (isRtl ? '-translate-x-5' : 'translate-x-5') : 'translate-x-0'
+                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-[2px] bg-white transition duration-200 ease-in-out ${
+                      notificationsEnabled ? (isRtl ? '-translate-x-4' : 'translate-x-4') : 'translate-x-0'
                     }`}
                   />
                 </button>
               </div>
 
-              <p className="text-xs opacity-70">
+              <p className="text-xs opacity-70 text-[var(--color-text)]">
                 {t('accountNotifications.desc')}
               </p>
 
               <div 
-                className="py-2 px-3 rounded-xl text-[11px] font-medium flex items-center gap-1.5 border-[0.5px]"
+                className="py-1.5 px-2.5 rounded-[4px] text-[11px] font-mono flex items-center gap-1.5 border border-[var(--color-border)] bg-[var(--color-input-bg)]"
                 style={{
-                  backgroundColor: 'var(--color-bg)',
-                  borderColor: 'var(--color-border)',
-                  color: notificationsEnabled ? 'var(--color-accent)' : 'inherit',
+                  color: notificationsEnabled ? 'var(--color-signal-blue)' : 'inherit',
                 }}
               >
                 {notificationsEnabled ? (
@@ -590,10 +575,10 @@ function AccountContent() {
                 </span>
               </div>
 
-              {/* Phase 30: Notification Channel Selection */}
+              {/* Notification Channel Selection */}
               {notificationsEnabled && (
-                <div className="mt-2 pt-3 border-t-[0.5px] flex flex-col gap-2" style={{ borderColor: 'var(--color-border)' }}>
-                  <label className="text-[11px] font-semibold opacity-80 block">
+                <div className="mt-2 pt-3 border-t border-[var(--color-separator)] flex flex-col gap-2">
+                  <label className="text-[11px] font-mono uppercase text-[var(--color-text-muted)] block">
                     {t('accountNotifications.channelLabel')}
                   </label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -611,17 +596,14 @@ function AccountContent() {
                           type="button"
                           disabled={isUpdatingChannel}
                           onClick={() => handleChannelChange(ch.id as any)}
-                          className={`p-2.5 rounded-xl border-[0.5px] text-xs font-semibold text-start flex items-center justify-between transition-all ${
-                            isSelected ? 'ring-1' : 'opacity-70 hover:opacity-100'
+                          className={`p-2 rounded-[6px] border text-xs font-mono text-start flex items-center justify-between transition-all cursor-pointer ${
+                            isSelected 
+                              ? 'border-[var(--color-signal-blue)] bg-[var(--color-input-bg)] text-[var(--color-signal-blue)] font-medium' 
+                              : 'border-[var(--color-border)] bg-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text)]'
                           }`}
-                          style={{
-                            backgroundColor: isSelected ? 'var(--color-bg)' : 'transparent',
-                            borderColor: isSelected ? 'var(--color-accent)' : 'var(--color-border)',
-                            color: isSelected ? 'var(--color-accent)' : 'inherit',
-                          }}
                         >
                           <div className="flex items-center gap-2">
-                            <Icon weight="light" className="w-4 h-4 shrink-0" />
+                            <Icon weight="light" className="w-3.5 h-3.5 shrink-0" />
                             <span>{ch.label}</span>
                           </div>
                           {isSelected && <Check weight="light" className="w-3.5 h-3.5 shrink-0" />}
@@ -635,13 +617,13 @@ function AccountContent() {
           )}
 
           {/* Contact Support Button */}
-          <div className="glass-card p-5 rounded-3xl flex flex-col gap-3">
-            <h2 className="text-xs font-bold uppercase tracking-wider opacity-80 flex items-center gap-1.5">
-              <Headphones weight="light" className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+          <div className="p-4 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] flex flex-col gap-3">
+            <h2 className="text-xs font-mono uppercase tracking-[0.08em] font-medium text-[var(--color-text)] flex items-center gap-1.5">
+              <Headphones weight="light" className="w-3.5 h-3.5 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
               <span>{t('account.helpSupport')}</span>
             </h2>
 
-            <p className="text-xs opacity-70">
+            <p className="text-xs opacity-70 text-[var(--color-text)]">
               {t('account.supportDesc')}
             </p>
 
@@ -649,12 +631,7 @@ function AccountContent() {
               type="button"
               id="contact-support-btn"
               onClick={() => setShowSupportModal(true)}
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all border-[0.5px] flex items-center justify-center gap-2 active:scale-95"
-              style={{
-                backgroundColor: 'var(--color-bg)',
-                borderColor: 'var(--color-border)',
-                color: 'var(--color-accent)',
-              }}
+              className="w-full py-2.5 px-4 rounded-[8px] text-xs font-mono uppercase tracking-[0.05em] transition-all border border-[var(--color-border)] bg-[var(--color-input-bg)] hover:border-[var(--color-signal-blue)] flex items-center justify-center gap-2 active:scale-95 text-[var(--color-text)] cursor-pointer"
             >
               <ChatCircle weight="light" className="w-4 h-4" />
               <span>{t('account.contactSupport')}</span>
@@ -663,23 +640,19 @@ function AccountContent() {
 
           {/* Danger Zone: Delete Single Loyalty Card */}
           <div
-            className="p-5 rounded-3xl border-[0.5px] flex flex-col gap-3"
-            style={{
-              backgroundColor: 'rgba(239, 68, 68, 0.05)',
-              borderColor: 'rgba(239, 68, 68, 0.25)',
-            }}
+            className="p-4 rounded-[8px] border border-red-500/25 bg-red-500/5 flex flex-col gap-3"
           >
-            <h2 className="text-xs font-bold uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
-              <Warning weight="light" className="w-4 h-4 shrink-0" />
+            <h2 className="text-xs font-mono uppercase tracking-[0.08em] font-medium text-rose-500 flex items-center gap-1.5">
+              <Warning weight="light" className="w-3.5 h-3.5 shrink-0" />
               <span>{t('accountDeletion.dangerZone')}</span>
             </h2>
 
-            <p className="text-xs opacity-70">
+            <p className="text-xs opacity-70 text-[var(--color-text)]">
               {t('accountDeletion.confirmCardDesc')}
             </p>
 
             {deleteCardError && (
-              <div className="p-2.5 rounded-xl border text-xs text-rose-400" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
+              <div className="p-2 rounded-[4px] border border-red-500/30 bg-red-500/10 text-xs font-mono text-rose-400">
                 {deleteCardError}
               </div>
             )}
@@ -688,10 +661,9 @@ function AccountContent() {
               type="button"
               id="delete-card-open-btn"
               onClick={() => setShowCardDeleteModal(true)}
-              className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white transition-all shadow-xs flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
-              style={{ backgroundColor: '#EF4444' }}
+              className="w-full py-2 px-4 rounded-[8px] text-xs font-mono uppercase tracking-[0.05em] text-white transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer bg-red-600 hover:bg-red-700"
             >
-              <Trash weight="light" className="w-4 h-4" />
+              <Trash weight="light" className="w-3.5 h-3.5" />
               <span>{t('accountDeletion.deleteCard')}</span>
             </button>
           </div>
@@ -702,28 +674,26 @@ function AccountContent() {
       {/* Delete Card Confirmation Modal */}
       {showCardDeleteModal && (
         <div
-          className="fixed inset-0 z-50 backdrop-blur-md flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ backgroundColor: 'var(--color-overlay-bg)' }}
           onClick={() => {
             if (!isDeletingCard) setShowCardDeleteModal(false);
           }}
         >
           <div
-            className="glass-card w-full max-w-xs rounded-3xl p-6 border-[0.5px] shadow-2xl animate-in zoom-in-95 duration-150 text-center"
-            style={{ borderColor: 'rgba(239, 68, 68, 0.4)' }}
+            className="w-full max-w-xs rounded-[8px] p-6 border border-red-500/40 bg-[var(--color-card-bg)] text-center animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
             dir={isRtl ? 'rtl' : 'ltr'}
           >
             <div
-              className="w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center"
-              style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
+              className="w-10 h-10 mx-auto mb-3 rounded-[4px] border border-red-500/30 bg-red-500/10 flex items-center justify-center text-rose-400"
             >
-              <Warning weight="light" className="w-6 h-6" />
+              <Warning weight="light" className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-bold text-rose-500 mb-1">
+            <h3 className="text-sm font-medium text-rose-500 mb-1">
               {t('accountDeletion.deleteCard')}
             </h3>
-            <p className="text-xs opacity-80 mb-4 leading-relaxed">
+            <p className="text-xs opacity-80 mb-4 leading-relaxed text-[var(--color-text)]">
               {t('accountDeletion.confirmCardDesc')}
             </p>
 
@@ -732,8 +702,7 @@ function AccountContent() {
                 type="button"
                 onClick={() => setShowCardDeleteModal(false)}
                 disabled={isDeletingCard}
-                className="flex-1 py-2 rounded-xl border-[0.5px] text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
-                style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
+                className="flex-1 py-2 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-input-bg)] text-xs font-mono uppercase tracking-[0.05em] transition-all hover:border-[var(--color-signal-blue)] cursor-pointer text-[var(--color-text)] disabled:opacity-50"
               >
                 {t('accountDeletion.cancelButton')}
               </button>
@@ -742,8 +711,7 @@ function AccountContent() {
                 onClick={handleDeleteCard}
                 id="confirm-delete-card-btn"
                 disabled={isDeletingCard}
-                className="flex-1 py-2 rounded-xl text-xs font-bold text-white transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
-                style={{ backgroundColor: '#EF4444' }}
+                className="flex-1 py-2 rounded-[8px] text-xs font-mono uppercase tracking-[0.05em] text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 bg-red-600 hover:bg-red-700"
               >
                 {isDeletingCard ? (
                   <>
@@ -765,50 +733,47 @@ function AccountContent() {
       {/* Support Modal */}
       {showSupportModal && (
         <div 
-          className="fixed inset-0 z-50 backdrop-blur-md flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ backgroundColor: 'var(--color-overlay-bg)' }}
           onClick={() => setShowSupportModal(false)}
         >
           <div 
-            className="glass-card w-full max-w-xs rounded-3xl p-6 border-[0.5px] shadow-2xl animate-in zoom-in-95 duration-150 text-center"
+            className="w-full max-w-xs rounded-[8px] p-6 border border-[var(--color-border)] bg-[var(--color-card-bg)] text-center animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             <div 
-              className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center border-[0.5px]"
-              style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
+              className="w-10 h-10 mx-auto mb-3 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]"
             >
-              <Headphones weight="light" className="w-6 h-6" />
+              <Headphones weight="light" className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-bold mb-1">{t('account.supportModalTitle')}</h3>
-            <p className="text-xs opacity-70 mb-4">
+            <h3 className="text-sm font-medium mb-1 text-[var(--color-text)]">{t('account.supportModalTitle')}</h3>
+            <p className="text-xs opacity-70 mb-4 text-[var(--color-text)]">
               {t('account.reachUs')}
             </p>
 
-            <div className="flex flex-col gap-2 mb-4 text-xs font-semibold">
+            <div className="flex flex-col gap-2 mb-4 text-xs font-mono">
               <a
                 href="https://wa.me/201012345678"
                 target="_blank"
                 rel="noreferrer"
-                className="py-2.5 px-3 rounded-xl border-[0.5px] flex items-center justify-center gap-2 transition-transform active:scale-95"
-                style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
+                className="py-2.5 px-3 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-input-bg)] hover:border-[var(--color-signal-blue)] flex items-center justify-center gap-2 transition-all active:scale-95 text-[var(--color-text)]"
               >
-                <ChatCircle weight="light" className="w-4 h-4" />
+                <ChatCircle weight="light" className="w-4 h-4 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
                 <span>{t('account.whatsappDirect')}</span>
               </a>
 
               <a
                 href="tel:+201012345678"
-                className="py-2.5 px-3 rounded-xl border-[0.5px] flex items-center justify-center gap-2 transition-transform active:scale-95"
-                style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)', color: 'var(--color-accent)' }}
+                className="py-2.5 px-3 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-input-bg)] hover:border-[var(--color-signal-blue)] flex items-center justify-center gap-2 transition-all active:scale-95 text-[var(--color-text)]"
               >
-                <Phone weight="light" className="w-4 h-4" />
+                <Phone weight="light" className="w-4 h-4 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
                 <span>{t('account.callDirect')}</span>
               </a>
             </div>
 
             <button
               onClick={() => setShowSupportModal(false)}
-              className="ios-btn-primary w-full py-2.5 rounded-xl text-xs font-bold transition-transform active:scale-95"
+              className="ios-btn-primary w-full py-2 rounded-[8px] text-xs font-mono uppercase tracking-[0.05em] transition-all active:scale-95"
             >
               {t('common.close')}
             </button>
@@ -816,7 +781,7 @@ function AccountContent() {
         </div>
       )}
 
-      <footer className="text-center text-[10px] opacity-40 py-3">
+      <footer className="text-center text-[10px] font-mono opacity-50 py-3 text-[var(--color-text-muted)]">
         {t('account.footerProtected')}
       </footer>
     </div>

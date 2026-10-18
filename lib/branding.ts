@@ -32,8 +32,8 @@ export interface BusinessBranding {
 }
 
 export const DEFAULT_BRANDING = {
-  primary_color: '#FAF7F2',
-  accent_color: '#B08968',
+  primary_color: '#00052e',
+  accent_color: '#0428cb',
   font_family: 'Inter',
   layout_variant: 'centered-classic' as LayoutVariant,
 };

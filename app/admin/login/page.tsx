@@ -100,18 +100,13 @@ export default function AdminLoginPage() {
           <Link
             href="/"
             aria-label={t('common.home')}
-            className="w-10 h-10 rounded-full flex items-center justify-center border transition-transform active:scale-95"
-            style={{
-              backgroundColor: 'var(--color-input-bg)',
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-text)',
-            }}
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] transition-transform active:scale-95"
           >
-            <ArrowRight size={18} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
+            <ArrowRight size={16} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
           </Link>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
-            <span className="text-xs font-semibold tracking-wider uppercase opacity-75">Merchant Suite</span>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
+            <span className="text-[10px] font-mono font-medium tracking-wider uppercase text-[var(--color-text-muted)]">Merchant Suite</span>
           </div>
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
@@ -120,44 +115,40 @@ export default function AdminLoginPage() {
         </header>
 
         {/* Login Card */}
-        <div className="glass-card p-6 sm:p-7 my-auto flex flex-col gap-5 transition-all">
+        <div className="rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 sm:p-7 my-auto flex flex-col gap-5 transition-all">
           <div className="text-center flex flex-col items-center">
             {/* Icon */}
             <div
-              className="w-16 h-16 mb-3 rounded-2xl flex items-center justify-center shadow-md transition-transform"
-              style={{
-                backgroundColor: 'var(--color-accent)',
-                color: 'var(--color-accent-text)',
-              }}
+              className="w-12 h-12 mb-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)] transition-transform"
             >
-              <ChartBar size={32} weight="light" />
+              <ChartBar size={24} weight="light" />
             </div>
 
-            <h1 className="text-xl font-bold mb-1 tracking-tight" style={{ color: 'var(--color-text)' }}>
+            <h1 className="text-xl font-light mb-1 tracking-tight text-[var(--color-text)]">
               {t('admin.loginTitle')}
             </h1>
-            <p className="text-xs max-w-xs leading-relaxed opacity-60">
+            <p className="text-xs max-w-xs leading-relaxed text-[var(--color-text-muted)]">
               {t('admin.loginSubtitle')}
             </p>
           </div>
 
           {errorMsg && (
             <div
-              className="p-3 rounded-xl border text-xs flex items-center gap-2"
+              className="p-3 rounded-[4px] border text-xs font-mono flex items-center gap-2"
               style={{
                 backgroundColor: 'var(--color-error-bg)',
                 color: 'var(--color-error-text)',
                 borderColor: 'var(--color-error-border)',
               }}
             >
-              <WarningCircle size={18} weight="light" className="shrink-0" />
+              <WarningCircle size={16} weight="light" className="shrink-0" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           <form onSubmit={handleLogin} className="flex flex-col gap-3.5">
             <div>
-              <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="admin-email-input">
+              <label className="block text-[11px] font-mono uppercase tracking-wider mb-1.5 text-[var(--color-text-muted)]" htmlFor="admin-email-input">
                 {t('admin.email')}
               </label>
               <div className="relative flex items-center">
@@ -169,14 +160,14 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@example.com"
-                  className="ios-input"
+                  className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                 />
-                <EnvelopeSimple size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
+                <EnvelopeSimple size={16} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1.5 opacity-80" htmlFor="admin-password-input">
+              <label className="block text-[11px] font-mono uppercase tracking-wider mb-1.5 text-[var(--color-text-muted)]" htmlFor="admin-password-input">
                 {t('admin.password')}
               </label>
               <div className="relative flex items-center">
@@ -188,19 +179,18 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="ios-input"
+                  className="w-full h-10 px-3 pe-10 rounded-[4px] font-mono text-xs border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
                 />
-                <Lock size={18} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
+                <Lock size={16} weight="light" className={`absolute opacity-40 pointer-events-none ${isRtl ? 'left-3' : 'right-3'}`} />
               </div>
             </div>
 
-            <div className="flex justify-between items-center text-[11px] pt-1">
-              <span className="font-mono text-[10px] opacity-60 uppercase">Owner / Manager</span>
+            <div className="flex justify-between items-center text-[11px] font-mono pt-1">
+              <span className="text-[10px] text-[var(--color-text-muted)] uppercase">Owner / Manager</span>
               <Link
                 href="/forgot-password"
                 id="admin-forgot-password-link"
-                className="font-semibold transition-opacity hover:opacity-80"
-                style={{ color: 'var(--color-text)' }}
+                className="text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
               >
                 {t('admin.forgotPassword')}
               </Link>
@@ -210,16 +200,16 @@ export default function AdminLoginPage() {
               type="submit"
               id="admin-login-btn"
               disabled={isLoading}
-              className="ios-btn-primary w-full mt-2"
+              className="w-full h-10 rounded-[8px] font-mono text-xs uppercase tracking-wider font-semibold text-white bg-[var(--color-accent)] hover:opacity-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-2 transition-opacity"
             >
               {isLoading ? (
                 <>
-                  <CircleNotch size={18} weight="light" className="animate-spin" />
+                  <CircleNotch size={16} weight="light" className="animate-spin" />
                   <span>{t('admin.signingIn')}</span>
                 </>
               ) : (
                 <>
-                  <Buildings size={18} weight="light" />
+                  <Buildings size={16} weight="light" />
                   <span>{t('admin.signIn')}</span>
                 </>
               )}
@@ -227,7 +217,7 @@ export default function AdminLoginPage() {
           </form>
         </div>
 
-        <footer className="text-center text-[11px] py-3 flex items-center justify-center gap-1.5 opacity-40">
+        <footer className="text-center text-[11px] font-mono py-3 flex items-center justify-center gap-1.5 text-[var(--color-text-muted)]">
           <Buildings size={14} weight="light" />
           <span>{t('admin.footer')}</span>
         </footer>

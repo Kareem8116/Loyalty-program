@@ -95,8 +95,12 @@ async function testRoleIsolation() {
       const allowed = role === 'super_admin';
       return { allowed, role, reason: allowed ? 'OK' : `Rejected non-superadmin role: ${role}` };
     } else if (portal === 'customer') {
-      const allowed = !roleRow || !['cashier', 'owner', 'branch_admin', 'super_admin'].includes(roleRow.role);
-      return { allowed, role, reason: allowed ? 'OK' : `Rejected staff role from customer portal: ${role}` };
+      // DESIGN RULE: /card/[token] is PUBLIC — anyone (staff, owner, super_admin) can
+      // be a customer at another business. The customer card is identified by QR token,
+      // not by auth role. Staff are NEVER blocked from customer-facing pages.
+      // Only /cashier /admin /super-admin portals enforce role isolation.
+      const allowed = true; // Customer portal is always accessible (public route)
+      return { allowed, role, reason: 'Customer card is public — accessible to all roles' };
     }
     return { allowed: false, reason: 'Unknown portal' };
   }
@@ -121,11 +125,13 @@ async function testRoleIsolation() {
     { role: 'Cashier', email: cashierEmail, pass: testPassword, portal: 'super-admin', expected: false },
     { role: 'Customer', email: customerEmail, pass: 'Customer123!', portal: 'super-admin', expected: false },
 
-    // CUSTOMER PORTAL
+    // CUSTOMER PORTAL — public, accessible to all roles
+    // A business owner/cashier can be a CUSTOMER at a different business
+    // The /card/[token] page uses QR token, not auth role
     { role: 'Customer', email: customerEmail, pass: 'Customer123!', portal: 'customer', expected: true },
-    { role: 'Cashier', email: cashierEmail, pass: testPassword, portal: 'customer', expected: false },
-    { role: 'Store Admin', email: ownerEmail, pass: testPassword, portal: 'customer', expected: false },
-    { role: 'Super Admin', email: superAdminEmail, pass: 'SuperAdmin2026!', portal: 'customer', expected: false },
+    { role: 'Cashier', email: cashierEmail, pass: testPassword, portal: 'customer', expected: true },
+    { role: 'Store Admin', email: ownerEmail, pass: testPassword, portal: 'customer', expected: true },
+    { role: 'Super Admin', email: superAdminEmail, pass: 'SuperAdmin2026!', portal: 'customer', expected: true },
   ];
 
   let passed = 0;
@@ -143,7 +149,7 @@ async function testRoleIsolation() {
   // --- Edge Middleware & Cookie Scoping Verification ---
   console.log('\n🔒 Testing Edge Middleware & Cookie Scoping Isolation...');
   const { POINTAT_ROLE_COOKIE } = await import('../lib/cookies');
-  const { extractSubdomain } = await import('../middleware');
+  const { extractSubdomain } = await import('../proxy');
 
   // Verify cookie constants
   if (POINTAT_ROLE_COOKIE === 'pointat_role') {

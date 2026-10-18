@@ -42,9 +42,11 @@ export function parseTransactionDetails(pointsChange: number, rawReason: string)
     return { type: 'referral', itemName: null };
   }
 
-  // Check for menu item redemption: e.g. "menu_item_redemption: Espresso"
+  // Check for menu item redemption: e.g. "menu_item_redemption: Espresso [Branch]"
   if (reasonLower.startsWith('menu_item_redemption:')) {
-    const itemName = rawReason.split(':')[1]?.trim() || null;
+    const rawItemName = rawReason.split(':')[1]?.trim() || null;
+    // Strip any trailing branch/context suffix in brackets e.g. " [CBD Branch]"
+    const itemName = rawItemName ? rawItemName.replace(/\s*\[.*?\]\s*$/, '').trim() : null;
     return { type: 'redeemed', itemName };
   }
 

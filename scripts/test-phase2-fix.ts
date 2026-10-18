@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { generateQrToken } from '../lib/customer';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
@@ -44,7 +45,7 @@ async function runPhase2FixTest() {
     // Customer is business-wide
     const { data: customer, error: custErr } = await adminClient
       .from('customers')
-      .insert({ business_id: bizId, name: 'Shared Customer', phone_number: '+201099999999' })
+      .insert({ business_id: bizId, name: 'Shared Customer', phone_number: '+201099999999', qr_token: generateQrToken() })
       .select().single();
     if (custErr) throw custErr;
 

@@ -94,7 +94,7 @@ export function extractSubdomain(host: string): string {
 import { POINTAT_ROLE_COOKIE } from './lib/cookies';
 
 // export function middleware
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Support both direct host and proxy/forwarded headers (Cloudflare, Vercel, local test suites)
   const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
   const querySubdomain = request.nextUrl.searchParams.get('store') || request.nextUrl.searchParams.get('subdomain') || '';

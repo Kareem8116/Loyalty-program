@@ -41,7 +41,7 @@ export default function ThemeToggle() {
   if (!mounted) {
     return (
       <div 
-        className="w-10 h-10 rounded-full flex items-center justify-center opacity-0"
+        className="w-9 h-9 rounded-[8px] flex items-center justify-center opacity-0"
         aria-hidden="true"
       />
     );
@@ -52,14 +52,14 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       id="theme-toggle-btn"
       aria-label="Toggle Light/Dark Theme"
-      className="w-10 h-10 rounded-full flex items-center justify-center transition-transform active:scale-95 hover:opacity-80 shadow-xs border"
+      className="w-9 h-9 rounded-[8px] flex items-center justify-center transition-all active:scale-95 hover:border-[var(--color-signal-blue)] cursor-pointer"
       style={{
-        backgroundColor: 'var(--color-input-bg)',
+        backgroundColor: 'var(--color-card-bg)',
         color: 'var(--color-text)',
-        borderColor: 'var(--color-border)',
+        border: '1px solid var(--color-border)',
       }}
     >
-      {isDark ? <Sun size={20} weight="light" /> : <Moon size={20} weight="light" />}
+      {isDark ? <Sun size={18} weight="light" /> : <Moon size={18} weight="light" />}
     </button>
   );
 }

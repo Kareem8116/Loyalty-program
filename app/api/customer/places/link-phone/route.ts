@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'businessId is required' }, { status: 400 });
     }
 
+    // Egyptian phone validation: must startsWith('01') and length !== 11 digits are rejected
     const phoneVal = validateEgyptianPhone(String(phoneNumber || ''));
     if (!phoneVal.isValid) {
       return NextResponse.json({ success: false, error: phoneVal.errorMessage, errorKey: phoneVal.errorKey }, { status: 400 });

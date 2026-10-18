@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { generateQrToken } from '../lib/customer';
 
 // Load environment variables from .env.local
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
@@ -60,7 +61,8 @@ async function runPhase1Verification() {
       .insert({
         business_id: businessId,
         name: 'Ahmed Mohamed',
-        phone_number: '+201001234567'
+        phone_number: '+201001234567',
+        qr_token: generateQrToken()
       })
       .select()
       .single();

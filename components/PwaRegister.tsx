@@ -127,43 +127,33 @@ export default function PwaRegister() {
       dir={isRtl ? 'rtl' : 'ltr'}
     >
       <div 
-        className="p-4 sm:p-5 rounded-3xl border shadow-2xl backdrop-blur-xl relative flex flex-col gap-3"
-        style={{
-          backgroundColor: 'rgba(15, 23, 42, 0.92)',
-          borderColor: 'rgba(99, 102, 241, 0.35)',
-          color: '#F8FAFC',
-          boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px rgba(99, 102, 241, 0.2)'
-        }}
+        className="p-4 sm:p-5 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] relative flex flex-col gap-3"
       >
         {/* Dismiss button */}
         <button
           onClick={handleDismiss}
           aria-label="Dismiss"
-          className="absolute top-3 end-3 w-8 h-8 rounded-full flex items-center justify-center opacity-60 hover:opacity-100 hover:bg-white/10 transition-colors cursor-pointer"
+          className="absolute top-3 end-3 w-7 h-7 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors cursor-pointer"
         >
-          <X weight="light" className="w-4 h-4" />
+          <X weight="light" className="w-3.5 h-3.5" />
         </button>
 
         {/* Main Content */}
         <div className="flex items-center gap-3.5 pe-6">
           <div 
-            className="w-13 h-13 rounded-2xl flex items-center justify-center shrink-0 shadow-lg border"
-            style={{ 
-              background: 'linear-gradient(135deg, #4F46E5, #9333EA)',
-              borderColor: 'rgba(255, 255, 255, 0.2)' 
-            }}
+            className="w-10 h-10 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center shrink-0 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]"
           >
-            <DownloadSimple weight="light" className="w-6 h-6 text-white" />
+            <DownloadSimple weight="light" className="w-5 h-5" />
           </div>
 
           <div className="min-w-0">
-            <h4 className="text-sm font-extrabold flex items-center gap-1.5">
+            <h4 className="text-sm font-light flex items-center gap-1.5">
               <span>{isRtl ? 'تثبيت تطبيق Pointat' : 'Install Pointat App'}</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-indigo-500/30 text-indigo-300 border border-indigo-500/40">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-[2px] font-mono tracking-wider uppercase border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]">
                 PWA
               </span>
             </h4>
-            <p className="text-xs opacity-75 mt-0.5 leading-snug">
+            <p className="text-xs text-[var(--color-text-muted)] mt-0.5 leading-snug">
               {isRtl
                 ? 'ثبّت التطبيق على شاشة هاتفك الرئيسية لفتحه مباشرة وبدون متصفح.'
                 : 'Install Pointat to your home screen for quick standalone access.'}
@@ -173,19 +163,19 @@ export default function PwaRegister() {
 
         {/* iOS Step-by-Step Guide Modal/Tooltip */}
         {showIosGuide && (
-          <div className="p-3.5 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 text-xs space-y-2 animate-in fade-in duration-200">
-            <p className="font-bold text-indigo-300">
+          <div className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] text-xs space-y-2 animate-in fade-in duration-200">
+            <p className="font-mono text-xs font-semibold text-[var(--color-text)]">
               {isRtl ? 'طريقة التثبيت على أجهزة iPhone / iPad:' : 'How to install on iPhone / iPad:'}
             </p>
-            <div className="space-y-1.5 opacity-90">
+            <div className="space-y-1.5 text-[var(--color-text-muted)]">
               <div className="flex items-center gap-2">
-                <ShareNetwork weight="light" className="w-4 h-4 text-indigo-400 shrink-0" />
+                <ShareNetwork weight="light" className="w-4 h-4 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)] shrink-0" />
                 <span>
                   {isRtl ? '1. اضغط على زر المشاركة (Share) في أسفل المتصفح' : '1. Tap the Share button at the bottom'}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <PlusSquare weight="light" className="w-4 h-4 text-indigo-400 shrink-0" />
+                <PlusSquare weight="light" className="w-4 h-4 text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)] shrink-0" />
                 <span>
                   {isRtl ? '2. مرر للأسفل واختر "إضافة إلى الصفحة الرئيسية"' : '2. Scroll down and tap "Add to Home Screen"'}
                 </span>
@@ -195,15 +185,11 @@ export default function PwaRegister() {
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2 pt-1">
+        <div className="flex items-center gap-2 pt-1 font-mono">
           <button
             type="button"
             onClick={handleInstallClick}
-            className="flex-1 h-11 px-4 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 cursor-pointer"
-            style={{
-              backgroundColor: '#4F46E5',
-              color: '#FFFFFF',
-            }}
+            className="flex-1 h-9 px-3 rounded-[8px] text-xs font-semibold uppercase tracking-wider text-white bg-[var(--color-accent)] hover:opacity-95 transition-opacity active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
           >
             <DownloadSimple weight="light" className="w-4 h-4" />
             <span>
@@ -216,11 +202,7 @@ export default function PwaRegister() {
           <button
             type="button"
             onClick={handleDismiss}
-            className="h-11 px-4 rounded-xl text-xs font-semibold border opacity-80 hover:opacity-100 transition-colors cursor-pointer"
-            style={{
-              borderColor: 'rgba(255, 255, 255, 0.15)',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-            }}
+            className="h-9 px-3 rounded-[8px] text-xs font-semibold uppercase tracking-wider border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] hover:opacity-100 transition-colors cursor-pointer"
           >
             {isRtl ? 'لاحقاً' : 'Later'}
           </button>

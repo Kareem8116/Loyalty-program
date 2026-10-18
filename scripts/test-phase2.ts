@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
+import { generateQrToken } from '../lib/customer';
 
 dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
@@ -37,16 +38,23 @@ export async function runPhase2RoleTests(superAdminEmail?: string) {
     if (errB) throw errB;
     bizBId = bizB.id;
 
+    // Create a branch for Business A (required for cashier RLS)
+    const { data: branchA, error: branchAErr } = await adminClient
+      .from('branches')
+      .insert({ business_id: bizAId, name: 'Main Branch A' })
+      .select().single();
+    if (branchAErr) throw branchAErr;
+
     // 2. Add customers to both businesses
     const { data: custA, error: custAErr } = await adminClient
       .from('customers')
-      .insert({ business_id: bizAId, name: 'Customer in Biz A', phone_number: '+201011111111' })
+      .insert({ business_id: bizAId, name: 'Customer in Biz A', phone_number: '+201011111111', qr_token: generateQrToken() })
       .select().single();
     if (custAErr) throw custAErr;
 
     const { data: custB, error: custBErr } = await adminClient
       .from('customers')
-      .insert({ business_id: bizBId, name: 'Customer in Biz B', phone_number: '+201022222222' })
+      .insert({ business_id: bizBId, name: 'Customer in Biz B', phone_number: '+201022222222', qr_token: generateQrToken() })
       .select().single();
     if (custBErr) throw custBErr;
 
@@ -63,11 +71,12 @@ export async function runPhase2RoleTests(superAdminEmail?: string) {
     if (ownerAuthErr) throw ownerAuthErr;
     ownerAUser = ownerAuth.user;
 
-    await adminClient.from('user_roles').insert({
+    const { error: ownerRoleErr } = await adminClient.from('user_roles').insert({
       user_id: ownerAUser.id,
       business_id: bizAId,
       role: 'owner'
     });
+    if (ownerRoleErr) throw new Error(`Failed to assign owner role: ${ownerRoleErr.message}`);
     console.log(`   ✅ Owner A created and assigned role.`);
 
     // 4. Create a test Cashier user for Business A
@@ -81,12 +90,14 @@ export async function runPhase2RoleTests(superAdminEmail?: string) {
     if (cashierAuthErr) throw cashierAuthErr;
     cashierAUser = cashierAuth.user;
 
-    await adminClient.from('user_roles').insert({
+    const { error: cashierRoleErr } = await adminClient.from('user_roles').insert({
       user_id: cashierAUser.id,
       business_id: bizAId,
+      branch_id: branchA.id,
       role: 'cashier'
     });
-    console.log(`   ✅ Cashier A created and assigned role.`);
+    if (cashierRoleErr) throw new Error(`Failed to assign cashier role: ${cashierRoleErr.message}`);
+    console.log(`   ✅ Cashier A created and assigned role (branch: Main Branch A).`);
 
     // 5. Test Owner A Client (Authenticating with Anon Key + User Token)
     console.log('\n2️⃣ Testing RLS Isolation for Business Owner A:');
@@ -120,11 +131,12 @@ export async function runPhase2RoleTests(superAdminEmail?: string) {
     });
     if (cashierLoginErr) throw cashierLoginErr;
 
-    // Cashier CAN insert a points record for Customer A
+    // Cashier CAN insert a points record for Customer A (must include branch_id)
     const { data: insertedPoints, error: cashierInsertErr } = await cashierClient
       .from('points_ledger')
       .insert({
         business_id: bizAId,
+        branch_id: branchA.id,
         customer_id: custA.id,
         points_change: 25,
         reason: 'cashier_order_reward'

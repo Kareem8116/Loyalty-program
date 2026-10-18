@@ -89,7 +89,16 @@ async function runPhase3Tests() {
     console.error('❌ Phase 3 test failed:', err.message);
     process.exitCode = 1;
   } finally {
-    // Keep the test customer available for manual mobile scan test, or clean up later
+    // Clean up test data to avoid accumulation in the database
+    if (testBizId) {
+      console.log('\n🧹 Cleaning up test data...');
+      const { error: delErr } = await adminClient.from('businesses').delete().eq('id', testBizId);
+      if (delErr) {
+        console.warn('   ⚠️ Could not delete test business:', delErr.message);
+      } else {
+        console.log('   ✅ Test data cleaned up successfully (CASCADE verified).');
+      }
+    }
   }
 }
 

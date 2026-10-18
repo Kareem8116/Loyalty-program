@@ -178,15 +178,12 @@ export default function CashierPage() {
             <Link
               href="/"
               aria-label={t('common.home')}
-              className="w-10 h-10 rounded-full flex items-center justify-center glass-card transition-transform active:scale-95"
-              style={{
-                color: 'var(--color-text)',
-              }}
+              className="w-9 h-9 rounded-[8px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] hover:bg-[var(--color-accent)]/10 transition-colors cursor-pointer"
             >
               {isRtl ? (
-                <ArrowRight weight="light" className="w-5 h-5" />
+                <ArrowRight weight="light" className="w-4 h-4" />
               ) : (
-                <ArrowLeft weight="light" className="w-5 h-5" />
+                <ArrowLeft weight="light" className="w-4 h-4" />
               )}
             </Link>
 
@@ -199,10 +196,7 @@ export default function CashierPage() {
               id="cashier-profile-btn"
               title={t('accountDeletion.profileTitle')}
               aria-label={t('accountDeletion.profileTitle')}
-              className="w-10 h-10 rounded-full flex items-center justify-center glass-card transition-transform active:scale-95 cursor-pointer"
-              style={{
-                color: 'var(--color-text)',
-              }}
+              className="w-9 h-9 rounded-[8px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)] hover:bg-[var(--color-accent)]/10 transition-colors cursor-pointer"
             >
               <User weight="light" className="w-4 h-4" />
             </button>
@@ -212,7 +206,7 @@ export default function CashierPage() {
               id="cashier-logout-btn"
               title={t('cashierLogin.logout')}
               aria-label={t('cashierLogin.logout')}
-              className="w-10 h-10 rounded-full flex items-center justify-center glass-card transition-transform active:scale-95 cursor-pointer text-rose-500"
+              className="w-9 h-9 rounded-[8px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-card-bg)] text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
             >
               <SignOut weight="light" className="w-4 h-4" />
             </button>
@@ -220,12 +214,11 @@ export default function CashierPage() {
 
           <div className="text-center">
             <span 
-              className="text-xs font-semibold uppercase tracking-wider block"
-              style={{ color: 'var(--color-accent)' }}
+              className="text-[10px] font-mono uppercase tracking-[0.1em] block text-[var(--color-accent)]"
             >
               {t('cashier.title')}
             </span>
-            <span className="text-sm font-bold">
+            <span className="text-sm font-light tracking-tight">
               {customer ? t('cashier.controlTitle') : t('cashier.scanPrompt')}
             </span>
           </div>
@@ -243,12 +236,7 @@ export default function CashierPage() {
 
           {scanError && (
             <div 
-              className="w-full mb-4 p-3 rounded-2xl border-[0.5px] text-xs flex items-center gap-2 backdrop-blur-md"
-              style={{
-                backgroundColor: 'var(--color-error-bg)',
-                color: 'var(--color-error-text)',
-                borderColor: 'var(--color-error-border)',
-              }}
+              className="w-full mb-4 p-3 rounded-[4px] border border-[var(--color-error-border)] bg-[var(--color-error-bg)] text-[var(--color-error-text)] text-xs font-mono flex items-center gap-2"
             >
               <ShieldWarning weight="light" className="w-4 h-4 shrink-0" />
               <span>{scanError}</span>
@@ -264,7 +252,7 @@ export default function CashierPage() {
                 id="external-reader-form"
               >
                 <div
-                  className="glass-card flex items-center gap-2 px-3 py-2.5 rounded-2xl"
+                  className="flex items-center gap-2 px-3 py-2 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card-bg)]"
                 >
                   <Keyboard weight="light" className="w-4 h-4 shrink-0 opacity-40" />
                   <input
@@ -274,7 +262,7 @@ export default function CashierPage() {
                     value={externalInput}
                     onChange={(e) => setExternalInput(e.target.value)}
                     placeholder={isRtl ? 'أدخل كود العميل أو امسح بالجهاز الخارجي...' : 'Enter customer code or scan with external device...'}
-                    className="flex-1 bg-transparent text-xs focus:outline-hidden font-mono"
+                    className="flex-1 bg-transparent text-xs focus:outline-hidden font-mono text-[var(--color-text)]"
                     autoComplete="off"
                     autoCorrect="off"
                     spellCheck={false}
@@ -284,7 +272,7 @@ export default function CashierPage() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="ios-btn-primary text-[10px] font-bold px-2 py-1 rounded-lg transition-all"
+                      className="text-[10px] font-mono uppercase px-2.5 py-1 rounded-[4px] bg-[var(--color-accent)] text-white hover:brightness-110 transition-all cursor-pointer"
                     >
                       {isRtl ? 'بحث' : 'Go'}
                     </button>
@@ -315,14 +303,10 @@ export default function CashierPage() {
           }}
           dangerZone={
             <div
-              className="p-4 rounded-2xl border-[0.5px]"
-              style={{
-                backgroundColor: 'rgba(239, 68, 68, 0.05)',
-                borderColor: 'rgba(239, 68, 68, 0.25)',
-              }}
+              className="p-4 rounded-[8px] border border-[var(--color-error-border)] bg-[var(--color-error-bg)]"
             >
               {deleteCashierError && (
-                <div className="p-2.5 mb-3 rounded-xl border text-xs text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-2">
+                <div className="p-2.5 mb-3 rounded-[4px] border text-xs font-mono text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-2">
                   <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
                   <span>{deleteCashierError}</span>
                 </div>
@@ -332,17 +316,16 @@ export default function CashierPage() {
                 <>
                   <div className="flex items-center gap-2 mb-1.5 text-rose-500">
                     <Warning weight="light" className="w-4 h-4 shrink-0" />
-                    <span className="text-xs font-bold">{t('accountDeletion.dangerZone')}</span>
+                    <span className="text-xs font-mono uppercase tracking-wider font-semibold">{t('accountDeletion.dangerZone')}</span>
                   </div>
-                  <p className="text-[11px] opacity-75 mb-3 leading-relaxed">
+                  <p className="text-[11px] font-mono opacity-75 mb-3 leading-relaxed">
                     {t('accountDeletion.confirmCashierDesc')}
                   </p>
                   <button
                     type="button"
                     onClick={() => setShowCashierDeleteConfirm(true)}
                     id="cashier-open-delete-btn"
-                    className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-2 cursor-pointer"
-                    style={{ backgroundColor: '#EF4444' }}
+                    className="w-full py-2.5 px-3 rounded-[8px] text-xs font-medium uppercase tracking-wider text-white transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer bg-rose-600 hover:bg-rose-500"
                   >
                     <Trash weight="light" className="w-3.5 h-3.5" />
                     <span>{t('accountDeletion.deleteCashierAccount')}</span>
@@ -351,15 +334,14 @@ export default function CashierPage() {
               ) : (
                 <div className="text-center">
                   <div
-                    className="w-10 h-10 mx-auto mb-2 rounded-xl flex items-center justify-center"
-                    style={{ backgroundColor: 'rgba(239, 68, 68, 0.15)', color: '#EF4444' }}
+                    className="w-9 h-9 mx-auto mb-2 rounded-[4px] flex items-center justify-center bg-rose-500/15 text-rose-500"
                   >
                     <Warning weight="light" className="w-5 h-5" />
                   </div>
-                  <h3 className="text-xs font-bold text-rose-500 mb-1">
+                  <h3 className="text-xs font-light text-rose-500 mb-1">
                     {isRtl ? 'تأكيد الحذف النهائي' : 'Confirm Permanent Deletion'}
                   </h3>
-                  <p className="text-[11px] opacity-75 mb-3 leading-relaxed">
+                  <p className="text-[11px] font-mono opacity-75 mb-3 leading-relaxed">
                     {t('accountDeletion.confirmCashierDesc')}
                   </p>
                   <div className="flex items-center gap-2">
@@ -367,8 +349,7 @@ export default function CashierPage() {
                       type="button"
                       onClick={() => setShowCashierDeleteConfirm(false)}
                       disabled={isDeletingCashier}
-                      className="flex-1 py-2 rounded-xl border-[0.5px] text-xs font-semibold transition-transform active:scale-95 disabled:opacity-50 cursor-pointer"
-                      style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
+                      className="flex-1 py-2 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] text-xs font-mono transition-all active:scale-[0.99] disabled:opacity-40 cursor-pointer"
                     >
                       {t('accountDeletion.cancelButton')}
                     </button>
@@ -377,8 +358,7 @@ export default function CashierPage() {
                       onClick={handleDeleteCashierAccount}
                       id="cashier-confirm-delete-btn"
                       disabled={isDeletingCashier}
-                      className="flex-1 py-2 rounded-xl text-xs font-bold text-white transition-transform active:scale-95 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
-                      style={{ backgroundColor: '#EF4444' }}
+                      className="flex-1 py-2 rounded-[8px] text-xs font-medium uppercase tracking-wider text-white transition-all active:scale-[0.99] flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-40 bg-rose-600 hover:bg-rose-500"
                     >
                       {isDeletingCashier ? (
                         <>

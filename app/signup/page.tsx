@@ -161,16 +161,11 @@ function SignupContent() {
         <Link
           href="/"
           aria-label={t('common.back')}
-          className="w-10 h-10 rounded-full flex items-center justify-center border transition-transform active:scale-95"
-          style={{
-            backgroundColor: 'var(--color-input-bg)',
-            color: 'var(--color-text)',
-            borderColor: 'var(--color-border)',
-          }}
+          className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors active:scale-95 cursor-pointer"
         >
-          <ArrowRight size={18} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
+          <ArrowRight size={16} weight="light" className={`rotate-0 ${isRtl ? '' : 'rotate-180'}`} />
         </Link>
-        <span className="text-sm font-bold">{t('signup.title')}</span>
+        <span className="text-sm font-light tracking-tight">{t('signup.title')}</span>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
@@ -179,81 +174,65 @@ function SignupContent() {
 
       {isLoadingTenant ? (
         <div className="my-auto py-16 flex flex-col items-center justify-center opacity-70">
-          <CircleNotch size={32} weight="light" className="animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
-          <span className="text-xs">{t('common.loading')}</span>
+          <CircleNotch size={28} weight="light" className="animate-spin mb-2" style={{ color: 'var(--color-accent)' }} />
+          <span className="text-xs font-mono">{t('common.loading')}</span>
         </div>
       ) : isSelfSignupEnabled === false ? (
         /* Feature Disabled Notice */
         <div className="my-auto py-8 flex flex-col items-center text-center gap-4">
           <div 
-            className="w-14 h-14 rounded-3xl flex items-center justify-center border shadow-sm"
-            style={{ 
-              backgroundColor: 'var(--color-card-bg)', 
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-accent)'
-            }}
+            className="w-12 h-12 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-accent)]"
           >
-            <ShieldWarning size={28} weight="light" />
+            <ShieldWarning size={24} weight="light" />
           </div>
 
           <div className="flex flex-col gap-1.5 px-4">
-            <h1 className="text-base font-bold">{t('signup.featureDisabledTitle')}</h1>
-            <p className="text-xs opacity-70 leading-relaxed">
+            <h1 className="text-base font-light tracking-tight">{t('signup.featureDisabledTitle')}</h1>
+            <p className="text-xs font-mono opacity-70 leading-relaxed">
               {t('signup.featureDisabledDesc')}
             </p>
           </div>
 
           <Link
             href="/"
-            className="ios-btn-primary mt-2"
+            className="h-10 px-4 rounded-[8px] font-mono text-xs uppercase tracking-wider bg-[var(--color-accent)] text-white hover:brightness-110 flex items-center justify-center mt-2 cursor-pointer"
           >
             {t('signup.backHome')}
           </Link>
         </div>
       ) : (
         /* Active Self-Signup Form */
-        <div className="flex flex-col gap-4 my-auto py-4">
+        <div className="flex flex-col gap-3.5 my-auto py-4">
           {/* Business Welcome Badge */}
-          <div className="glass-card p-4 flex items-center gap-3">
+          <div className="p-3.5 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] flex items-center gap-3">
             <div 
-              className="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border"
-              style={{
-                backgroundColor: 'rgba(125, 125, 125, 0.08)',
-                borderColor: 'var(--color-border)',
-                color: 'var(--color-accent)',
-              }}
+              className="w-9 h-9 rounded-[4px] flex items-center justify-center shrink-0 border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-accent)]"
             >
-              <Sparkle size={20} weight="light" />
+              <Sparkle size={18} weight="light" />
             </div>
             <div>
-              <span className="text-[11px] opacity-60 block">{business?.name || t('customer.defaultBusiness')}</span>
-              <h1 className="text-xs font-bold">{t('signup.subtitle')}</h1>
+              <span className="text-[10px] font-mono uppercase tracking-wider opacity-60 block">{business?.name || t('customer.defaultBusiness')}</span>
+              <h1 className="text-xs font-medium">{t('signup.subtitle')}</h1>
             </div>
           </div>
 
           {/* Feedback alerts */}
           {errorMessage && (
             <div 
-              className="p-3.5 rounded-2xl text-xs font-medium flex flex-col gap-2 border"
-              style={{
-                backgroundColor: 'var(--color-error-bg)',
-                color: 'var(--color-error-text)',
-                borderColor: 'var(--color-error-border)',
-              }}
+              className="p-3 rounded-[4px] text-xs font-mono flex flex-col gap-2 border border-[var(--color-error-border)] bg-[var(--color-error-bg)] text-[var(--color-error-text)]"
             >
               <div className="flex items-center gap-2">
-                <WarningCircle size={18} weight="light" className="shrink-0" />
+                <WarningCircle size={16} weight="light" className="shrink-0" />
                 <span>{errorMessage}</span>
               </div>
               {existingQrToken && (
                 <Link
                   href={`/card/${existingQrToken}`}
                   id="view-existing-card-link"
-                  className="mt-1 py-1.5 px-3 rounded-xl border text-[11px] font-bold self-start flex items-center gap-1 transition-opacity hover:opacity-80"
-                  style={{ borderColor: 'var(--color-error-border)', backgroundColor: 'var(--color-card-bg)' }}
+                  className="mt-1 py-1 px-2.5 rounded-[4px] border border-[var(--color-error-border)] bg-[var(--color-card-bg)] text-[10px] font-mono self-start flex items-center gap-1 hover:opacity-80 transition-opacity"
                 >
                   <span>{t('signup.viewExistingCard')}</span>
-                  <ArrowSquareOut size={14} weight="light" />
+                  <ArrowSquareOut size={13} weight="light" />
                 </Link>
               )}
             </div>
@@ -261,14 +240,9 @@ function SignupContent() {
 
           {isSuccess && (
             <div 
-              className="p-3.5 rounded-2xl text-xs font-medium flex items-center gap-2 border"
-              style={{
-                backgroundColor: 'var(--color-success-bg)',
-                color: 'var(--color-success-text)',
-                borderColor: 'var(--color-success-border)',
-              }}
+              className="p-3 rounded-[4px] text-xs font-mono flex items-center gap-2 border border-[var(--color-success-border)] bg-[var(--color-success-bg)] text-[var(--color-success-text)]"
             >
-              <Check size={18} weight="light" className="shrink-0" />
+              <Check size={16} weight="light" className="shrink-0" />
               <span>{t('signup.successRedirect')}</span>
             </div>
           )}
@@ -276,11 +250,11 @@ function SignupContent() {
           {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className="glass-card p-6 flex flex-col gap-4 relative z-10"
+            className="p-5 sm:p-6 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] shadow-2xl flex flex-col gap-3.5 relative z-10"
           >
             {/* Full Name */}
             <div>
-              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-name-input">
+              <label className="block text-[11px] font-mono uppercase tracking-wider opacity-75 mb-1.5" htmlFor="signup-name-input">
                 {t('signup.nameLabel')}
               </label>
               <div className="relative flex items-center">
@@ -291,12 +265,12 @@ function SignupContent() {
                   placeholder={t('signup.namePlaceholder')}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="ios-input"
+                  className="w-full h-10 px-3 rounded-[4px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors pe-10"
                 />
-                <User size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                <User size={16} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
               </div>
               {name && !validateName(name).isValid && (
-                <p className="text-[11px] text-red-500 mt-1 font-medium">
+                <p className="text-[10px] font-mono text-rose-400 mt-1">
                   {t(`validation.${validateName(name).errorKey}`)}
                 </p>
               )}
@@ -304,7 +278,7 @@ function SignupContent() {
 
             {/* Phone Number */}
             <div>
-              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-phone-input">
+              <label className="block text-[11px] font-mono uppercase tracking-wider opacity-75 mb-1.5" htmlFor="signup-phone-input">
                 {t('signup.phoneLabel')}
               </label>
               <div className="relative flex items-center">
@@ -317,12 +291,12 @@ function SignupContent() {
                   placeholder={t('signup.phonePlaceholder')}
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="ios-input font-mono"
+                  className="w-full h-10 px-3 rounded-[4px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors pe-10"
                 />
-                <Phone size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                <Phone size={16} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
               </div>
               {phoneNumber && !validateEgyptianPhone(phoneNumber).isValid && (
-                <p className="text-[11px] text-red-500 mt-1 font-medium">
+                <p className="text-[10px] font-mono text-rose-400 mt-1">
                   {t(`validation.${validateEgyptianPhone(phoneNumber).errorKey}`)}
                 </p>
               )}
@@ -330,7 +304,7 @@ function SignupContent() {
 
             {/* Password */}
             <div>
-              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-password-input">
+              <label className="block text-[11px] font-mono uppercase tracking-wider opacity-75 mb-1.5" htmlFor="signup-password-input">
                 {t('signup.passwordLabel') || 'كلمة المرور'}
               </label>
               <div className="relative flex items-center">
@@ -342,23 +316,23 @@ function SignupContent() {
                   placeholder={t('signup.passwordPlaceholder') || '••••••••'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="ios-input pe-10"
+                  className="w-full h-10 px-3 rounded-[4px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors pe-10"
                   dir="ltr"
                 />
                 <button
                   type="button"
                   tabIndex={-1}
                   onClick={() => setShowPassword((v) => !v)}
-                  className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity focus:outline-none`}
+                  className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity focus:outline-none cursor-pointer`}
                   aria-label={showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
                 >
                   {showPassword
-                    ? <EyeSlash size={18} weight="light" />
-                    : <Eye size={18} weight="light" />}
+                    ? <EyeSlash size={16} weight="light" />
+                    : <Eye size={16} weight="light" />}
                 </button>
               </div>
               {password && !validatePassword(password).isValid && (
-                <p className="text-[11px] text-red-500 mt-1 font-medium">
+                <p className="text-[10px] font-mono text-rose-400 mt-1">
                   {validatePassword(password).errorMessage || 'كلمة المرور ضعيفة'}
                 </p>
               )}
@@ -366,7 +340,7 @@ function SignupContent() {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-confirm-password-input">
+              <label className="block text-[11px] font-mono uppercase tracking-wider opacity-75 mb-1.5" htmlFor="signup-confirm-password-input">
                 {t('signup.confirmPasswordLabel') || 'تأكيد كلمة المرور'}
               </label>
               <div className="relative flex items-center">
@@ -378,23 +352,23 @@ function SignupContent() {
                   placeholder={t('signup.passwordPlaceholder') || '••••••••'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="ios-input pe-10"
+                  className="w-full h-10 px-3 rounded-[4px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors pe-10"
                   dir="ltr"
                 />
                 <button
                   type="button"
                   tabIndex={-1}
                   onClick={() => setShowConfirmPassword((v) => !v)}
-                  className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity focus:outline-none`}
+                  className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-50 hover:opacity-100 transition-opacity focus:outline-none cursor-pointer`}
                   aria-label={showConfirmPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'}
                 >
                   {showConfirmPassword
-                    ? <EyeSlash size={18} weight="light" />
-                    : <Eye size={18} weight="light" />}
+                    ? <EyeSlash size={16} weight="light" />
+                    : <Eye size={16} weight="light" />}
                 </button>
               </div>
               {confirmPassword && confirmPassword !== password && (
-                <p className="text-[11px] text-red-500 mt-1 font-medium">
+                <p className="text-[10px] font-mono text-rose-400 mt-1">
                   {t('validation.passwords_not_matching') || 'كلمتا المرور غير متطابقتين'}
                 </p>
               )}
@@ -402,7 +376,7 @@ function SignupContent() {
 
             {/* Referral Code (Optional) */}
             <div>
-              <label className="block text-xs opacity-75 font-semibold mb-1.5" htmlFor="signup-referral-input">
+              <label className="block text-[11px] font-mono uppercase tracking-wider opacity-75 mb-1.5" htmlFor="signup-referral-input">
                 {t('signup.referralCodeLabel')}
               </label>
               <div className="relative flex items-center">
@@ -412,28 +386,27 @@ function SignupContent() {
                   placeholder={t('signup.referralCodePlaceholder')}
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  className="ios-input uppercase font-mono"
+                  className="w-full h-10 px-3 rounded-[4px] text-xs font-mono uppercase border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] focus:border-[var(--color-accent)] focus:outline-hidden transition-colors pe-10"
                 />
-                <Gift size={18} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
+                <Gift size={16} weight="light" className={`absolute ${isRtl ? 'left-3' : 'right-3'} opacity-40 pointer-events-none`} />
               </div>
             </div>
 
             {/* Mandatory Consent Checkbox */}
             <div 
-              className="p-3 rounded-2xl border flex items-start gap-2.5"
-              style={{ backgroundColor: 'var(--color-input-bg)', borderColor: 'var(--color-border)' }}
+              className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] flex items-start gap-2.5"
             >
               <input
                 type="checkbox"
                 id="signup-consent-checkbox"
                 checked={consentGiven}
                 onChange={(e) => setConsentGiven(e.target.checked)}
-                className="mt-1 w-4 h-4 rounded cursor-pointer shrink-0"
+                className="mt-1 w-3.5 h-3.5 rounded-[2px] cursor-pointer shrink-0"
                 style={{ accentColor: 'var(--color-accent)' }}
               />
               <label 
                 htmlFor="signup-consent-checkbox" 
-                className="text-[11px] opacity-80 leading-relaxed cursor-pointer select-none"
+                className="text-[11px] font-mono opacity-80 leading-relaxed cursor-pointer select-none"
               >
                 {t('signup.consentText')}
               </label>
@@ -444,11 +417,11 @@ function SignupContent() {
               type="submit"
               id="signup-submit-btn"
               disabled={isSubmitting || !name.trim() || !phoneNumber.trim() || !password || !confirmPassword || !consentGiven}
-              className="ios-btn-primary w-full mt-1"
+              className="w-full h-10 rounded-[8px] font-mono text-xs uppercase tracking-wider transition-all active:scale-[0.99] disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110 flex items-center justify-center gap-2 mt-1 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
-                  <CircleNotch size={18} weight="light" className="animate-spin" />
+                  <CircleNotch size={16} weight="light" className="animate-spin" />
                   <span>{t('signup.submitting')}</span>
                 </>
               ) : (

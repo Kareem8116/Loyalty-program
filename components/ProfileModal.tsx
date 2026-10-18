@@ -567,14 +567,12 @@ export default function ProfileModal({
     >
       {/* 
         Responsive Modal Container:
-        - Mobile: Full height of mobile screen (h-[100dvh] w-full rounded-none), smooth scrolling, native app drawer feel.
-        - Desktop/Tablet (sm:): max-w-xl centered rounded-3xl with generous padding.
+        - Mobile: Full height of mobile screen (h-[100dvh] w-full rounded-none).
+        - Desktop/Tablet (sm:): max-w-lg centered rounded-[8px] with 1px hairline border.
       */}
       <div
-        className="w-full h-[100dvh] sm:h-auto sm:max-h-[92vh] sm:max-w-xl rounded-none sm:rounded-3xl border-0 sm:border-[0.5px] glass-card shadow-2xl animate-in zoom-in-95 duration-200 flex flex-col overflow-hidden relative"
+        className="w-full h-[100dvh] sm:h-auto sm:max-h-[90vh] sm:max-w-lg rounded-none sm:rounded-[8px] border-0 sm:border border-[var(--color-border)] bg-[var(--color-card-bg)] shadow-2xl flex flex-col overflow-hidden relative"
         style={{
-          backgroundColor: 'var(--color-card-bg)',
-          borderColor: 'var(--color-border)',
           color: 'var(--color-text)',
         }}
         onClick={(e) => e.stopPropagation()}
@@ -583,13 +581,9 @@ export default function ProfileModal({
       >
         {/* ──── TOP NAVIGATION HEADER ──── */}
         <div 
-          className="px-5 sm:px-7 py-4 border-b flex items-center justify-between shrink-0 sticky top-0 z-20 backdrop-blur-md"
-          style={{ 
-            borderColor: 'var(--color-border)',
-            backgroundColor: 'rgba(var(--color-card-bg-rgb, 15, 23, 42), 0.85)'
-          }}
+          className="px-5 py-3.5 border-b border-[var(--color-border)] flex items-center justify-between shrink-0 sticky top-0 z-20 bg-[var(--color-card-bg)]"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {mode !== 'view' && (
               <button
                 type="button"
@@ -599,17 +593,16 @@ export default function ProfileModal({
                   setPwdError(null);
                   setOtpError(null);
                 }}
-                className="w-10 h-10 rounded-2xl flex items-center justify-center border hover:opacity-100 transition-all cursor-pointer opacity-70 active:scale-95"
-                style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
+                className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-bg)] hover:bg-[var(--color-accent)]/10 transition-colors cursor-pointer text-[var(--color-text-secondary)] hover:text-[var(--color-text)]"
                 aria-label="Back"
               >
-                {isRtl ? <ArrowRight weight="light" className="w-5 h-5" /> : <ArrowLeft weight="light" className="w-5 h-5" />}
+                {isRtl ? <ArrowRight weight="light" className="w-4 h-4" /> : <ArrowLeft weight="light" className="w-4 h-4" />}
               </button>
             )}
 
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-extrabold tracking-tight">
+                <h1 className="text-base sm:text-lg font-light tracking-tight">
                   {mode === 'view' && (t('profileEdit.title') || 'الملف الشخصي')}
                   {mode === 'edit' && (t('profileEdit.editProfile') || 'تعديل البيانات')}
                   {mode === 'password' && (t('profileEdit.changePassword') || 'تغيير كلمة المرور')}
@@ -617,12 +610,12 @@ export default function ProfileModal({
                 </h1>
 
                 {mode === 'view' && (
-                  <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-accent)]">
                     {roleDisplay}
                   </span>
                 )}
               </div>
-              <p className="text-xs opacity-60 font-medium mt-0.5">
+              <p className="text-[11px] font-mono opacity-60 mt-0.5">
                 {businessName ? `${businessName}` : (isRtl ? 'حسابك في Pointat' : 'Pointat Account')}
               </p>
             </div>
@@ -631,65 +624,55 @@ export default function ProfileModal({
           <button
             onClick={handleClose}
             aria-label="Close"
-            className="w-11 h-11 rounded-2xl flex items-center justify-center border hover:bg-rose-500/10 hover:border-rose-500/30 hover:text-rose-400 opacity-70 hover:opacity-100 transition-all cursor-pointer active:scale-95"
-            style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
+            className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-bg)] hover:border-rose-400/50 hover:bg-rose-500/10 hover:text-rose-400 transition-colors cursor-pointer text-[var(--color-text-secondary)]"
           >
-            <X weight="light" className="w-5 h-5" />
+            <X weight="light" className="w-4 h-4" />
           </button>
         </div>
 
         {/* ──── SCROLLABLE BODY CONTENT ──── */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-7 space-y-5">
+        <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {/* Global Feedback Alert */}
           {feedbackSuccess && (
-            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm flex items-center gap-3 animate-in fade-in duration-200">
-              <Check weight="light" className="w-5 h-5 shrink-0 text-emerald-400" />
-              <span className="flex-1 font-bold">{feedbackSuccess}</span>
+            <div className="p-3 rounded-[4px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono flex items-center gap-2.5">
+              <Check weight="light" className="w-4 h-4 shrink-0 text-emerald-400" />
+              <span className="flex-1 font-medium">{feedbackSuccess}</span>
               <button onClick={() => setFeedbackSuccess(null)} className="opacity-60 hover:opacity-100 p-1">
-                <X weight="light" className="w-4 h-4" />
+                <X weight="light" className="w-3.5 h-3.5" />
               </button>
             </div>
           )}
 
           {/* ════════ MODE 1: VIEW PROFILE ════════ */}
           {mode === 'view' && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Profile Hero Avatar & Name */}
               <div 
-                className="p-6 rounded-3xl border flex flex-col sm:flex-row items-center gap-5 text-center sm:text-start"
-                style={{ 
-                  backgroundColor: 'var(--color-bg)',
-                  borderColor: 'var(--color-border)' 
-                }}
+                className="p-4 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-bg)] flex flex-col sm:flex-row items-center gap-4 text-center sm:text-start"
               >
                 <div 
-                  className="w-20 h-20 sm:w-22 sm:h-22 rounded-3xl flex items-center justify-center text-2xl sm:text-3xl font-black shadow-lg relative shrink-0 border"
-                  style={{ 
-                    background: 'linear-gradient(135deg, var(--color-accent), #4F46E5)',
-                    color: 'var(--color-btn-text)',
-                    borderColor: 'rgba(255,255,255,0.2)'
-                  }}
+                  className="w-14 h-14 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-accent)] flex items-center justify-center text-xl font-light font-mono relative shrink-0"
                 >
                   {avatarLetter}
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[var(--color-card-bg)] flex items-center justify-center">
-                    <Check weight="light" className="w-3.5 h-3.5 text-white stroke-[3]" />
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-[2px] bg-emerald-500 border border-[var(--color-card-bg)] flex items-center justify-center">
+                    <Check weight="light" className="w-2.5 h-2.5 text-white stroke-[3]" />
                   </div>
                 </div>
 
-                <div className="flex-1 space-y-1.5 min-w-0">
-                  <h2 className="text-xl sm:text-2xl font-black truncate">
+                <div className="flex-1 space-y-1 min-w-0">
+                  <h2 className="text-base sm:text-lg font-light tracking-tight truncate">
                     {currentName || (isRtl ? 'حساب المستخدم' : 'User Account')}
                   </h2>
-                  <p className="text-sm opacity-60 font-mono truncate select-all" dir="ltr">
+                  <p className="text-xs opacity-60 font-mono truncate select-all" dir="ltr">
                     {currentEmail}
                   </p>
-                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                    <span className="text-xs px-3 py-1 rounded-xl font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 pt-0.5">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-accent)]">
                       {roleDisplay}
                     </span>
                     {businessName && (
-                      <span className="text-xs px-3 py-1 rounded-xl font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
-                        <Storefront weight="light" className="w-3.5 h-3.5" />
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-emerald-400 flex items-center gap-1">
+                        <Storefront weight="light" className="w-3 h-3" />
                         {businessName}
                       </span>
                     )}
@@ -698,19 +681,14 @@ export default function ProfileModal({
               </div>
 
               {/* Action Buttons: Edit Profile & Change Password */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={handleStartEdit}
                   id="profile-modal-edit-btn"
-                  className="h-12 px-5 rounded-2xl text-sm font-bold transition-all active:scale-98 shadow-sm flex items-center justify-center gap-2.5 cursor-pointer border hover:opacity-95"
-                  style={{
-                    backgroundColor: 'var(--color-accent)',
-                    color: 'var(--color-btn-text)',
-                    borderColor: 'var(--color-accent)',
-                  }}
+                  className="h-10 px-4 rounded-[8px] text-xs font-mono uppercase tracking-wider transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer bg-[var(--color-accent)] text-white hover:brightness-110"
                 >
-                  <PencilSimple weight="light" className="w-4 h-4" />
+                  <PencilSimple weight="light" className="w-3.5 h-3.5" />
                   <span>{t('profileEdit.editProfile') || 'تعديل البيانات'}</span>
                 </button>
 
@@ -718,33 +696,27 @@ export default function ProfileModal({
                   type="button"
                   onClick={handleStartPasswordChange}
                   id="profile-modal-password-btn"
-                  className="h-12 px-5 rounded-2xl text-sm font-bold transition-all active:scale-98 shadow-sm flex items-center justify-center gap-2.5 cursor-pointer border hover:border-cyan-500/50 hover:bg-cyan-500/10 transition-colors"
-                  style={{
-                    backgroundColor: 'var(--color-bg)',
-                    borderColor: 'var(--color-border)',
-                    color: 'var(--color-text)',
-                  }}
+                  className="h-10 px-4 rounded-[8px] text-xs font-mono uppercase tracking-wider border border-[var(--color-border)] bg-[var(--color-bg)] hover:bg-[var(--color-accent)]/10 text-[var(--color-text)] transition-colors active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <Key weight="light" className="w-4 h-4 text-cyan-400" />
+                  <Key weight="light" className="w-3.5 h-3.5 text-[var(--color-accent)]" />
                   <span>{t('profileEdit.changePassword') || 'تغيير كلمة المرور'}</span>
                 </button>
               </div>
 
-              {/* Spacious, Eye-Friendly Information Cards with Large Icons */}
-              <div className="space-y-3">
+              {/* Information Cards */}
+              <div className="space-y-2">
                 {/* 1. Full Name Card */}
                 <div 
-                  className="p-4 sm:p-5 rounded-2xl border flex items-center gap-4 transition-all hover:border-amber-500/30"
-                  style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                  className="p-3.5 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-bg)] flex items-center gap-3"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 shadow-xs">
-                    <User weight="light" className="w-7 h-7" />
+                  <div className="w-9 h-9 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-accent)] flex items-center justify-center shrink-0">
+                    <User weight="light" className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
+                    <span className="text-[10px] font-mono uppercase tracking-wider opacity-60 block">
                       {t('profileEdit.fullName') || 'الاسم الكامل'}
                     </span>
-                    <strong className="text-base sm:text-lg font-bold block truncate mt-0.5">
+                    <strong className="text-sm font-medium font-mono block truncate mt-0.5">
                       {currentName || (isRtl ? 'غير محدد' : 'Not set')}
                     </strong>
                   </div>
@@ -753,17 +725,16 @@ export default function ProfileModal({
                 {/* 2. Email Address Card (only shown if real non-phantom email exists) */}
                 {currentEmail && !currentEmail.endsWith('@pointat.internal') && (
                   <div 
-                    className="p-4 sm:p-5 rounded-2xl border flex items-center gap-4 transition-all hover:border-indigo-500/30"
-                    style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                    className="p-3.5 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-bg)] flex items-center gap-3"
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0 shadow-xs">
-                      <EnvelopeSimple weight="light" className="w-7 h-7" />
+                    <div className="w-9 h-9 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-accent)] flex items-center justify-center shrink-0">
+                      <EnvelopeSimple weight="light" className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
+                      <span className="text-[10px] font-mono uppercase tracking-wider opacity-60 block">
                         {t('profileEdit.email') || 'البريد الإلكتروني'}
                       </span>
-                      <strong className="text-base sm:text-lg font-bold font-mono block truncate select-all mt-0.5 text-indigo-400" dir="ltr">
+                      <strong className="text-sm font-medium font-mono block truncate select-all mt-0.5 text-[var(--color-accent)]" dir="ltr">
                         {currentEmail}
                       </strong>
                     </div>
@@ -772,17 +743,16 @@ export default function ProfileModal({
 
                 {/* 3. Mobile Number Card */}
                 <div 
-                  className="p-4 sm:p-5 rounded-2xl border flex items-center gap-4 transition-all hover:border-emerald-500/30"
-                  style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                  className="p-3.5 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-bg)] flex items-center gap-3"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 shadow-xs">
-                    <Phone weight="light" className="w-7 h-7" />
+                  <div className="w-9 h-9 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-emerald-400 flex items-center justify-center shrink-0">
+                    <Phone weight="light" className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
+                    <span className="text-[10px] font-mono uppercase tracking-wider opacity-60 block">
                       {t('profileEdit.phoneNumber') || 'رقم الموبايل'}
                     </span>
-                    <strong className="text-base sm:text-lg font-bold font-mono block truncate select-all mt-0.5 text-emerald-400" dir="ltr">
+                    <strong className="text-sm font-medium font-mono block truncate select-all mt-0.5 text-emerald-400" dir="ltr">
                       {currentPhone || (isRtl ? 'غير محدد بعد' : 'Not set')}
                     </strong>
                   </div>
@@ -790,24 +760,23 @@ export default function ProfileModal({
 
                 {/* 4. Password / Security Status Card */}
                 <div 
-                  className="p-4 sm:p-5 rounded-2xl border flex items-center gap-4 transition-all hover:border-cyan-500/30"
-                  style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-border)' }}
+                  className="p-3.5 rounded-[8px] border border-[var(--color-border)] bg-[var(--color-bg)] flex items-center gap-3"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 shadow-xs">
-                    <ShieldCheck weight="light" className="w-7 h-7" />
+                  <div className="w-9 h-9 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-accent)] flex items-center justify-center shrink-0">
+                    <ShieldCheck weight="light" className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-xs font-bold uppercase tracking-wider opacity-60 block">
+                    <span className="text-[10px] font-mono uppercase tracking-wider opacity-60 block">
                       {t('profileEdit.securityTitle') || 'الأمان وكلمة المرور'}
                     </span>
-                    <strong className="text-base sm:text-lg font-mono tracking-widest block truncate mt-0.5 opacity-80">
+                    <strong className="text-sm font-mono tracking-widest block truncate mt-0.5 opacity-80">
                       ••••••••••••
                     </strong>
                   </div>
                   <button
                     type="button"
                     onClick={handleStartPasswordChange}
-                    className="text-xs font-bold px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 transition-colors cursor-pointer"
+                    className="text-[10px] font-mono uppercase px-2.5 py-1 rounded-[4px] border border-[var(--color-border)] text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors cursor-pointer"
                   >
                     {t('profileEdit.changePassword') || 'تعديل'}
                   </button>
@@ -823,7 +792,7 @@ export default function ProfileModal({
 
               {/* Danger Zone Slot (Delete Account) */}
               {dangerZone && (
-                <div className="pt-2">
+                <div className="pt-1">
                   {dangerZone}
                 </div>
               )}
@@ -832,18 +801,18 @@ export default function ProfileModal({
 
           {/* ════════ MODE 2: EDIT PROFILE FORM ════════ */}
           {mode === 'edit' && (
-            <div className="space-y-5">
+            <div className="space-y-4">
               {formError && (
-                <div className="p-4 rounded-2xl border text-sm text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-3">
-                  <WarningCircle weight="light" className="w-5 h-5 shrink-0" />
-                  <span className="font-semibold">{formError}</span>
+                <div className="p-3 rounded-[4px] border border-[var(--color-error-border)] bg-[var(--color-error-bg)] text-xs font-mono text-[var(--color-error-text)] flex items-center gap-2.5">
+                  <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
+                  <span>{formError}</span>
                 </div>
               )}
 
               {/* Name Input */}
-              <div className="space-y-2">
-                <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                  <User weight="light" className="w-4 h-4 text-amber-400" />
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono uppercase tracking-wider opacity-75 flex items-center gap-1.5">
+                  <User weight="light" className="w-3.5 h-3.5 text-[var(--color-accent)]" />
                   <span>{t('profileEdit.fullName') || 'الاسم الكامل'}</span>
                 </label>
                 <input
@@ -851,25 +820,20 @@ export default function ProfileModal({
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   placeholder={t('profileEdit.namePlaceholder') || 'أدخل اسمك...'}
-                  className="w-full h-13 px-4 rounded-2xl border text-sm font-medium transition-colors focus:outline-hidden focus:border-amber-500"
-                  style={{
-                    backgroundColor: 'var(--color-bg)',
-                    borderColor: 'var(--color-border)',
-                    color: 'var(--color-text)',
-                  }}
+                  className="w-full h-10 px-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-xs font-mono text-[var(--color-text)] transition-colors focus:border-[var(--color-accent)] focus:outline-hidden"
                 />
               </div>
 
               {/* Email Input (only for staff / non-customer accounts with real email) */}
               {userRole !== 'customer' && currentEmail && !currentEmail.endsWith('@pointat.internal') && (
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                      <EnvelopeSimple weight="light" className="w-4 h-4 text-indigo-400" />
+                    <label className="text-xs font-mono uppercase tracking-wider opacity-75 flex items-center gap-1.5">
+                      <EnvelopeSimple weight="light" className="w-3.5 h-3.5 text-[var(--color-accent)]" />
                       <span>{t('profileEdit.email') || 'البريد الإلكتروني'}</span>
                     </label>
                     {isEmailChanged && (
-                      <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+                      <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-accent)]">
                         {t('profileEdit.otpNoticeEmail') || 'تأكيد OTP مطلوب'}
                       </span>
                     )}
@@ -880,25 +844,20 @@ export default function ProfileModal({
                     onChange={(e) => setEditEmail(e.target.value)}
                     placeholder={t('profileEdit.emailPlaceholder') || 'example@domain.com'}
                     dir="ltr"
-                    className="w-full h-13 px-4 rounded-2xl border text-sm font-mono transition-colors focus:outline-hidden focus:border-indigo-500"
-                    style={{
-                      backgroundColor: 'var(--color-bg)',
-                      borderColor: isEmailChanged ? 'rgba(99, 102, 241, 0.6)' : 'var(--color-border)',
-                      color: 'var(--color-text)',
-                    }}
+                    className="w-full h-10 px-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-xs font-mono text-[var(--color-text)] transition-colors focus:border-[var(--color-accent)] focus:outline-hidden"
                   />
                 </div>
               )}
 
               {/* Phone Input */}
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                    <Phone weight="light" className="w-4 h-4 text-emerald-400" />
+                  <label className="text-xs font-mono uppercase tracking-wider opacity-75 flex items-center gap-1.5">
+                    <Phone weight="light" className="w-3.5 h-3.5 text-emerald-400" />
                     <span>{t('profileEdit.phoneNumber') || 'رقم الموبايل'}</span>
                   </label>
                   {isPhoneChanged && (
-                    <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-[4px] border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
                       {t('profileEdit.otpNoticePhone') || 'تأكيد OTP مطلوب'}
                     </span>
                   )}
@@ -909,28 +868,23 @@ export default function ProfileModal({
                   onChange={(e) => setEditPhone(e.target.value)}
                   placeholder={t('profileEdit.phonePlaceholder') || '01xxxxxxxxx'}
                   dir="ltr"
-                  className="w-full h-13 px-4 rounded-2xl border text-sm font-mono transition-colors focus:outline-hidden focus:border-emerald-500"
-                  style={{
-                    backgroundColor: 'var(--color-bg)',
-                    borderColor: isPhoneChanged ? 'rgba(16, 185, 129, 0.6)' : 'var(--color-border)',
-                    color: 'var(--color-text)',
-                  }}
+                  className="w-full h-10 px-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-xs font-mono text-[var(--color-text)] transition-colors focus:border-[var(--color-accent)] focus:outline-hidden"
                 />
               </div>
 
               {/* OTP Notice Info Box */}
               {(isEmailChanged || isPhoneChanged) && (
-                <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300 flex items-start gap-3 leading-relaxed">
-                  <Key weight="light" className="w-5 h-5 shrink-0 text-indigo-400 mt-0.5" />
+                <div className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-xs font-mono text-[var(--color-text-secondary)] flex items-start gap-2.5 leading-relaxed">
+                  <Key weight="light" className="w-4 h-4 shrink-0 text-[var(--color-accent)] mt-0.5" />
                   <div>
-                    <p className="font-bold">
+                    <p className="font-medium text-[var(--color-text)]">
                       {isEmailChanged && isPhoneChanged
                         ? (isRtl ? 'لتأكيد تغيير البريد ورقم الموبايل، سيتم التحقق من كل منهما برمز OTP مكون من 6 أرقام لحماية حسابك.' : 'To confirm new email and phone, each will be verified via a 6-digit OTP for security.')
                         : isEmailChanged
                         ? (isRtl ? 'سيتم إرسال رمز تحقق OTP مكون من 6 أرقام إلى بريدك الجديد لتأكيده.' : 'A 6-digit OTP verification code will be sent to your new email.')
                         : (isRtl ? 'سيتم إرسال رمز تحقق OTP مكون من 6 أرقام إلى رقم هاتفك الجديد لتأكيده.' : 'A 6-digit OTP verification code will be sent to your new phone.')}
                     </p>
-                    <p className="text-[11px] opacity-70 mt-1 font-medium">
+                    <p className="text-[10px] opacity-60 mt-1">
                       {t('profileEdit.rateLimitNotice') || 'مسموح بـ 5 رموز تحقق كحد أقصى كل 15 دقيقة.'}
                     </p>
                   </div>
@@ -938,17 +892,13 @@ export default function ProfileModal({
               )}
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-center gap-3 pt-3">
+              <div className="flex flex-col sm:flex-row items-center gap-2 pt-2">
                 <button
                   type="button"
                   onClick={handleSaveChanges}
                   disabled={isSaving}
                   id="profile-save-changes-btn"
-                  className="w-full sm:flex-1 h-13 px-6 rounded-2xl text-sm font-bold transition-all active:scale-98 shadow-md flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
-                  style={{
-                    backgroundColor: 'var(--color-accent)',
-                    color: 'var(--color-btn-text)',
-                  }}
+                  className="w-full sm:flex-1 h-10 px-4 rounded-[8px] text-xs font-mono uppercase tracking-wider transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110"
                 >
                   {isSaving ? (
                     <>
@@ -970,8 +920,7 @@ export default function ProfileModal({
                     setFormError(null);
                   }}
                   disabled={isSaving}
-                  className="w-full sm:w-auto h-13 px-6 rounded-2xl text-sm font-semibold border opacity-80 hover:opacity-100 transition-colors cursor-pointer"
-                  style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
+                  className="w-full sm:w-auto h-10 px-4 rounded-[8px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors cursor-pointer"
                 >
                   {t('profileEdit.cancel') || 'إلغاء'}
                 </button>
@@ -981,21 +930,21 @@ export default function ProfileModal({
 
           {/* ════════ MODE 3: PASSWORD CHANGE FORM ════════ */}
           {mode === 'password' && (
-            <form onSubmit={handleRequestPasswordOtp} className="space-y-5">
+            <form onSubmit={handleRequestPasswordOtp} className="space-y-4">
               {pwdError && (
-                <div className="p-4 rounded-2xl border text-sm text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-3">
-                  <WarningCircle weight="light" className="w-5 h-5 shrink-0" />
-                  <span className="font-semibold">{pwdError}</span>
+                <div className="p-3 rounded-[4px] border border-[var(--color-error-border)] bg-[var(--color-error-bg)] text-xs font-mono text-[var(--color-error-text)] flex items-center gap-2.5">
+                  <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
+                  <span>{pwdError}</span>
                 </div>
               )}
 
-              <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-300 flex items-start gap-3">
-                <ShieldCheck weight="light" className="w-5 h-5 shrink-0 text-cyan-400 mt-0.5" />
+              <div className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-xs font-mono text-[var(--color-text-secondary)] flex items-start gap-2.5">
+                <ShieldCheck weight="light" className="w-4 h-4 shrink-0 text-[var(--color-accent)] mt-0.5" />
                 <div>
-                  <h3 className="font-bold text-sm">
+                  <h3 className="font-medium text-[var(--color-text)]">
                     {t('profileEdit.securityTitle') || 'تأمين كلمة المرور برمز OTP'}
                   </h3>
-                  <p className="opacity-80 mt-1 leading-relaxed">
+                  <p className="opacity-75 mt-1 leading-relaxed">
                     {isRtl 
                       ? 'لحماية حسابك، سيتم إرسال رمز تحقق مكون من 6 أرقام لتأكيد تغيير كلمة المرور. يمكنك استلام الرمز عبر رقم الموبايل أو البريد الإلكتروني.' 
                       : 'For your security, a 6-digit OTP will be sent to confirm your new password via SMS or Email.'}
@@ -1004,9 +953,9 @@ export default function ProfileModal({
               </div>
 
               {/* New Password Input */}
-              <div className="space-y-2">
-                <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                  <Lock weight="light" className="w-4 h-4 text-cyan-400" />
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono uppercase tracking-wider opacity-75 flex items-center gap-1.5">
+                  <Lock weight="light" className="w-3.5 h-3.5 text-[var(--color-accent)]" />
                   <span>{t('profileEdit.newPassword') || 'كلمة المرور الجديدة'}</span>
                 </label>
                 <div className="relative">
@@ -1015,17 +964,12 @@ export default function ProfileModal({
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder={t('profileEdit.newPasswordPlaceholder') || '8 خانات على الأقل (حروف وأرقام)'}
-                    className="w-full h-13 px-4 rounded-2xl border text-sm font-mono transition-colors focus:outline-hidden focus:border-cyan-500 pe-12"
-                    style={{
-                      backgroundColor: 'var(--color-bg)',
-                      borderColor: 'var(--color-border)',
-                      color: 'var(--color-text)',
-                    }}
+                    className="w-full h-10 px-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-xs font-mono text-[var(--color-text)] transition-colors focus:border-[var(--color-accent)] focus:outline-hidden pe-10"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 end-0 px-4 flex items-center text-gray-400 hover:text-white"
+                    className="absolute inset-y-0 end-0 px-3 flex items-center text-gray-400 hover:text-[var(--color-text)]"
                   >
                     {showPassword ? <EyeSlash weight="light" className="w-4 h-4" /> : <Eye weight="light" className="w-4 h-4" />}
                   </button>
@@ -1033,9 +977,9 @@ export default function ProfileModal({
               </div>
 
               {/* Confirm Password Input */}
-              <div className="space-y-2">
-                <label className="text-sm font-bold opacity-80 flex items-center gap-2">
-                  <ShieldCheck weight="light" className="w-4 h-4 text-cyan-400" />
+              <div className="space-y-1.5">
+                <label className="text-xs font-mono uppercase tracking-wider opacity-75 flex items-center gap-1.5">
+                  <ShieldCheck weight="light" className="w-3.5 h-3.5 text-[var(--color-accent)]" />
                   <span>{t('profileEdit.confirmPassword') || 'تأكيد كلمة المرور'}</span>
                 </label>
                 <input
@@ -1043,37 +987,32 @@ export default function ProfileModal({
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder={t('profileEdit.confirmPasswordPlaceholder') || 'أعد إدخال كلمة المرور للتحقق'}
-                  className="w-full h-13 px-4 rounded-2xl border text-sm font-mono transition-colors focus:outline-hidden focus:border-cyan-500"
-                  style={{
-                    backgroundColor: 'var(--color-bg)',
-                    borderColor: 'var(--color-border)',
-                    color: 'var(--color-text)',
-                  }}
+                  className="w-full h-10 px-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-xs font-mono text-[var(--color-text)] transition-colors focus:border-[var(--color-accent)] focus:outline-hidden"
                 />
               </div>
 
               {/* OTP Delivery Channel Selector */}
-              <div className="space-y-2.5 pt-1">
-                <label className="text-xs font-bold uppercase tracking-wider opacity-70 block">
+              <div className="space-y-2 pt-1">
+                <label className="text-[10px] font-mono uppercase tracking-wider opacity-70 block">
                   {t('profileEdit.otpDeliveryChannel') || 'إرسال رمز التحقق OTP لتأكيد كلمة المرور عبر:'}
                 </label>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {/* Option A: Phone */}
                   <button
                     type="button"
                     onClick={() => setPwdDeliveryChannel('phone')}
-                    className={`p-4 rounded-2xl border flex items-center gap-3 transition-all cursor-pointer text-start ${
+                    className={`p-3 rounded-[8px] border flex items-center gap-2.5 transition-colors cursor-pointer text-start ${
                       pwdDeliveryChannel === 'phone'
-                        ? 'border-emerald-500 bg-emerald-500/15 shadow-sm'
-                        : 'border-[var(--color-border)] bg-[var(--color-bg)] opacity-70 hover:opacity-100'
+                        ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/10'
+                        : 'border-[var(--color-border)] bg-[var(--color-bg)] opacity-75 hover:opacity-100'
                     }`}
                   >
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                      <DeviceMobile weight="light" className="w-5 h-5" />
+                    <div className="w-8 h-8 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-emerald-400 flex items-center justify-center shrink-0">
+                      <DeviceMobile weight="light" className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <span className="text-xs font-bold block">
+                      <span className="text-[11px] font-mono uppercase tracking-wider font-semibold block">
                         {t('profileEdit.sendToPhone') || 'رقم الموبايل'}
                       </span>
                       <span className="text-xs font-mono opacity-80 truncate block mt-0.5" dir="ltr">
@@ -1086,17 +1025,17 @@ export default function ProfileModal({
                   <button
                     type="button"
                     onClick={() => setPwdDeliveryChannel('email')}
-                    className={`p-4 rounded-2xl border flex items-center gap-3 transition-all cursor-pointer text-start ${
+                    className={`p-3 rounded-[8px] border flex items-center gap-2.5 transition-colors cursor-pointer text-start ${
                       pwdDeliveryChannel === 'email'
-                        ? 'border-indigo-500 bg-indigo-500/15 shadow-sm'
-                        : 'border-[var(--color-border)] bg-[var(--color-bg)] opacity-70 hover:opacity-100'
+                        ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/10'
+                        : 'border-[var(--color-border)] bg-[var(--color-bg)] opacity-75 hover:opacity-100'
                     }`}
                   >
-                    <div className="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
-                      <EnvelopeSimple weight="light" className="w-5 h-5" />
+                    <div className="w-8 h-8 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-accent)] flex items-center justify-center shrink-0">
+                      <EnvelopeSimple weight="light" className="w-4 h-4" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <span className="text-xs font-bold block">
+                      <span className="text-[11px] font-mono uppercase tracking-wider font-semibold block">
                         {t('profileEdit.sendToEmail') || 'البريد الإلكتروني'}
                       </span>
                       <span className="text-xs font-mono opacity-80 truncate block mt-0.5" dir="ltr">
@@ -1108,22 +1047,18 @@ export default function ProfileModal({
               </div>
 
               {/* Rate limit note */}
-              <p className="text-xs opacity-60 flex items-center gap-1.5">
-                <Sparkle weight="light" className="w-3.5 h-3.5 text-cyan-400" />
+              <p className="text-[11px] font-mono opacity-60 flex items-center gap-1.5">
+                <Sparkle weight="light" className="w-3.5 h-3.5 text-[var(--color-accent)]" />
                 <span>{t('profileEdit.rateLimitNotice') || 'مسموح بـ 5 رموز تحقق كحد أقصى كل 15 دقيقة.'}</span>
               </p>
 
               {/* Submit & Cancel */}
-              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row items-center gap-2 pt-2">
                 <button
                   type="submit"
                   disabled={isRequestingPwdOtp || !newPassword || !confirmPassword}
                   id="send-password-otp-btn"
-                  className="w-full sm:flex-1 h-13 px-6 rounded-2xl text-sm font-bold transition-all active:scale-98 shadow-md flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
-                  style={{
-                    backgroundColor: 'var(--color-accent)',
-                    color: 'var(--color-btn-text)',
-                  }}
+                  className="w-full sm:flex-1 h-10 px-4 rounded-[8px] text-xs font-mono uppercase tracking-wider transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110"
                 >
                   {isRequestingPwdOtp ? (
                     <>
@@ -1145,8 +1080,7 @@ export default function ProfileModal({
                     setPwdError(null);
                   }}
                   disabled={isRequestingPwdOtp}
-                  className="w-full sm:w-auto h-13 px-6 rounded-2xl text-sm font-semibold border opacity-80 hover:opacity-100 transition-colors cursor-pointer"
-                  style={{ borderColor: 'var(--color-border)', backgroundColor: 'var(--color-bg)' }}
+                  className="w-full sm:w-auto h-10 px-4 rounded-[8px] text-xs font-mono border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors cursor-pointer"
                 >
                   {t('profileEdit.cancel') || 'إلغاء'}
                 </button>
@@ -1156,21 +1090,16 @@ export default function ProfileModal({
 
           {/* ════════ MODE 4: OTP VERIFICATION CHALLENGE ════════ */}
           {mode === 'otp' && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Header Icon & Explanation */}
-              <div className="text-center space-y-2">
+              <div className="text-center space-y-1.5">
                 <div
-                  className="w-16 h-16 mx-auto rounded-3xl flex items-center justify-center mb-3 shadow-lg border"
-                  style={{ 
-                    backgroundColor: 'rgba(99, 102, 241, 0.15)', 
-                    color: '#6366F1',
-                    borderColor: 'rgba(99, 102, 241, 0.3)'
-                  }}
+                  className="w-12 h-12 mx-auto rounded-[8px] flex items-center justify-center mb-2 border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-accent)]"
                 >
-                  <Key weight="light" className="w-8 h-8" />
+                  <Key weight="light" className="w-6 h-6" />
                 </div>
 
-                <h3 className="text-lg sm:text-xl font-black">
+                <h3 className="text-base sm:text-lg font-light tracking-tight">
                   {otpPurpose === 'password_change'
                     ? (t('profileEdit.verifyPasswordTitle') || 'تأكيد تغيير كلمة المرور')
                     : otpType === 'email'
@@ -1178,7 +1107,7 @@ export default function ProfileModal({
                     : (t('profileEdit.verifyPhoneTitle') || 'تأكيد رقم الموبايل الجديد')}
                 </h3>
 
-                <p className="text-xs sm:text-sm opacity-70 max-w-sm mx-auto leading-relaxed">
+                <p className="text-xs font-mono opacity-70 max-w-sm mx-auto leading-relaxed">
                   {otpType === 'email'
                     ? (t('profileEdit.verifyEmailSubtitle') || 'تم إرسال رمز التحقق المكون من 6 أرقام إلى: {email}').replace('{email}', otpTarget)
                     : (t('profileEdit.verifyPhoneSubtitle') || 'تم إرسال رمز التحقق المكون من 6 أرقام إلى: {phone}').replace('{phone}', otpTarget)}
@@ -1187,27 +1116,27 @@ export default function ProfileModal({
 
               {/* Error message */}
               {otpError && (
-                <div className="p-4 rounded-2xl border text-sm text-rose-400 bg-rose-500/10 border-rose-500/30 flex items-center gap-3">
-                  <WarningCircle weight="light" className="w-5 h-5 shrink-0" />
-                  <span className="font-semibold">{otpError}</span>
+                <div className="p-3 rounded-[4px] border border-[var(--color-error-border)] bg-[var(--color-error-bg)] text-xs font-mono text-[var(--color-error-text)] flex items-center gap-2.5">
+                  <WarningCircle weight="light" className="w-4 h-4 shrink-0" />
+                  <span>{otpError}</span>
                 </div>
               )}
 
               {/* Simulated SMS Card (Trial / Demo Mode) */}
               {otpType === 'phone' && simulatedSms && (
-                <div className="p-4 rounded-3xl bg-indigo-500/10 border border-indigo-500/30 animate-in fade-in duration-300 space-y-2">
+                <div className="p-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-indigo-400 font-bold text-xs">
-                      <DeviceMobile weight="light" className="w-4 h-4" />
-                      <span>{t('profileEdit.simulatedSmsTitle') || 'رسالة SMS تجريبية (بيئة الاختبار):'}</span>
+                    <div className="flex items-center gap-1.5 text-[var(--color-accent)] font-mono text-[11px]">
+                      <DeviceMobile weight="light" className="w-3.5 h-3.5" />
+                      <span>{t('profileEdit.simulatedSmsTitle') || 'رسالة SMS تجريبية:'}</span>
                     </div>
-                    <span className="text-xs px-2 py-0.5 rounded-lg font-mono bg-indigo-500/20 text-indigo-300">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-[4px] font-mono border border-[var(--color-border)] bg-[var(--color-card-bg)] text-[var(--color-text)]">
                       {simulatedSms.phone}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-1">
-                    <span className="text-sm font-mono font-bold tracking-widest text-indigo-200">
+                  <div className="flex items-center justify-between pt-0.5">
+                    <span className="text-xs font-mono font-medium tracking-widest text-[var(--color-accent)]">
                       OTP: {simulatedSms.otp}
                     </span>
                     <button
@@ -1215,9 +1144,9 @@ export default function ProfileModal({
                       onClick={() => {
                         if (simulatedSms.otp) setOtpInput(simulatedSms.otp);
                       }}
-                      className="text-xs py-1.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-transform active:scale-95 cursor-pointer flex items-center gap-1.5 shadow-sm"
+                      className="text-[10px] font-mono uppercase py-1 px-2.5 rounded-[4px] bg-[var(--color-accent)] text-white hover:brightness-110 cursor-pointer flex items-center gap-1"
                     >
-                      <Sparkle weight="light" className="w-3.5 h-3.5" />
+                      <Sparkle weight="light" className="w-3 h-3" />
                       <span>{t('profileEdit.fillOtp') || 'إدراج الرمز تلقائياً'}</span>
                     </button>
                   </div>
@@ -1225,9 +1154,9 @@ export default function ProfileModal({
               )}
 
               {/* OTP Form */}
-              <form onSubmit={handleVerifyOtp} className="space-y-5">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider opacity-70 block text-center">
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-mono uppercase tracking-wider opacity-70 block text-center">
                     {t('profileEdit.otpLabel') || 'أدخل رمز التحقق (6 أرقام)'}
                   </label>
                   <input
@@ -1238,12 +1167,7 @@ export default function ProfileModal({
                     onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
                     placeholder="• • • • • •"
                     dir="ltr"
-                    className="w-full h-16 px-4 rounded-3xl border text-center font-mono text-2xl tracking-widest transition-colors focus:outline-hidden shadow-inner"
-                    style={{
-                      backgroundColor: 'var(--color-bg)',
-                      borderColor: otpError ? '#EF4444' : 'var(--color-accent)',
-                      color: 'var(--color-text)',
-                    }}
+                    className="w-full h-12 px-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-bg)] text-center font-mono text-xl tracking-[0.35em] text-[var(--color-text)] transition-colors focus:border-[var(--color-accent)] focus:outline-hidden"
                   />
                 </div>
 
@@ -1251,11 +1175,7 @@ export default function ProfileModal({
                   type="submit"
                   disabled={isVerifyingOtp || otpInput.trim().length !== 6}
                   id="profile-confirm-otp-btn"
-                  className="w-full h-13 px-6 rounded-2xl text-sm font-bold transition-all active:scale-98 shadow-md flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
-                  style={{
-                    backgroundColor: 'var(--color-accent)',
-                    color: 'var(--color-btn-text)',
-                  }}
+                  className="w-full h-10 px-4 rounded-[8px] text-xs font-mono uppercase tracking-wider transition-all active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 bg-[var(--color-accent)] text-white hover:brightness-110"
                 >
                   {isVerifyingOtp ? (
                     <>
@@ -1271,17 +1191,12 @@ export default function ProfileModal({
                 </button>
 
                 {/* Resend button with 60s countdown & 15-min quota note */}
-                <div className="pt-2 flex flex-col items-center gap-3">
+                <div className="pt-1 flex flex-col items-center gap-2">
                   <button
                     type="button"
                     onClick={handleResendOtp}
                     disabled={resendCooldown > 0 || isResending}
-                    className="h-11 px-5 rounded-xl border text-xs font-bold transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                    style={{
-                      backgroundColor: resendCooldown > 0 ? 'transparent' : 'rgba(99, 102, 241, 0.1)',
-                      borderColor: resendCooldown > 0 ? 'var(--color-border)' : 'rgba(99, 102, 241, 0.3)',
-                      color: resendCooldown > 0 ? 'var(--color-text)' : '#6366F1',
-                    }}
+                    className="h-9 px-4 rounded-[4px] border border-[var(--color-border)] text-xs font-mono transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
                   >
                     <CircleNotch weight="light" className={`w-3.5 h-3.5 ${isResending ? 'animate-spin' : ''}`} />
                     <span>
@@ -1291,7 +1206,7 @@ export default function ProfileModal({
                     </span>
                   </button>
 
-                  <span className="text-[11px] opacity-50 text-center">
+                  <span className="text-[10px] font-mono opacity-50 text-center">
                     {t('profileEdit.rateLimitNotice') || 'مسموح بـ 5 رموز تحقق كحد أقصى كل 15 دقيقة.'}
                   </span>
 
@@ -1301,7 +1216,7 @@ export default function ProfileModal({
                       setMode(otpPurpose === 'password_change' ? 'password' : 'edit');
                       setOtpError(null);
                     }}
-                    className="text-xs font-semibold opacity-60 hover:opacity-100 transition-opacity cursor-pointer mt-1"
+                    className="text-xs font-mono text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors cursor-pointer mt-1"
                   >
                     {t('profileEdit.cancel') || 'رجوع'}
                   </button>

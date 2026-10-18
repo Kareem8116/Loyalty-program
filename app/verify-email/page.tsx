@@ -212,18 +212,13 @@ function VerifyEmailContent() {
         <Link
           href={getLoginLink()}
           aria-label={t('common.back')}
-          className="w-10 h-10 rounded-full flex items-center justify-center border transition-transform active:scale-95"
-          style={{
-            backgroundColor: 'var(--color-input-bg)',
-            color: 'var(--color-text)',
-            borderColor: 'var(--color-border)',
-          }}
+          className="w-8 h-8 rounded-[4px] flex items-center justify-center border border-[var(--color-border)] bg-[var(--color-input-bg)] text-[var(--color-text)] transition-transform active:scale-95"
         >
-          {isRtl ? <ArrowRight size={18} weight="light" /> : <ArrowLeft size={18} weight="light" />}
+          {isRtl ? <ArrowRight size={16} weight="light" /> : <ArrowLeft size={16} weight="light" />}
         </Link>
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
-          <span className="text-xs font-semibold tracking-wider uppercase opacity-75">
+          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--color-accent)' }} />
+          <span className="text-[10px] font-mono font-medium tracking-wider uppercase text-[var(--color-text-muted)]">
             Security Verification
           </span>
         </div>
@@ -234,23 +229,19 @@ function VerifyEmailContent() {
       </header>
 
       {/* Main Card */}
-      <div className="glass-card p-6 sm:p-8 my-auto flex flex-col gap-6 transition-all">
+      <div className="rounded-[8px] border border-[var(--color-border)] bg-[var(--color-card-bg)] p-6 sm:p-8 my-auto flex flex-col gap-6 transition-all">
         {/* Badge & Icon */}
         <div className="text-center flex flex-col items-center">
           <div
-            className="w-16 h-16 mb-3 rounded-2xl flex items-center justify-center shadow-md transition-transform"
-            style={{
-              backgroundColor: 'var(--color-accent)',
-              color: 'var(--color-accent-text)',
-            }}
+            className="w-12 h-12 mb-3 rounded-[4px] border border-[var(--color-border)] bg-[var(--color-input-bg)] flex items-center justify-center text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)] transition-transform"
           >
-            <EnvelopeSimple size={30} weight="light" />
+            <EnvelopeSimple size={24} weight="light" />
           </div>
 
-          <h1 className="text-xl font-bold mb-1 tracking-tight" style={{ color: 'var(--color-text)' }}>
+          <h1 className="text-xl font-light mb-1 tracking-tight text-[var(--color-text)]">
             {t('verifyEmail.title')}
           </h1>
-          <p className="text-xs max-w-xs leading-relaxed opacity-60">
+          <p className="text-xs max-w-xs leading-relaxed text-[var(--color-text-muted)]">
             {t('verifyEmail.subtitle', { email: email || 'بريدك الإلكتروني' })}
           </p>
         </div>
@@ -258,7 +249,7 @@ function VerifyEmailContent() {
         {/* Pending Notice Banner */}
         {isPendingParam && !errorMsg && !successMsg && (
           <div
-            className="p-3 rounded-xl border text-xs flex items-center gap-2"
+            className="p-3 rounded-[4px] border text-xs flex items-center gap-2"
             style={{
               backgroundColor: 'var(--color-badge-daily-bg)',
               color: 'var(--color-badge-daily-text)',
@@ -273,14 +264,14 @@ function VerifyEmailContent() {
         {/* Error Alert */}
         {errorMsg && (
           <div
-            className="p-3.5 rounded-xl border text-xs flex items-center gap-2"
+            className="p-3 rounded-[4px] border text-xs flex items-center gap-2"
             style={{
               backgroundColor: 'var(--color-error-bg)',
               color: 'var(--color-error-text)',
               borderColor: 'var(--color-error-border)',
             }}
           >
-            <WarningCircle size={18} weight="light" className="shrink-0" />
+            <WarningCircle size={16} weight="light" className="shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
@@ -288,14 +279,14 @@ function VerifyEmailContent() {
         {/* Success Alert */}
         {successMsg && (
           <div
-            className="p-3.5 rounded-xl border text-xs flex items-center gap-2"
+            className="p-3 rounded-[4px] border text-xs flex items-center gap-2"
             style={{
               backgroundColor: 'var(--color-success-bg)',
               color: 'var(--color-success-text)',
               borderColor: 'var(--color-success-border)',
             }}
           >
-            <CheckCircle size={18} weight="light" className="shrink-0" />
+            <CheckCircle size={16} weight="light" className="shrink-0" />
             <span>{successMsg}</span>
           </div>
         )}
@@ -303,20 +294,20 @@ function VerifyEmailContent() {
         {/* Simulated Phone SMS Card */}
         {simulatedSms && (
           <div
-            className="p-3.5 rounded-2xl border shadow-sm flex flex-col gap-2 relative overflow-hidden"
+            className="p-3.5 rounded-[4px] border flex flex-col gap-2 relative overflow-hidden"
             style={{
-              backgroundColor: 'var(--color-success-bg)',
-              borderColor: 'var(--color-success-border)',
+              backgroundColor: 'var(--color-input-bg)',
+              borderColor: 'var(--color-border)',
             }}
           >
             <div className="flex items-center gap-2">
-              <DeviceMobile size={18} weight="light" style={{ color: 'var(--color-success-text)' }} />
+              <DeviceMobile size={16} weight="light" className="text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]" />
               <div>
-                <span className="text-xs font-bold block" style={{ color: 'var(--color-success-text)' }}>
+                <span className="text-xs font-mono font-medium block text-[var(--color-text)]">
                   📩 محاكاة رسالة SMS لهاتفك (وضع التجربة)
                 </span>
                 {simulatedSms.phone && (
-                  <span className="text-[10px] opacity-75 font-mono" dir="ltr">
+                  <span className="text-[10px] opacity-75 font-mono text-[var(--color-text-muted)]" dir="ltr">
                     إلى الرقم: {simulatedSms.phone}
                   </span>
                 )}
@@ -324,15 +315,15 @@ function VerifyEmailContent() {
             </div>
 
             <div
-              className="p-2.5 rounded-xl border flex items-center justify-between gap-2"
+              className="p-2.5 rounded-[4px] border flex items-center justify-between gap-2"
               style={{
                 backgroundColor: 'var(--color-card-bg)',
                 borderColor: 'var(--color-border)',
               }}
             >
               <div>
-                <span className="text-[10px] opacity-70 block mb-0.5">كود التحقق المستلم:</span>
-                <span className="text-base font-mono font-extrabold tracking-widest" style={{ color: 'var(--color-success-text)' }}>
+                <span className="text-[10px] text-[var(--color-text-muted)] block mb-0.5">كود التحقق المستلم:</span>
+                <span className="text-base font-mono font-medium tracking-widest text-[var(--color-signal-blue)] dark:text-[var(--color-arc-cyan)]">
                   {simulatedSms.otp}
                 </span>
               </div>
@@ -345,11 +336,7 @@ function VerifyEmailContent() {
                   setErrorMsg(null);
                   inputRefs.current[5]?.focus();
                 }}
-                className="px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-sm flex items-center gap-1 shrink-0"
-                style={{
-                  backgroundColor: 'var(--color-accent)',
-                  color: 'var(--color-accent-text)',
-                }}
+                className="px-3 py-1.5 rounded-[4px] text-xs font-mono uppercase font-semibold text-white bg-[var(--color-accent)] hover:opacity-95 transition-opacity active:scale-95 cursor-pointer flex items-center gap-1 shrink-0"
               >
                 <Sparkle size={14} weight="light" />
                 <span>تعبئة الرمز</span>
@@ -361,7 +348,7 @@ function VerifyEmailContent() {
         {/* 6-Digit OTP Form */}
         <form onSubmit={handleVerify} className="flex flex-col gap-5">
           <div className="flex flex-col items-center gap-2">
-            <label className="text-xs font-semibold opacity-75 self-start">
+            <label className="text-[11px] font-mono uppercase tracking-wider self-start text-[var(--color-text-muted)]">
               {t('verifyEmail.otpLabel')}
             </label>
 
@@ -381,7 +368,7 @@ function VerifyEmailContent() {
                   onKeyDown={(e) => handleKeyDown(idx, e)}
                   onPaste={handlePaste}
                   id={`otp-digit-${idx}`}
-                  className="w-12 h-14 text-center text-xl font-mono font-bold rounded-xl border focus:outline-none transition-all"
+                  className="w-11 h-12 text-center text-lg font-mono font-medium rounded-[4px] border focus:outline-none transition-all"
                   style={{
                     backgroundColor: 'var(--color-input-bg)',
                     borderColor: digit ? 'var(--color-accent)' : 'var(--color-border)',
@@ -391,7 +378,7 @@ function VerifyEmailContent() {
               ))}
             </div>
 
-            <p className="text-[11px] opacity-60 text-center mt-1">
+            <p className="text-[11px] font-mono text-[var(--color-text-muted)] text-center mt-1">
               {t('verifyEmail.hint')}
             </p>
           </div>
@@ -401,21 +388,21 @@ function VerifyEmailContent() {
             type="submit"
             id="verify-email-submit-btn"
             disabled={isLoading || isSuccess || digits.join('').length !== 6}
-            className="ios-btn-primary w-full mt-2"
+            className="w-full h-10 rounded-[8px] font-mono text-xs uppercase tracking-wider font-semibold text-white bg-[var(--color-accent)] hover:opacity-95 disabled:opacity-50 flex items-center justify-center gap-2 mt-2 transition-opacity"
           >
             {isLoading ? (
               <>
-                <CircleNotch size={18} weight="light" className="animate-spin" />
+                <CircleNotch size={16} weight="light" className="animate-spin" />
                 <span>{t('verifyEmail.verifying')}</span>
               </>
             ) : isSuccess ? (
               <>
-                <CheckCircle size={18} weight="light" />
+                <CheckCircle size={16} weight="light" />
                 <span>{t('verifyEmail.successTitle')}</span>
               </>
             ) : (
               <>
-                <ShieldCheck size={18} weight="light" />
+                <ShieldCheck size={16} weight="light" />
                 <span>{t('verifyEmail.verifyBtn')}</span>
               </>
             )}
@@ -423,16 +410,15 @@ function VerifyEmailContent() {
         </form>
 
         {/* Resend OTP Section */}
-        <div className="flex flex-col items-center gap-3 pt-3 border-t" style={{ borderColor: 'var(--color-separator)' }}>
-          <div className="flex items-center justify-between w-full text-xs">
-            <span className="opacity-70">لم يصلك الرمز؟</span>
+        <div className="flex flex-col items-center gap-3 pt-3 border-t border-[var(--color-separator)]">
+          <div className="flex items-center justify-between w-full text-xs font-mono">
+            <span className="text-[var(--color-text-muted)]">لم يصلك الرمز؟</span>
             <button
               type="button"
               id="resend-otp-btn"
               disabled={cooldown > 0 || isResending || isLoading || isSuccess}
               onClick={handleResend}
-              className="font-bold flex items-center gap-1.5 transition-opacity disabled:opacity-50 cursor-pointer"
-              style={{ color: 'var(--color-text)' }}
+              className="font-medium flex items-center gap-1.5 transition-opacity disabled:opacity-50 cursor-pointer text-[var(--color-accent)]"
             >
               {isResending ? (
                 <>
@@ -453,19 +439,17 @@ function VerifyEmailContent() {
             </button>
           </div>
 
-          <div className="flex items-center justify-between w-full text-[11px] pt-1">
+          <div className="flex items-center justify-between w-full text-[11px] font-mono pt-1 text-[var(--color-text-muted)]">
             <Link
               href={getLoginLink()}
-              className="opacity-70 hover:opacity-100 transition-opacity"
-              style={{ color: 'var(--color-text)' }}
+              className="hover:text-[var(--color-text)] transition-colors"
             >
               {t('verifyEmail.backToLogin')}
             </Link>
 
             <Link
               href={roleParam === 'customer' ? '/signup' : getLoginLink()}
-              className="opacity-70 hover:opacity-100 transition-opacity underline"
-              style={{ color: 'var(--color-text)' }}
+              className="hover:text-[var(--color-text)] transition-colors underline"
             >
               {t('verifyEmail.changeEmail')}
             </Link>

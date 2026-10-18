@@ -30,8 +30,10 @@ export interface CustomerData {
   created_at: string;
 }
 
-// Crockford's clean Base32 alphabet: eliminates 0/O, 1/I/L to avoid human confusion
-const CODE_ALPHABET = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+// Crockford Base32 clean alphabet: eliminates ambiguous chars 0/O, 1/I/L to avoid human confusion
+// Crockford removes: I (=1), L (=1), O (=0), U (sounds like profanity)
+const CODE_ALPHABET = '23456789ABCDEFGHJKMNPQRSTVWXYZ';
+
 
 /**
  * 3.1 & Phase 25: Generate a 9-character alphanumeric code for the customer.
@@ -46,8 +48,8 @@ export function generateQrToken(): string {
   return token;
 }
 
-export { extractCustomerToken } from './tokens';
 import { extractCustomerToken } from './tokens';
+export { extractCustomerToken };
 
 /**
  * Calculate customer points balance from points_ledger.
