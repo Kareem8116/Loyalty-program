@@ -33,7 +33,7 @@
     },
     {
       "path": "/api/cron/process-points",
-      "schedule": "* * * * *"
+      "schedule": "0 3 * * *"
     }
   ]
 }
