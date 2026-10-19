@@ -100,8 +100,11 @@ export default function CustomerScreen({ customer }: CustomerScreenProps) {
       if (saved === 'qr' || saved === 'barcode') {
         setCodeFormat(saved);
       }
+      if (customer?.qr_token) {
+        localStorage.setItem('pointat_last_token', customer.qr_token);
+      }
     } catch {}
-  }, []);
+  }, [customer?.qr_token]);
 
   const handleFormatChange = (format: 'qr' | 'barcode') => {
     setCodeFormat(format);

@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:rls": "jest tests/rls --testTimeout=60000"
+    "test:rls": "jest tests/rls --testTimeout=60000",
+    "load-test": "node --env-file=.env.local scripts/load-test.mjs",
+    "load-test:prod": "LOAD_TEST_URL=https://loyalty-app-chi-seven.vercel.app node scripts/load-test.mjs",
+    "verify-partitioning": "node --env-file=.env.local scripts/verify-partitioning.mjs",
+    "cache:warm": "node --env-file=.env.local scripts/warm-cache.mjs",
+    "queue:stats": "node --env-file=.env.local scripts/queue-stats.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
